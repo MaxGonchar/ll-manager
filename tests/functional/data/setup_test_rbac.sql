@@ -1,0 +1,8 @@
+DELETE FROM users;
+
+-- password: "qwe123!@#"
+INSERT INTO users (id, first, last, email, role, password_hash, properties, added, updated, last_login) VALUES
+  ('4d7993aa-d897-4647-994b-e0625c88f349', 'first', 'last', 'super-admin@test.com', 'super-admin', '2c835ba8966d902120fb4504037fad34effa4b9461e988e4c4da073ad50dae82', '{"nativeLang": "uk", "challenges": {"dailyTraining": {"learnListSize": 50, "practiceCountThreshold": 50, "knowledgeLevelThreshold": 0.9, "learning_list": []}}}', '2023-04-09 10:34:42', '2023-04-09 10:34:42', '2023-04-09 10:34:42'),
+  ('aba08f26-174c-421f-87ea-033cb4104182', 'first', 'last', 'admin@test.com', 'admin', '2c835ba8966d902120fb4504037fad34effa4b9461e988e4c4da073ad50dae82', '{"nativeLang": "uk", "challenges": {"dailyTraining": {"learnListSize": 50, "practiceCountThreshold": 50, "knowledgeLevelThreshold": 0.9, "learning_list": []}}}', '2023-04-09 10:34:42', '2023-04-09 10:34:42', '2023-04-09 10:34:42'),
+  ('70f276b3-2cf6-4c85-9dd0-30f14b643ef6', 'first', 'last', 'self-educated@test.com', 'self-educated', '2c835ba8966d902120fb4504037fad34effa4b9461e988e4c4da073ad50dae82', '{"nativeLang": "uk", "challenges": {"dailyTraining": {"learnListSize": 50, "practiceCountThreshold": 50, "knowledgeLevelThreshold": 0.9, "learning_list": []}}}', '2023-04-09 10:34:42', '2023-04-09 10:34:42', '2023-04-09 10:34:42'),
+  ('eed91f47-b411-4019-a5c9-748e16f947e4', 'first', 'last', 'invalid-role@test.com', 'invalid-role', '2c835ba8966d902120fb4504037fad34effa4b9461e988e4c4da073ad50dae82', '{"nativeLang": "uk", "challenges": {"dailyTraining": {"learnListSize": 50, "practiceCountThreshold": 50, "knowledgeLevelThreshold": 0.9, "learning_list": []}}}', '2023-04-09 10:34:42', '2023-04-09 10:34:42', '2023-04-09 10:34:42');

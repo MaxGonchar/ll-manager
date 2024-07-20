@@ -1,0 +1,442 @@
+.error { /* TODO: move to common */
+    color: red;
+    font-size: 16px;
+}
+
+/* GENERAL */
+* {
+    margin: 0;
+    padding: 0;
+    /* box-sizing: border-box; */
+}
+
+body, html {
+    height: 100%;
+}
+
+body, html, input, textarea {
+    font-family: 'Comme', sans-serif;
+    color: #343a40;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 24px 44px;
+
+    background-color: #e599f7;
+}
+
+header a:link, header a:visited {
+    font-size: 31.25px;
+    text-decoration: none;
+}
+
+.main-container {
+    display: flex;
+}
+
+main {
+    width: 100%;
+}
+
+.menu-title-link:link, .menu-title-link:visited {
+    display: inline-block;
+    margin: 32px;
+    text-decoration: none;
+}
+
+.menu-title-icon {
+    height: 61px;
+    width: 61px;
+    margin-bottom: 24px;
+}
+
+.menu-title-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    border: solid;
+    border-radius: 10px;
+    padding: 32px;
+    width: 200px;
+
+    transition: all 0.4s;
+}
+
+.menu-title-box:hover {
+    background-color: #f8f0fc;
+}
+
+.menu-title-box h2 {
+    margin-bottom: 20px;
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.flash-message {
+    padding: 18px;
+    text-align: center;
+}
+
+.message-success {
+    color: #40c057;
+}
+
+.message-error {
+    color: #fa5252;
+}
+
+.exercise-navigation a {
+    margin: 10px;
+}
+
+.button {
+    height: 38px;
+    width: 100px;
+    margin-top: 10px;
+    
+    color: #9c36b5;
+    font-size: 20px;
+    /* text-align: center;
+    text-decoration: none; */
+    
+    border-radius: 5px;
+    border-color: #862e9c;
+}
+
+.button-filled {
+    color: #f1f3f5;
+    background-color: #9c36b5;
+}
+
+.button-box {
+    display: flex;
+    gap: 10px;
+}
+
+.h2-center {
+    text-align: center;
+    margin: 40px;
+}
+
+.options-tips {
+    display: flex;
+    gap: 10px;
+}
+
+.options {
+    width: 50%;
+}
+
+.tips {
+    align-self: stretch;
+    width: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    opacity: 0;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+/***********/
+/* TOOLTIP */
+/***********/
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+  }
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    /* Position the tooltip text */
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    /* Fade in tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+/* Tooltip arrow */
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+
+/* DAILY TRAINING */
+
+.daily-training {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+
+    margin-top: 48px;
+
+    font-size: 25px;
+}
+
+.definition {
+    max-width: 1000px;
+    text-align: center;
+}
+
+.example-in-sentence {
+    max-width: 1000px;
+    text-align: center;
+}
+
+.expression-input-template {
+    display: flex;
+    gap: 3px;
+}
+
+.letter-box {
+    height: 30px;
+    width: 20px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+.non-letter-box {
+    height: 30px;
+    width: 20px;
+    text-align: center;
+}
+
+.daily-training-input {
+    height: 38px;
+    padding-left: 5px;
+    font-size: 20px;
+
+    border-radius: 5px;
+    border-color: #862e9c;
+    width: 500px;
+}
+
+.daily-training-settings-form {
+    display: flex;
+    flex-direction: column;
+
+    margin: 40px auto 0px auto;
+    max-width: 1000px;
+}
+
+.daily-training-settings-form label {
+    width: 50%;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.daily-training-settings-form input {
+    width: 40%;
+    padding: 8px;
+
+    font-size: 20px
+}
+
+/* USER EXPRESSIONS LIST */
+
+.user-expressions {
+    text-align: left;
+    margin-left: 40px;
+    margin-top: 28px;
+}
+
+.user-expressions thead {
+    background-color: #862e9c;
+    color: #e9ecef;
+}
+
+.user-expressions th, .user-expressions td {
+    padding: 4px 12px;
+}
+
+.expression-link:visited, .expression-link:link {
+    text-decoration: none;
+    color: #343a40;
+}
+
+.user-expressions--1 {
+    width: 65%;
+}
+
+.user-expressions tr:nth-child(even) {
+    background-color: #f8f0fc;
+  }
+
+.search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    margin-top: 10px;
+}
+
+.search button {
+    margin: 0;
+}
+
+.link-icon {
+    display: block;
+    height: 48px;
+    width: 48px;
+}
+
+.table-icon {
+    display: block;
+    height: 16px;
+    width: 16px;
+}
+
+/* POST EXPRESSION */
+
+.post-expression-form {
+    display: flex;
+    flex-direction: column;
+    margin: 40px auto 0px auto;
+    max-width: 1000px;
+}
+
+.form-row-post-expression {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+    margin-bottom: 8px;
+    font-size: 20px
+}
+
+.tags-container {
+    display: inline;
+}
+
+.post-expression-form label {
+    width: 15%;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.post-expression-form input {
+    width: 85%;
+    padding: 8px;
+
+    font-size: 20px
+}
+
+.post-expression-form textarea {
+    width: 85%;
+    max-width: 85%;
+    height: 150px;
+    padding: 8px;
+
+    font-size: 20px
+}
+
+.post-expression-form select {
+    padding: 8px;
+    font-size: 20px
+}
+
+/* EXPRESSION */
+
+.expression-item {
+    max-width: 1000px;
+    margin: 40px auto 0px auto;
+}
+
+.expression-item h2 {
+    margin-bottom: 12px;
+}
+
+.expression-item hr {
+    margin: 8px 0;
+}
+
+.expression-item dl {
+    font-size: 20px;
+}
+
+.expression-item dd {
+    margin-bottom: 10px;
+    margin-left: 80px;
+}
+
+.expression-item dt {
+    margin-bottom: 8px;
+    font-style: italic;
+}
+
+/* EXPRESSION SENTENCES */
+
+.expression-sentences {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    max-width: 1000px;
+    margin: 40px auto 0px auto;
+}
+
+.sentence-parts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+
+    padding: 24px;
+    width: 100%
+}
+
+.sentence-part {
+    background-color: #e9ecefa5;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.sentence-part--selected {
+    background-color: #40c057;
+    color: #343a40;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.sentence-train--word-box {
+    letter-spacing: 2px;
+}

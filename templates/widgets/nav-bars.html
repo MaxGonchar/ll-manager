@@ -1,0 +1,5 @@
+{% macro side_nav_bar(class) -%}
+    <nav class="{{ class }}">
+        {{ caller() }}
+    </nav>
+{%- endmacro %}

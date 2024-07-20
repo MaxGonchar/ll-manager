@@ -1,0 +1,43 @@
+{% from "widgets/icons.html" import academic_cap, cloud_arrow_up, queue_list, chat_bubble_bottom_center_text %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL{% endblock %}
+
+{% block content%}
+<main>
+  <article class="menu">
+    <a class="menu-title-link" href="{{ url_for('exercise.daily_training_challenge')}}">
+      <div class="menu-title-box">
+        {{ academic_cap("menu-title-icon") }}
+        <h2>Daily Training</h2>
+        <p>{{ exprs["dailyTrainingExpressionsNumber"] }} expressions to train</p>
+      </div>
+    </a>
+
+    <a class="menu-title-link" href="{{ url_for('expression_recall.expression_recall_challenge')}}">
+      <div class="menu-title-box">
+        {{ cloud_arrow_up("menu-title-icon") }}
+        <h2>Recall</h2>
+        <p>{{ exprs["recallExpressionsNumber"] }} expressions to recall</p>
+      </div>
+    </a>
+
+    <a class="menu-title-link" href="{{ url_for('sentence_training.sentence_training_challenge') }}">
+      <div class="menu-title-box">
+        {{ chat_bubble_bottom_center_text("menu-title-icon") }}
+        <h2>In sentence</h2>
+        <p>{{ exprs["sentenceTrainingExpressionsNumber"] }} expressions to train</p>
+      </div>
+    </a>
+
+    <a class="menu-title-link" href="{{ url_for('expressions.user_expressions')}}">
+      <div class="menu-title-box">
+        {{ queue_list("menu-title-icon") }}
+        <h2>My expressions</h2>
+        <p>{{ exprs["totalExpressions"] }} total</p>
+      </div>
+    </a>
+  </article>
+</main>
+{% endblock %}

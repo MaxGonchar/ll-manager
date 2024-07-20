@@ -1,0 +1,84 @@
+{% from "widgets/forms.html" import render_field %}
+
+{% extends 'admin/base.html' %}
+
+{% block title %}LL-admin{% endblock %}
+
+{% block content%}
+
+<form class="post-expression-form" method="post" action="{{url_for('admin.add_expression_sentence', expression_id=expression_id)}}">
+    {{ form.csrf_token }}
+    {{ render_field(form.sentence) }}
+    {{ render_field(form.translation) }}
+    <div class="sentence-parts" id="parts"></div>
+    {{ render_field(form.template, "hidden") }}
+
+    {% if form.template.errors %}
+        <ul class=errors>
+        {% for error in form.template.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+        <button class="button button-filled">Add</button>
+</form>
+
+<script>  //"Hello, Bob! Qwe-qwe asd zxc it's bed qwe - qwe."
+    const sentenceEl = document.getElementById('sentence');
+    const partsEl = document.getElementById('parts');
+    const templateEl = document.getElementById('template');
+
+    const setSchema = function(schema) {
+        content = {
+            tpl: schema.template.join(''),
+            values: schema.words.filter(el=>el !== '{}')
+        }
+        templateEl.value = JSON.stringify(content);
+    };
+    
+    sentenceEl.addEventListener('input', function(event) {
+        const sentence = event.target.value;
+        console.log(sentence);
+        
+        // split by words
+        const wordPattern = /(["])|([\w\-']+)|(\S+)|(\s)/g;
+        const words = sentence.split(wordPattern).filter(Boolean);
+        const template = [...words]
+        const placeholderValues = new Array(template.length).fill('{}');
+        const schema = {
+            template: template,
+            words: placeholderValues
+        };
+
+        setSchema(schema);
+
+        partsEl.innerHTML = '';
+        words.map((word, i) => {
+
+            const regex = /[\w\-']+/;
+            if (!regex.test(word)) return
+
+            div = document.createElement('div');
+            div.classList.add('sentence-part');
+            div.textContent = word;
+            div.addEventListener('click', (e)=>{
+
+                if (e.target.className === 'sentence-part') {
+                    e.target.className = 'sentence-part--selected';
+                    schema.template[i] = '{}';
+                    schema.words[i] = word;
+                } else {
+                    e.target.className = 'sentence-part';
+                    schema.template[i] = word;
+                    schema.words[i] = '{}';
+                }
+
+                setSchema(schema);
+            })
+            partsEl.insertAdjacentElement('beforeend', div)
+        })
+    });
+</script>
+
+{% endblock %}

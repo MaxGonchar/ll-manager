@@ -1,0 +1,10 @@
+.vscode
+
+venv
+__pycache__
+
+token.json
+credentials.json
+
+.env*
+!.env.sample

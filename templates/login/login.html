@@ -1,0 +1,19 @@
+{% from "login/utils.html" import render_form_field as render %}
+{% from "login/utils.html" import handle_flash %}
+
+{% extends 'login/base.html' %}
+
+{% block title %}LL-login{% endblock %}
+
+{% block content%}
+    <form method="POST" action="{{url_for('login.login')}}" novalidate>
+        {{ form.csrf_token }}
+        {{ render(form.email) }}
+        {{ render(form.password) }}
+
+        {{ handle_flash() }}
+
+        <input class="btn" type="submit" value="Login" style = "font-size:20px">
+        <a href="{{ url_for('login.sign_on') }}">Have no account O_o</a>
+    </form>
+{% endblock %}

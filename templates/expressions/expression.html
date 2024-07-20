@@ -1,0 +1,18 @@
+{% extends 'user/base.html' %}
+
+{% block title %}LL-Expressions{% endblock %}
+
+{% block content%}
+<article class="expression-item">
+    <h2>{{ expression["expression"] }}</h2>
+    <hr>
+    <dl>
+        <dt>Definition:</dt>
+        <dd>{{ expression["definition"] }}</dd>
+        <dt>Translation:</dt>
+        <dd>{{ expression["translation"] }}</dd>
+        <dt>Tags:</dt>
+        <dd>{{ expression["tags"] }}</dd>
+    </dl>
+</article>
+{% endblock %}

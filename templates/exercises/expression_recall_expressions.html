@@ -1,0 +1,41 @@
+{% from "widgets/icons.html" import cloud_arrow_up %}
+{% from "widgets/link-icons.html" import link_icon %}
+{% from "widgets/nav-bars.html" import side_nav_bar %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-expression-recall{% endblock %}
+
+{% block navigation %}
+  {% call side_nav_bar('exercise-navigation') %}
+      {{ link_icon("link-icon", url_for("expression_recall.expression_recall_challenge"), cloud_arrow_up("icon")) }}
+  {% endcall %}
+{% endblock %}
+
+{% block content %}
+
+<h2 class="h2-center">Recall Expressions</h2>
+
+<table class="user-expressions">
+    <thead>
+        <tr>
+            <th class="user-expressions--1">Expression</th>
+            <th>Knowledge Level</th>
+            <th>Practice Count</th>
+            <th>Last Practice</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for expr in exprs %}
+            <tr>
+                <td>
+                    <a class="expression-link" href="{{ url_for('expressions.user_expression', expression_id=expr.expression_id) }}">{{ expr.expression }}</a>
+                </td>
+                <td>{{ expr.knowledge_level | knowledge_level_filter }}</td>
+                <td>{{ expr.practice_count }}</td>
+                <td>{{ expr.last_practice_time | date_filter }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+
+{% endblock %}

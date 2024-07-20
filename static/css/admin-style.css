@@ -1,0 +1,11 @@
+.admin-nav {
+    width: 100%;
+    display: flex;
+    padding: 16px 24px;
+    background-color: #e599f7;
+}
+
+.admin-nav a:link, .admin-nav a:visited {
+    font-size: 23.04px;
+    text-decoration: none;
+}

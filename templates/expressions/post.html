@@ -1,0 +1,11 @@
+{% from "widgets/forms.html" import expression_form %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-Expressions{% endblock %}
+
+{% block content%}
+
+{{ expression_form(form, url_for('expressions.post_expression' , expression=form.expression.data)) }}
+
+{% endblock %}

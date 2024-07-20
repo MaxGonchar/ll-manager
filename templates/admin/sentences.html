@@ -1,0 +1,20 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}LL-admin{% endblock %}
+
+{% block content%}
+
+<div class="expression-sentences">
+
+    {% for sentence in sentences %}
+    <div>
+        <p>{{ sentence["template"]|expression_sentence|safe }}</p>
+    </div>
+    {% endfor %}
+
+    <a href="{{url_for('admin.add_expression_sentence', expression_id=expression_id)}}">
+        <button class="button button-filled">Add</button>
+    </a>
+</div>
+
+{% endblock %}

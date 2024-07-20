@@ -1,0 +1,39 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}{{expression["expression"]}}{% endblock %}
+
+{% block content%}
+<div class="container">
+
+    <form action="{{url_for('expression', expression_id=expression['id'])}}" method="post">
+        <fieldset>
+            <legend>{{expression.expression}}</legend>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label" for="definition">Definition</label>
+                <div class="col-sm-10">
+                    <textarea type="text" rows="3" class="col-sm-10 form-control" id="definition" name="definition">{{expression['definition']}}</textarea>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label" for="translation">Translation</label>
+                <div class="col-sm-10">
+                    <input type="text" class="col-sm-10 form-control" id="translation" name="translation" value="{{expression['translation']}}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label" for="example">Example</label>
+                <div class="col-sm-10">
+                    <input type="text" class="col-sm-10 form-control" id="example" name="example" value="{{expression['example']}}">
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-sm-2 col-form-label" for="tag">Tag</label>
+                <div class="col-sm-10">
+                    <input type="text" class="col-sm-10 form-control" id="tag" name="tag" value="{{expression['tags']}}">
+                </div>
+            </div>
+        </fieldset>
+        <button type="submit" class="btn btn-outline-secondary">Submit</button>
+    </form>
+</div>
+{% endblock %}

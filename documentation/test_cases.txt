@@ -1,0 +1,12 @@
+ADMIN
+  - get expressions
+  - update expression
+
+
+USER EXPRESSIONS
+  - get expressions
+  - search expressions
+  - post expressions
+
+DAILY TRAINING
+  - train expressions

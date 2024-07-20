@@ -1,0 +1,35 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Status{% endblock %}
+
+{% block content%}
+<div class="container">
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Total</th>
+                <th>{{status["total"]}}</th>
+            </tr>
+        </thead>
+    </table>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tags</th>
+                <th>count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for tag in status["tags"]%}
+            <tr>
+                <td><a href="{{url_for('expressions', tag=tag['tag']['id'])}}">{{tag["tag"]["name"] | upper}}</a></td>
+                <td>{{tag["count"]}}</td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+    
+</div>
+{% endblock %}

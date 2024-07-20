@@ -1,0 +1,44 @@
+----- terminal start -----
+/Applications/Postgres.app/Contents/Versions/14/bin/psql
+
+export PATH=/Applications/Postgres.app/Contents/Versions/14/bin:$PATH
+or add to .zprofile
+
+----- show databases -----
+\l
+\l+
+
+----- connect DB -----
+\c <db name>
+
+----- show tables -----
+\d
+\d+
+
+----- describe table -----
+\d <table name>
+\d+ <table name>
+
+----- list of users -----
+\du
+\du+
+https://www.postgresqltutorial.com/postgresql-administration/postgresql-list-users/
+
+----- create db -----
+CREATE DATABASE ll_db;
+CREATE DATABASE test_ll_db;
+
+----- create user -----
+CREATE USER ll_user WITH PASSWORD 'll_user_password';
+GRANT ALL PRIVILEGES ON DATABASE ll_db TO ll_user;
+-- to be able copy to csv
+GRANT ll_user TO pg_write_server_files;
+
+CREATE USER test_ll_user WITH PASSWORD 'test_ll_user_password';
+GRANT ALL PRIVILEGES ON DATABASE test_ll_db TO test_ll_user;
+
+
+----- DOCKS -----
+full text search: https://www.postgresql.org/docs/current/textsearch.html
+
+import from csv: https://www.postgresqltutorial.com/postgresql-tutorial/import-csv-file-into-posgresql-table/

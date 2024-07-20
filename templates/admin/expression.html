@@ -1,0 +1,15 @@
+{% from "widgets/forms.html" import expression_form %}
+
+{% extends 'admin/base.html' %}
+
+{% block title %}LL-admin{% endblock %}
+
+{% block content%}
+
+<nav class="admin-nav">
+    <a href="{{ url_for('admin.expression_sentences', expression_id=expression_id) }}">Sentences</a>
+</nav>
+
+{{ expression_form(form, url_for('admin.expression' , expression_id=expression_id)) }}
+
+{% endblock %}

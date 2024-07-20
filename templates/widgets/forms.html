@@ -1,0 +1,44 @@
+{% macro expression_form(form, action) -%}
+    {% for field in form.all_fields %}
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <div class="form-row error">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+    <form class="post-expression-form" method="POST" action="{{ action }}">
+
+        
+        {{ form.csrf_token }}
+        <div class="form-row-post-expression">{{ form.expression.label }}{{ form.expression }}</div>
+        <div class="form-row-post-expression">{{ form.translation.label }}{{ form.translation }}</div>
+        <div class="form-row-post-expression">{{ form.definition.label }}{{ form.definition }}</div>
+        <div class="form-row-post-expression">{{ form.example.label }}{{ form.example }}</div>
+        <div class="form-row-post-expression">
+            <label>tags</label>
+            <div class="tags-container">
+                {{ form.tag_1 }}
+                {{ form.tag_2 }}
+                {{ form.tag_3 }}
+                {{ form.tag_4 }}
+                {{ form.tag_5 }}
+            </div>
+        </div>
+        <div class="form-row-post-expression">{{ form.grammar.label }}{{ form.grammar }}</div>
+        <div class="form-row-post-expression">{{ form.grammar_tag.label }}{{ form.grammar_tag }}</div>
+        <button class="button button-filled" type="submit">Add</button>
+    </form>
+{%- endmacro %}
+
+{% macro render_field(field, class="form-row-post-expression") %}
+<div class="{{ class }}">{{ field.label }}{{ field }}</div>
+  {% if field.errors %}
+    <ul class="form-row error">
+    {% for error in field.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </dd>
+{% endmacro %}

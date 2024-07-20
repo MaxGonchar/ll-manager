@@ -1,0 +1,28 @@
+{% extends 'user/base.html' %}
+
+{% block title %}LL-expression-recall{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <article class="daily-training">
+    <h3>Solution</h3>
+
+    <div class="user-answer"></div>
+    <div class="correct-answer"></div>
+    <div>{{ solution.translation }}</div>
+
+    <form action="{{ url_for('sentence_training.sentence_training_challenge') }}" method="get">
+        <div class="button-box">
+          <button class="button button-filled" type="submit" autofocus>Next</button>
+        </div>
+    </form>
+    <script>
+        const userAnswer = "{{ solution.usersAnswer | escape_double_quotas | safe  }}";
+        const correctAnswer = "{{ solution.correctAnswer | escape_double_quotas | safe }}";
+    </script>
+    <script type="module" src="{{ url_for('static', filename='js/render_sentence_training_answer.js')}}"></script>
+
+  </article>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% from "login/utils.html" import render_form_field as render %}
+{% from "login/utils.html" import handle_flash %}
+
+{% extends 'login/base.html' %}
+
+{% block title %}LL-sign-on{% endblock %}
+
+{% block content%}
+<div class="log-in-form">
+    <form method="POST" action="{{url_for('login.sign_on')}}" novalidate>
+        {{ form.csrf_token }}
+        {{ render(form.first) }}
+        {{ render(form.last) }}
+        {{ render(form.email) }}
+        {{ render(form.password) }}
+        {{ render(form.password_repeat) }}
+
+        {{ handle_flash() }}
+
+        <input class="btn" type="submit" value="Sign on" style = "font-size:20px">
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,10 @@
+-----------------------------------------
+RECALL EXERCISE
+-----------------------------------------
+goal:
+  recall expressions was learned before
+
+flow:
+  - get the latest trained expression
+  - challenge it
+  - update its knowledge level, practice count, last practice time

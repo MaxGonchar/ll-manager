@@ -1,0 +1,38 @@
+==========================
+------ Done --------------
+==========================
+==========================
+------ In Progress -------
+==========================
+
+as user I want to train en expression in context
+- get the context with gaps equivalent to letters of trained expression
+
+==========================
+------ ToBeDone ----------
+==========================
+
+- exercises for grammar rules
+==========================
+------ BackLog -----------
+==========================
+  |- use MongoDB for different properties
+
+  |- flake8
+
+  |- mypy
+
+  |- test coverage
+  
+  - implement synonyms table
+
+  - implement antonym table
+
+  - error handling
+
+  - create macro for html
+
+  - user can correct translations, definitions, ...
+    to not affect other users, edited expression should be saved as a new one
+    consider extract translation, ... from expression table
+    or keep custom translations, ... in user_expression table

@@ -1,0 +1,90 @@
+/* COLORS: grape, yellow, gray */
+/* https://yeun.github.io/open-color/ */
+
+/* FONT SIZE: https://typescale.com/ */
+/* SPACE: https://tailwindcss.com/docs/customizing-spacing */
+/*---------------------------------------------------------*/
+
+* {
+    margin: 0;
+    padding: 0;
+    /* box-sizing: border-box; */
+}
+
+/* LOGIN */
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: 'Comme', sans-serif;
+    color: #495057;
+
+    background-image: url(/static/img/login-background.png);
+    background-size: 100% 100%;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 5px;
+
+    padding: 2em;
+    font-size: 25px;
+
+    border: solid;
+    border-radius: 10px;
+    border-color: #862e9c;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+}
+
+.form-row-login {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+
+    margin-bottom: 5px;
+}
+
+.form-row-login input {
+    margin-left: 5px;
+    height: 38px;
+    width: 400px;
+    padding-left: 5px;
+
+    border-radius: 10px;
+    border-color: #862e9c;
+
+    font-size: 20px;
+}
+
+.btn {
+    align-self: center;
+    height: 38px;
+    width: 80%;
+    margin-top: 10px;
+
+    color: #f1f3f5;
+
+    border-radius: 10px;
+    border-color: #862e9c;
+    background-color: #9c36b5;
+}
+
+a:link, a:visited {
+    align-self: center;
+    font-size: 20px;
+    margin-top: 20px;
+    text-decoration: none;
+}
+
+.error {
+    color: red;
+    font-size: 16px;
+}

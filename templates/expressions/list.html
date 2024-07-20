@@ -1,0 +1,50 @@
+{% from "widgets/icons.html" import academic_cap, x_circle %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-Expressions{% endblock %}
+
+{% block content%}
+<div class="search">
+    <a class="link-icon" href="{{ url_for('expressions.user_expressions') }}">
+        {{ x_circle("") }}
+    </a>
+    <form action="{{ url_for('expressions.user_expressions') }}" method="post">
+        <input class="daily-training-input" type="text" name="query" value="{{ query_expression }}" required>
+        <button class="button button-filled" type="submit" name="action" value="search">Search</button>
+        <button class="button button-filled" type="submit" name="action" value="add">Add</button>
+    </form>
+</div>
+
+<table class="user-expressions">
+    <thead>
+        <tr>
+            <th class="user-expressions--1">Expression</th>
+            <th>Knowledge Level</th>
+            <th>Practice Count</th>
+            <th>Last Practice</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for expr in exprs %}
+            <tr>
+                <td>
+                    <a class="expression-link" href="{{ url_for('expressions.user_expression', expression_id=expr['expressionId']) }}">{{ expr["expression"] }}</a>
+                </td>
+                <td>{{ expr["knowledgeLevel"] | knowledge_level_filter }}</td>
+                <td>{{ expr["practiceCount"] }}</td>
+                <td>{{ expr["lastPracticeTime"] | date_filter }}</td>
+                <td>
+                    {% if not expr["isInLearnList"] %}
+                        <a class="table-icon tooltip" href="{{ url_for('expressions.add_expression_to_daily_training', expression_id=expr['expressionId']) }}">
+                            <span class="tooltiptext">Add to daily training</span>
+                            {{ academic_cap("") }}
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

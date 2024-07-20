@@ -1,0 +1,45 @@
+{% from "widgets/icons.html" import academic_cap %}
+{% from "widgets/link-icons.html" import link_icon %}
+{% from "widgets/nav-bars.html" import side_nav_bar %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-daily-training{% endblock %}
+
+{% block navigation %}
+  {% call side_nav_bar('exercise-navigation') %}
+      {{ link_icon("link-icon", url_for("exercise.daily_training_challenge"), academic_cap("icon")) }}
+  {% endcall %}
+{% endblock %}
+
+{% block content %}
+
+<h2 class="h2-center">Daily Training Settings</h2>
+
+<form class="daily-training-settings-form" method="POST" action="{{ url_for('exercise.settings')}}">
+    {{ form.csrf_token }}
+    <div class="options-tips">
+        <div class="options">
+            <div class="form-row-post-expression">
+                {{ form.llist_size.label }}
+                {{ form.llist_size(**{"onmouseover": "showDailyTrainingSettingsTip('" + form.llist_size.description + "')", "onmouseleave": "hideDailyTrainingSettingsTip()"}) }}
+            </div>
+            <div class="form-row-post-expression">
+                {{ form.practice_count_threshold.label }}
+                {{ form.practice_count_threshold(**{"onmouseover": "showDailyTrainingSettingsTip('" + form.practice_count_threshold.description + "')", "onmouseleave": "hideDailyTrainingSettingsTip()"}) }}
+            </div>
+            <div class="form-row-post-expression">
+                {{ form.knowledge_level_threshold.label }}
+                {{ form.knowledge_level_threshold(**{"onmouseover": "showDailyTrainingSettingsTip('" + form.knowledge_level_threshold.description + "')", "onmouseleave": "hideDailyTrainingSettingsTip()"}) }}
+            </div>
+        </div>
+        <div class="tips" id="daily-training-settings-tips">
+            <p>The minimum number of practice events, when the expression can be considered to be removed from the learn list.</p>
+        </div>
+    </div>
+    <button class="button button-filled" type="submit">Submit</button>
+</form>
+
+<script src="{{ url_for('static', filename='js/daily_training_settings.js')}}"></script>
+
+{% endblock %}

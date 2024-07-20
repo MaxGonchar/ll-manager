@@ -1,0 +1,37 @@
+{% from "widgets/flash.html" import handle_flash %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comme:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main-style.css') }}">
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <a href="{{ url_for('user.index')}}">{{ session["user"] }}</a>
+        <a href="{{ url_for('login.log_out')}}">Log_out</a>
+    </header>
+
+    <div class="main-container">
+      <nav>
+        {% block navigation %}{% endblock %}
+      </nav>
+  
+      <main>
+        {{ handle_flash() }}
+    
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+
+</body>
+</html>

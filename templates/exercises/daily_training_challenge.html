@@ -1,0 +1,44 @@
+{% from "widgets/icons.html" import list_bullet, cog_6_tooth %}
+{% from "widgets/link-icons.html" import link_icon %}
+{% from "widgets/nav-bars.html" import side_nav_bar %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-daily-training{% endblock %}
+
+{% block navigation %}
+  {% call side_nav_bar('exercise-navigation') %}
+    {{ link_icon("link-icon", url_for("exercise.daily_training_expressions"), list_bullet("icon")) }}
+    {{ link_icon("link-icon", url_for("exercise.settings"), cog_6_tooth("icon")) }}
+  {% endcall %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <article class="daily-training">
+    <h3>Question</h3>
+
+    <div class="definition">
+        <p>{{ challenge.question }}</p>
+    </div>
+
+    <div class="expression-input-template"></div>
+
+    <div class="button-box">
+      <button class="button" id="button-hint">Hint</button>
+      <button class="button button-filled" id="button-submit" onclick="submit()">Submit</button>
+    </div>
+
+    <script>
+      const action = "{{ url_for('exercise.daily_training_challenge')}}";
+      const challenge = {
+        expression_id: "{{ challenge.expression_id }}",
+        tip: "{{ challenge.tip }}",
+        answer: "{{ challenge.answer | safe }}"
+      }
+    </script>
+    <script type="module" src="{{ url_for('static', filename='js/expression_input.js')}}"></script>
+  </article>
+</div>
+{% endblock %}

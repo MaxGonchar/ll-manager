@@ -1,0 +1,44 @@
+{% from "widgets/icons.html" import list_bullet %}
+{% from "widgets/link-icons.html" import link_icon %}
+{% from "widgets/nav-bars.html" import side_nav_bar %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-expression-recall{% endblock %}
+
+{% block navigation %}
+  {% call side_nav_bar('exercise-navigation') %}
+    {{ link_icon("link-icon", url_for("expression_recall.expression_recall_expressions"), list_bullet("icon")) }}
+  {% endcall %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <article class="daily-training">
+    <h3>Solution</h3>
+
+    <div class="definition">
+        <p>{{ solution.definition }}</p>
+    </div>
+
+    <div class="user-answer expression-input-template"></div>
+    <div class="correct-answer expression-input-template"></div>
+
+    <div class="translation"><b>{{ solution.translation }}</b></div>
+    <div class="example-in-sentence"><i>{{ solution.example }}</i></div>
+
+    <form action="{{ url_for('expression_recall.expression_recall_challenge')}}" method="get">
+        <div class="button-box">
+          <button class="button button-filled" type="submit" autofocus>Next</button>
+        </div>
+    </form>
+    <script>
+        const usersAnswer = "{{ solution.usersAnswer | safe  }}";
+        const correctAnswer = "{{ solution.correctAnswer | safe }}";
+    </script>
+    <script type="module" src="{{ url_for('static', filename='js/render_answer.js')}}"></script>
+
+  </article>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% from "widgets/link-icons.html" import link_icon %}
+{% from "widgets/nav-bars.html" import side_nav_bar %}
+{% from "widgets/icons.html" import list_bullet %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-expression-recall{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <article class="daily-training">
+    <h3>Question</h3>
+
+    <div class="box"></div>
+    <div id="sentence-training--hint" style="visibility: hidden;"><i>{{ challenge.sentence }}</i></div>
+
+    <div class="button-box">
+      <button class="button" id="button-hint">Hint</button>
+      <button class="button button-filled" id="button-submit">Submit</button>
+    </div>
+
+    <script>
+        const action = "{{ url_for('sentence_training.sentence_training_challenge')}}";
+        const challenge = {
+            expression_id: "{{ challenge.expressionId }}",
+            context_id: "{{ challenge.contextId }}",
+            sentence: "{{ challenge.sentence | escape_double_quotas | safe }}",
+            tpl: "{{ challenge.template | escape_double_quotas | safe }}",
+            values: JSON.parse('{{ challenge["values"] | string_array | safe}}')
+        }
+    </script>
+    <script type="module" src="{{ url_for('static', filename='js/butch_template_manager.js')}}"></script>
+  </article>
+</div>
+{% endblock %}
+

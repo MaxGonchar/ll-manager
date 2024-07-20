@@ -1,0 +1,43 @@
+{% from "widgets/icons.html" import list_bullet %}
+{% from "widgets/link-icons.html" import link_icon %}
+{% from "widgets/nav-bars.html" import side_nav_bar %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-expression-recall{% endblock %}
+
+{% block navigation %}
+  {% call side_nav_bar('exercise-navigation') %}
+    {{ link_icon("link-icon", url_for("expression_recall.expression_recall_expressions"), list_bullet("icon")) }}
+  {% endcall %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <article class="daily-training">
+    <h3>Question</h3>
+
+    <div class="definition">
+        <p>{{ challenge.question }}</p>
+    </div>
+
+    <div class="expression-input-template"></div>
+
+    <div class="button-box">
+      <button class="button" id="button-hint">Hint</button>
+      <button class="button button-filled" id="button-submit">Submit</button>
+    </div>
+
+    <script>
+        const action = "{{ url_for('expression_recall.expression_recall_challenge')}}";
+        const challenge = {
+            expression_id: "{{ challenge.expression_id }}",
+            tip: "{{ challenge.tip }}",
+            answer: "{{ challenge.answer | safe }}"
+        }
+    </script>
+    <script type="module" src="{{ url_for('static', filename='js/expression_input.js')}}"></script>
+  </article>
+</div>
+{% endblock %}

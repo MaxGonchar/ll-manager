@@ -1,0 +1,111 @@
+===== GENERAL =====
+https://github.com/public-apis/public-apis?tab=readme-ov-file#text-analysis
+
+
+----- UI -----
+https://getbootstrap.com/2.0.2/index.html
+https://getbootstrap.com/docs/5.2/getting-started/download/
+https://bbbootstrap.com/snippets/bootstrap-5-copy-clipboard-items-tooltips-31421615
+
+----- ICONS -----
+https://heroicons.com/
+
+----- Language detection API -----
+https://detectlanguage.com/documentation#auth
+https://languagelayer.com/documentation
+
+----- Translation API ----
+https://libretranslate.com/?source=en&target=uk&q=wild+game
+https://www.deepl.com/pro?cta=header-prices
+https://azure.microsoft.com/en-us/pricing/details/cognitive-services/translator/
+https://aws.amazon.com/translate/pricing/
+https://www.translate.com/pricing
+
+----- Dictionary api -----
+https://dictionaryapi.dev/
+https://dictionaryapi.com/products/json#sec-2.prs
+https://rapidapi.com/Graydyn/api/synonyms/
+https://www.wordsapi.com/
+https://developer.wordnik.com/docs#/
+https://www.dictionary.com/browse/afield
+https://www.thefreedictionary.com/
+https://www.antonym.com/
+https://www.merriam-webster.com/
+https://dictionary.cambridge.org/
+https://www.collinsdictionary.com/
+https://context.reverso.net/translation/
+https://www.collinsdictionary.com/
+https://dictionary.cambridge.org/
+https://7esl.com/
+https://www.thefreedictionary.com/
+https://www.oxfordlearnersdictionaries.com/
+https://medium.com/@martin.breuss/finding-a-useful-dictionary-api-52084a01503d
+https://www.onelook.com/
+https://dictionaryapi.com/products/index
+https://developer.oxforddictionaries.com/
+https://www.collinsdictionary.com/collins-api
+
+----- Dictionary replacement -----
+https://stackoverflow.com/questions/21395011/python-module-with-access-to-english-dictionaries-including-definitions-of-words
+
+----- Pronunciation -----
+https://youglish.com/api/doc/rest/videos
+
+----- translators -----
+https://rapidapi.com/googlecloud/api/google-translate1/pricing
+https://www.reverso.net/text-translation
+https://www.kyivdictionary.com/uk/
+https://english-online.org.ua/dictionary/lightness
+https://uk.glosbe.com/
+https://translate.glosbe.com/en-uk/strike%20while%20the%20iron&%2339%3Bs%20hot
+https://vocabulary.com.ua/
+
+----- phrase patterns -----
+https://ellii.com/blog/english-sentence-patterns
+
+----- text similarity -----
+https://newscatcherapi.com/blog/ultimate-guide-to-text-similarity-with-python#:~:text=In%20simple%20terms%2C%20similarity%20is,is%20called%20the%20similarity%20score.
+
+----- word similarity -----
+https://www.datamuse.com/api/
+
+----- grammar -----
+https://www.perfecttense.com/api
+
+----- words similarity -----
+https://spacy.io/
+
+----- Generators -----
+https://www.randomsentencegen.com/generator
+https://linguatools.org/language-apis/sentence-generating-api/
+
+----- rephraser -----
+https://docs.ai21.com/docs/text-improvements-api
+https://apilayer.com/marketplace/paraphraser-api#authentication
+
+----- chatbot -----
+https://medium.com/defense-unicorns/running-chatbot-ui-locally-with-a-leapfrogai-backend-and-api-72a50420e174
+https://botpress.com/blog/open-source-chatbots
+
+------ postgres ------
+https://www.digitalocean.com/community/tutorials/how-to-use-a-postgresql-database-in-a-flask-application
+
+----- language analyses -----
+https://www.nltk.org/index.html
+https://www.nltk.org/book/
+https://huggingface.co/blog/constrained-beam-search
+https://www.pythonpool.com/generate-random-sentence-in-python/
+https://thinkinfi.com/generate-sentences-from-keywords-using-python/
+https://www.toolify.ai/ai-news/create-grammaticallycorrect-random-sentences-with-python-71510
+https://pypi.org/project/wonderwords/
+
+----- Commands -----
+chmod 755 run_tests.sh
+export LL_TESTING="1" && python -m unittest -v
+python -m unittest tests.unit.test_daily_training_v2.UpdateSettingsTests
+
+python -m black . --exclude venv -l 79
+
+git commit --no-verify -m "refactoring" (git commit -n -m "refactoring")
+
+python -m scripts.db_init -e dev
