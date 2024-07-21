@@ -11,7 +11,7 @@ from scripts.db_snapshot_csv.google_client import GoogleClient
 GOOGLE_SNAPSHOTS_FOLDER_ID = "1xQifcwcOQgLFIwtPOM7sgZehjGeTy-Ov"
 
 host = "localhost"
-user = "mhonc"
+user = "maxboroda"
 dbname = "ll_db"
 
 connection = psycopg2.connect(
