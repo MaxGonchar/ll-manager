@@ -5,7 +5,7 @@ import os
 
 from dotenv import load_dotenv
 
-PROD_ENV_BRANCH = "master"
+PROD_ENV_BRANCH = "main"
 
 Environ = namedtuple("Environ", "name envvars_file")
 
