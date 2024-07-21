@@ -106,6 +106,6 @@ def before_request():
 
 if __name__ == "__main__":
     if os.environ.get("LL_ENV") == "prod":
-        # snapshot_db()
+        snapshot_db()
         ...
     app.run(debug=True)
