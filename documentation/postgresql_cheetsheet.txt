@@ -1,8 +1,74 @@
------ terminal start -----
-/Applications/Postgres.app/Contents/Versions/14/bin/psql
+=============================================================
+INSTALL WITH BREW
+=============================================================
+1. **Install PostgreSQL** (if not already installed):
 
-export PATH=/Applications/Postgres.app/Contents/Versions/14/bin:$PATH
+brew install postgresql
+brew install postgresql@16
+
+2. **Initialize the database** (this needs to be done only once):
+
+initdb /usr/local/var/postgres
+
+Note: If you have installed a specific version like `postgresql@16`, the path might vary, for example:
+
+initdb /usr/local/var/postgresql@16
+
+3. **Start the PostgreSQL service**:
+
+brew services start postgresql
+
+For a specific version like `postgresql@16`, use:
+
+brew services start postgresql@16
+
+4. **Stop the PostgreSQL service** when needed:
+
+brew services stop postgresql
+
+For a specific version like `postgresql@16`, use:
+
+brew services stop postgresql@16
+
+5. **Connect to PostgreSQL**:
+
+psql postgres
+
+This will connect you to the PostgreSQL server and allow you to execute SQL commands.
+
+To check the status of the running PostgreSQL service, you can use:
+
+brew services list
+
+6. **Uninstall PostgreSQL**:
+
+brew uninstall postgresql
+
+For a specific version like `postgresql@16`, use:
+
+brew uninstall postgresql@16
+
+7. **Remove the PostgreSQL data directory** (optional, if you want to remove all PostgreSQL data):
+
+rm -rf /usr/local/var/postgres
+
+For a specific version, the path might be different, such as:
+
+rm -rf /usr/local/var/postgresql@16
+
+======================================================================
+INSTALL WITH Postgres.app
+====================================================================================================
+go https://postgresapp.com/
+
+for postgres installed from installer dmg
+to get access via "psql" command
+----- terminal start -----
+/Applications/Postgres.app/Contents/Versions/16/bin/psql
+
+export PATH=/Applications/Postgres.app/Contents/Versions/16/bin:$PATH
 or add to .zprofile
+====================================================================================================
 
 ----- show databases -----
 \l
