@@ -16,6 +16,7 @@ class SentenceTrainingChallenge(TypedDict):
     expressionId: str
     contextId: str
     sentence: str
+    translation: str
     template: str
     values: List[str]
 
@@ -46,6 +47,7 @@ class SentenceTraining:
             "expressionId": data.expression_id,
             "contextId": data.id,
             "sentence": data.sentence,
+            "translation": data.translation["uk"],
             "template": data.template["tpl"],
             "values": data.template["values"],
         }
