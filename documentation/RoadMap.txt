@@ -5,12 +5,17 @@
 ------ In Progress -------
 ==========================
 
-as user I want to train en expression in context
-- get the context with gaps equivalent to letters of trained expression
 
 ==========================
 ------ ToBeDone ----------
 ==========================
+
+- TRAIN IN DIALOGUE
+  - start page (page where I can start new dialogue or go on with old one)
+  - dialogue page
+  - BE for dialogue start
+  - BE for dialogue flow
+  - BE for dialogue continue
 
 - exercises for grammar rules
 ==========================

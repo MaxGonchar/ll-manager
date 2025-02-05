@@ -14,6 +14,7 @@ from scripts import snapshot_db
 from routes.login import login_bp
 from routes.user import user_bp
 from routes.daily_training import exercise_bp
+from routes.dialogue_training import dialogue_training_bp
 from routes.expressions import expressions_bp
 from routes.expression_recall import expression_recall_bp
 from routes.admin import admin_bp
@@ -72,6 +73,7 @@ app.register_blueprint(expressions_bp)
 app.register_blueprint(expression_recall_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(sentence_training_bp)
+app.register_blueprint(dialogue_training_bp)
 
 app.jinja_env.filters["date_filter"] = filters.date_filter
 app.jinja_env.filters[

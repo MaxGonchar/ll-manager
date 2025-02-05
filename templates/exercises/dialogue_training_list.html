@@ -1,0 +1,18 @@
+{% extends 'user/base.html' %}
+
+{% block title %}LL-dialogue-training{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="item-list-container">
+        <a class="link-button" href="#">New Dialogue</a>
+    
+        {% for dialogue in dialogues %}
+            <div>
+                <a class="link-list-item" href="#">{{ dialogue.title }}</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

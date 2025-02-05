@@ -81,6 +81,12 @@ main {
     justify-content: center;
 }
 
+.item-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
 .flash-message {
     padding: 18px;
     text-align: center;
@@ -122,6 +128,31 @@ main {
     gap: 10px;
 }
 
+.link-button {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #9c36b5;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.link-list-item {
+    display: block;
+    padding: 10px 15px;
+    margin: 5px 0;
+    background-color: #f8f9fa;
+    color: #343a40;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.link-list-item:hover {
+    background-color: #e9ecef;
+}
 .h2-center {
     text-align: center;
     margin: 40px;
