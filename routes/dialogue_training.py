@@ -14,3 +14,17 @@ def dialogues():
         "exercises/dialogue_training_list.html",
         dialogues=dialogues,
     )
+
+
+@dialogue_training_bp.route("/dialogues/new", methods=["GET", "POST"])
+def dialogue_new():
+    # ask dialogue name
+    # ask dialogue description
+    # create dialogue
+    # redirect to dialogue
+    pass
+
+
+@dialogue_training_bp.route("/dialogues/<dialogue_id>", methods=["GET", "POST"])
+def dialogue():
+    pass
