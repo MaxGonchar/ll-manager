@@ -6,7 +6,7 @@
 
 <div class="container">
     <div class="item-list-container">
-        <a class="link-button" href="#">New Dialogue</a>
+        <a class="link-button" href="{{ url_for('dialogue_training.dialogue_new') }}">New Dialogue</a>
     
         {% for dialogue in dialogues %}
             <div>

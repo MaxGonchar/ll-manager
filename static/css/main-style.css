@@ -128,16 +128,26 @@ main {
     gap: 10px;
 }
 
+.button-box-center {
+    justify-content: center;
+}
+
 .link-button {
     display: inline-block;
-    padding: 10px 20px;
+    height: 38px;
+    margin-top: 10px;
     text-decoration: none;
     color: #fff;
     background-color: #9c36b5;
     border-radius: 5px;
     text-align: center;
-    font-size: 16px;
+    font-size: 20px;
+    line-height: 38px; /* Center text vertically */
     transition: background-color 0.3s;
+}
+
+.link-button-w100 {
+    width: 100px;
 }
 
 .link-list-item {
