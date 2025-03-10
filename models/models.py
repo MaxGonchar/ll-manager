@@ -1,5 +1,5 @@
 from uuid import uuid4
-from typing import List, Optional, TypedDict
+from typing import List, TypedDict
 from typing_extensions import NotRequired
 
 from sqlalchemy.dialects.postgresql import UUID, JSON

@@ -1,3 +1,5 @@
+{% from "widgets/icons.html" import x_circle %}
+
 {% extends 'user/base.html' %}
 
 {% block title %}LL-dialogue-training{% endblock %}
@@ -9,8 +11,11 @@
         <a class="link-button" href="{{ url_for('dialogue_training.dialogue_new') }}">New Dialogue</a>
     
         {% for dialogue in dialogues %}
-            <div>
+            <div class="button-box">
                 <a class="link-list-item" href="#">{{ dialogue.title }}</a>
+                <a class="link-icon" href="{{ url_for('dialogue_training.delete_dialogue', dialogue_id=dialogue.id) }}">
+                    {{ x_circle("") }}
+                </a>
             </div>
         {% endfor %}
     </div>
