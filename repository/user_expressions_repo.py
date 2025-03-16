@@ -34,6 +34,19 @@ class UserExpressionsRepo:
             .order_by(UserExpression.last_practice_time.asc())
             .first()
         )
+    
+    # TODO: combine with get_oldest_trained_expression
+    def get_oldest_trained_expressions(self, limit: int) -> List[UserExpression]:
+        return (
+            self.session.query(UserExpression)
+            .filter(
+                UserExpression.user_id == self.user_id,
+                UserExpression.last_practice_time.is_not(None),
+            )
+            .order_by(UserExpression.last_practice_time.asc())
+            .limit(limit)
+            .all()
+        )
 
     def get_oldest_trained_expression_with_context(
         self,

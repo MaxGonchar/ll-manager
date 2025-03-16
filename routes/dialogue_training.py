@@ -51,7 +51,7 @@ def dialogue_new():
     if form.validate_on_submit():
         dialogue_id = DialogueTraining(g.user_id).create_dialogue(
             title=form.title.data,
-            description=form.description
+            description=form.description.data
         )
         return redirect(url_for("dialogue_training.dialogue", dialogue_id=dialogue_id))
 

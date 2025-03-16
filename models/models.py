@@ -57,6 +57,7 @@ class User(db.Model):
     expressions: Mapped[List["UserExpression"]] = relationship(
         back_populates="user"
     )
+    dialogues: Mapped[List["Dialogue"]] = relationship(back_populates="user")
 
     @property
     def native_lang(self):
@@ -168,3 +169,22 @@ class ExpressionContext(db.Model):
     updated = db.Column(db.DateTime, nullable=False)
 
     expression: Mapped["Expression"] = relationship(back_populates="context")
+
+
+class Dialogue(db.Model):
+    __tablename__ = "dialogues"
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id = db.Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    title = db.Column(db.Text, nullable=False)
+    description = db.Column(db.Text)
+    settings = db.Column(JSON, nullable=False)
+    dialogues = db.Column(JSON, nullable=False, default=[])
+    expressions = db.Column(JSON, nullable=False, default=[])
+    added = db.Column(db.DateTime, nullable=False)
+    updated = db.Column(db.DateTime, nullable=False)
+
+    user: Mapped["User"] = relationship(back_populates="dialogues")
+
+    def __repr__(self):
+        return f"{self.id} - {self.title}"

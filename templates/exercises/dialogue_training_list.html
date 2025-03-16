@@ -12,10 +12,10 @@
     
         {% for dialogue in dialogues %}
             <div class="button-box">
-                <a class="link-list-item" href="#">{{ dialogue.title }}</a>
                 <a class="link-icon" href="{{ url_for('dialogue_training.delete_dialogue', dialogue_id=dialogue.id) }}">
                     {{ x_circle("") }}
                 </a>
+                <a class="link-list-item" href="{{ url_for('dialogue_training.dialogue', dialogue_id=dialogue.id) }}">{{ dialogue.title }}: {{ dialogue.description }}</a>
             </div>
         {% endfor %}
     </div>
