@@ -10,8 +10,23 @@ class DialogueTrainingRepo:
 
     def get(self, dialogue_id: str | None = None) -> list[Dialogue] | Dialogue:
         if dialogue_id:
-            return self.session.query(Dialogue).filter(Dialogue.id == dialogue_id).first()
-        return self.session.query(Dialogue.id, Dialogue.title, Dialogue.description).all()
+            return (
+                self.session.query(Dialogue)
+                .filter(
+                    Dialogue.id == dialogue_id,
+                    Dialogue.user_id == self.user_id
+                )
+                .first()
+            )
+        return (
+            self.session.query(
+                Dialogue.id,
+                Dialogue.title,
+                Dialogue.description
+            ).filter(
+                Dialogue.user_id == self.user_id
+            ).order_by(Dialogue.added.desc()).all()
+        )
 
 
     def create(self, dialogue: Dialogue):
