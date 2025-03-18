@@ -35,12 +35,12 @@ class DialogueDict(TypedDict):
 class DialogueTraining:
     def __init__(self, user_id: str):
         self.user_id = user_id
-        self.repo = DialogueTrainingRepo(user_id)
+        self.dialogue_repo = DialogueTrainingRepo(user_id)
         self.user_expr_repo = UserExpressionsRepo(user_id)
     
     def get_dialogues(self):
         """Return a list of dialogues for the user"""
-        dialogues = self.repo.get()
+        dialogues = self.dialogue_repo.get()
         dialogues_list = [
             {
                 "id": dialogue.id,
@@ -79,17 +79,17 @@ class DialogueTraining:
         if description:
             dialogue.description = description
 
-        self.repo.create(dialogue)
+        self.dialogue_repo.create(dialogue)
 
         return id_
 
     def delete_dialogue(self, dialogue_id: str):
         """Delete a dialogue by id"""
-        self.repo.delete(dialogue_id)
+        self.dialogue_repo.delete(dialogue_id)
 
     def get_dialogue(self, dialogue_id: str) -> dict:
         """Return a dialogue by id"""
-        dialogue = self.repo.get(dialogue_id)
+        dialogue = self.dialogue_repo.get(dialogue_id)
         return {
             "id": dialogue.id,
             "title": dialogue.title,
