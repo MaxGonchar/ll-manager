@@ -12,6 +12,7 @@
     
         {% for dialogue in dialogues %}
             <div class="button-box">
+                <!-- TODO: add modal confirmation when delete -->
                 <a class="link-icon" href="{{ url_for('dialogue_training.delete_dialogue', dialogue_id=dialogue.id) }}">
                     {{ x_circle("") }}
                 </a>
