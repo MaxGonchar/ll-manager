@@ -17,7 +17,6 @@
   - BE for dialogue flow
   - BE for dialogue continue
 
-- exercises for grammar rules
 ==========================
 ------ BackLog -----------
 ==========================
@@ -28,7 +27,9 @@
   |- mypy
 
   |- test coverage
-  
+
+  - exercises for grammar rules
+
   - implement synonyms table
 
   - implement antonym table
@@ -36,8 +37,3 @@
   - error handling
 
   - create macro for html
-
-  - user can correct translations, definitions, ...
-    to not affect other users, edited expression should be saved as a new one
-    consider extract translation, ... from expression table
-    or keep custom translations, ... in user_expression table
