@@ -1,10 +1,14 @@
 from typing import TypedDict
 from uuid import uuid4
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pprint import pprint
 
 from helpers.time_helpers import get_current_utc_time
 from repository.dialogue_training_repo import DialogueTrainingRepo
 from repository.user_expressions_repo import UserExpressionsRepo
 from models.models import Dialogue
+from services.assistant import VeniceAssistant
+from exercises.common import calculate_knowledge_level
 
 
 DEFAULT_SETTINGS = {
@@ -12,6 +16,7 @@ DEFAULT_SETTINGS = {
 }
 DEFAULT_DIALOGUE = [
     {
+        "id": 1,
         "role": "assistant",
         "text": "Hello! What are we going to talk about?",
     },
@@ -33,10 +38,12 @@ class DialogueDict(TypedDict):
     expressions: list[dict]
 
 class DialogueTraining:
+
     def __init__(self, user_id: str):
         self.user_id = user_id
         self.dialogue_repo = DialogueTrainingRepo(user_id)
         self.user_expr_repo = UserExpressionsRepo(user_id)
+        self.assistant = VeniceAssistant()
     
     def get_dialogues(self):
         """Return a list of dialogues for the user"""
@@ -100,97 +107,92 @@ class DialogueTraining:
         }
 
 
+    # TODO: cover with tests
     def submit_dialogue_statement(self, dialogue_id: str, statement: str) -> dict:
         """Submit a statement to the dialogue and return the updated dialogue"""
-        # call DAO to get dialogue by id
-        # call ChatBot to get next dialogue phrase
-        # call ChatBot to validate expression usage
-        # calculate expressions training progress
-        # call DAO to update dialogue
-        # call DAO to update expressions training progress
-        # call DAO to refresh expressions list
-        # return updated dialogue
+        dialogue = self.dialogue_repo.get(dialogue_id)
+        messages = [{"role": message["role"], "content": message["text"]} for message in dialogue.dialogues]
+        messages.append({"role": "user", "content": statement})
+
+        expressions_to_detect = [{"id": expr["id"], "expression": expr["expression"]} for expr in dialogue.expressions]
+
+        with ThreadPoolExecutor() as executor:
+            future_assistant_message = executor.submit(self.assistant.complete_dialogue, messages)
+            future_general_judgement = executor.submit(self.assistant.get_general_judgement, statement)
+            future_detected_expression_ids = executor.submit(self.assistant.detect_phrases_usage, statement, expressions_to_detect)
+
+            assistant_message = future_assistant_message.result()
+            general_judgement = future_general_judgement.result()
+            detected_expression_ids = future_detected_expression_ids.result()
+        print("*" * 50)
+        print("Assistant message: ", assistant_message)
+        print("General judgement: ", general_judgement)
+        print("Detected expression ids: ", detected_expression_ids)
+        print("*" * 50)
+        if detected_expression_ids.expressions:
+            print("*" * 50)
+            pprint(dialogue.expressions)
+            print("*" * 50)
+            with ThreadPoolExecutor() as executor:
+                futures = [
+                    executor.submit(
+                    self.assistant.get_expression_usage_judgement,
+                    statement,
+                    {
+                        "id": expression_id,
+                        "expression": dialogue.get_dialogue_expression(expression_id)["expression"],
+                        "meaning": dialogue.get_dialogue_expression(expression_id)["definition"],
+                    }
+                    )
+                    for expression_id in detected_expression_ids.expressions
+                ]
+                judgments = [future.result() for future in as_completed(futures)]
+        
+            expression_ids_to_update = [judgment.id for judgment in judgments]
+            user_expressions_to_update = self.user_expr_repo.get(include=expression_ids_to_update)
+        # TODO: in transaction using batch operation
+        # ------------------------------------------------------------------------
+            for judgement in judgments:
+                expression_id = judgement.id
+                if judgement.is_correct:
+                    dialogue.remove_expression_by(expression_id)
+                else:
+                    dialogue.update_expression_by_id(
+                        expression_id,
+                        "failed",
+                        judgement.comment,
+                    )
+                # TOFIX: trained expression isn't updated
+                for user_expression in user_expressions_to_update:
+                    if user_expression.expression.id == expression_id:
+                        user_expression.knowledge_level = calculate_knowledge_level(
+                            user_expression.knowledge_level,
+                            user_expression.practice_count,
+                            judgement.is_correct,
+                        )
+                        user_expression.practice_count += 1
+                        user_expression.last_practice_time = get_current_utc_time()
+                        self.user_expr_repo.put(user_expression)
+            
+            if dif := int(dialogue.settings["maxExpressionsToTrain"]) - len(dialogue.expressions) > 0:
+                # TOFIX: exclude expressions already in dialogue
+                user_expressions_to_add = self.user_expr_repo.get_oldest_trained_expressions(dif)
+                dialogue.add_expressions(
+                    [user_expression.expression for user_expression in user_expressions_to_add]
+                )
+        
+        # TOFIX: report is hard to read - orr in one string
+        # TOFIX: don't show if problem is none
+        dialogue.add_message(statement, "user", comment=general_judgement.generate_report())
+        dialogue.add_message(assistant_message, "assistant")
+        dialogue.updated = get_current_utc_time()
+        self.dialogue_repo.update(dialogue)
+        # ------------------------------------------------------------------------
+
         return {
-        "id": "123",
-        "title": "Dialogue 1",
-        "description": "This is a description",
-        "dialogue": [
-            {
-                "id": 1,
-                "author": "user",
-                "text": "Hello, how are you? I want to know how are you doing today. This is a long message and I want to see how it will be displayed on the screen",
-                "comment": "This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information.",
-            },
-            {
-                "id": 2,
-                "author": "assistant",
-                "text": "I am fine, thank you. How can I help you? I can provide you with information about the weather, news, or answer your questions. I am fine, thank you. How can I help you? I can provide you with information about the weather, news, or answer your questions. I am fine, thank you. How can I help you? I can provide you with information about the weather, news, or answer your questions. I am fine, thank you. How can I help you? I can provide you with information about the weather, news, or answer your questions.",
-            },
-            {
-                "id": 3,
-                "author": "user",
-                "text": "What is your name? I want to know your name and how can I call you in the future if I need help or have questions about something specific",
-            },
-            {
-                "id": 4,
-                "author": "assistant",
-                "text": "My name is Assistant and I am here to help you. You can call me Assistant or ask me any questions you have. I am here to help you with anything you need. My name is Assistant and I am here to help you. You can call me Assistant or ask me any questions you have. I am here to help you with anything you need. My name is Assistant and I am here to help you. You can call me Assistant or ask me any questions you have. I am here to help you with anything you need.",
-            },
-            {
-                "id": 5,
-                "author": "user",
-                "text": "Thank you for the information. I will keep it in mind and ask you if I need help in the future. Have a nice day!",
-                "comment": "This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. ###",
-            },
-            {
-                "id": 6,
-                "author": "assistant",
-                "text": "You are welcome! Have a nice day too! If you have any questions or need help, feel free to ask me. I am here to help you with anything you need. You are welcome! Have a nice day too! If you have any questions or need help, feel free to ask me. I am here to help you with anything you need. You are welcome! Have a nice day too! If you have any questions or need help, feel free to ask me. I am here to help you with anything you need.",
-            },
-            {
-                "id": 7,
-                "author": "user",
-                "text": "Ok let's talk about something else. I want to know more about the weather in my city. Can you provide me with information about the weather?",
-                "comment": "This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. This is a comment, related to the user's message. It can be used to provide feedback or additional information. ***",
-            },
-            {
-                "id": 8,
-                "author": "assistant",
-                "text": "Sure! I can provide you with information about the weather in your city. Please tell me the name of your city and I will check the weather forecast for you. Sure! I can provide you with information about the weather in your city. Please tell me the name of your city and I will check the weather forecast for you. Sure! I can provide you with information about the weather in your city. Please tell me the name of your city and I will check the weather forecast for you. Sure! I can provide you with information about the weather in your city. Please tell me the name of your city and I will check the weather forecast for you.",
-            },
-        ],
-        "expressions": [
-            {
-                "id": 1,
-                "expression": "Hello",
-                "definition": "Greeting",
-                "status": "failed",
-                "comment": "This is a comment"
-            },
-            {
-                "id": 2,
-                "expression": "as if",
-                "definition": "Expression of doubt",
-                "status": "not_checked",
-            },
-            {
-                "id": 3,
-                "expression": "as if not",
-                "definition": "Expression of doubt",
-                "status": "failed",
-                "comment": "This is a big comment describing the reason why the expression is failed and what should be done to improve it"
-            },
-            {
-                "id": 4,
-                "expression": "rain of cats and dogs",
-                "definition": "Heavy rain with big drops",
-                "status": "not_checked",
-            },
-            {
-                "id": 5,
-                "expression": "attractive",
-                "definition": "Pleasant to look at",
-                "status": "not_checked",
-            }
-        ]
-    }
+            "id": dialogue.id,
+            "title": dialogue.title,
+            "description": dialogue.description,
+            "dialogue": dialogue.dialogues,
+            "expressions": dialogue.expressions,
+        }

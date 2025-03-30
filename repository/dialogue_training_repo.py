@@ -34,8 +34,9 @@ class DialogueTrainingRepo:
         self.session.commit()
 
 
-    def update(self, user_id: str, dialogue: Dialogue) -> None:
-        # update dialogue
+    def update(self, dialogue: Dialogue) -> None:
+        self.session.add(dialogue)
+        self.session.commit()
         pass
 
     def delete(self, dialogue_id: str) -> None:

@@ -3,7 +3,7 @@ from typing import List, TypedDict
 from typing_extensions import NotRequired
 
 from sqlalchemy.dialects.postgresql import UUID, JSON
-from sqlalchemy.orm import relationship, Mapped
+from sqlalchemy.orm import relationship, Mapped, attributes
 from sqlalchemy import ForeignKey
 from sqlalchemy.schema import CheckConstraint
 
@@ -188,3 +188,47 @@ class Dialogue(db.Model):
 
     def __repr__(self):
         return f"{self.id} - {self.title}"
+    
+    def update_expression_by_id(self, expression_id: str, status: str, comment: str):
+        for expression in self.expressions:
+            if expression["id"] == expression_id:
+                expression["status"] = status
+                expression["comment"] = comment
+                attributes.flag_modified(self, "expressions")
+                break
+        else:
+            raise ValueError(f"Expression with id {expression_id} not found in the dialogue.")
+    
+    def remove_expression_by(self, expression_id: str):
+        for expression in self.expressions:
+            if expression["id"] == expression_id:
+                self.expressions.remove(expression)
+                attributes.flag_modified(self, "expressions")
+                break
+        else:
+            raise ValueError(f"Expression with id {expression_id} not found in the dialogue.")
+    
+    def add_expressions(self, expressions:list[Expression]) -> None:
+        for expression in expressions:
+            self.expressions.append({"id": str(expression.id), "expression": expression.expression, "definition": expression.definition, "status": "not_checked"})
+        attributes.flag_modified(self, "expressions")
+    
+    def add_message(self, message: str, role: str, comment: str | None = None) -> None:
+        message_to_add = {
+            "id": len(self.dialogues) + 1,
+            "role": role,
+            "text": message,
+        }
+        if comment:
+            message_to_add["comment"] = comment
+        self.dialogues.append(message_to_add)
+        attributes.flag_modified(self, "dialogues")
+    
+    def get_dialogue_expression(self, expression_id: str) -> dict | None:
+        for expression in self.expressions:
+            print(expression_id)
+            print(expression)
+            if expression["id"] == expression_id:
+                return expression
+        return None
+        

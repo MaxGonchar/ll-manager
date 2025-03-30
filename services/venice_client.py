@@ -1,4 +1,5 @@
 import http
+from pprint import pprint
 
 import requests
 
@@ -31,6 +32,7 @@ class VeniceClient:
             "messages": messages,
             "temperature": self.temperature
         }
+        # pprint(payload)
         try:
             response = requests.post(url, headers=self.headers, json=payload, timeout=timeout)
         except requests.exceptions.Timeout:

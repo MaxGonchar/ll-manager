@@ -9,6 +9,7 @@ from pydantic import Field, SecretStr
 from services.venice_client import VeniceClient
 
 
+# TODO: log model prompts and responses
 class ChatVeniceAI(BaseChatModel):
 
     model_name: str = Field(alias="model")
@@ -62,3 +63,23 @@ class ChatVeniceAI(BaseChatModel):
             "role": role_mapping[message.type],
             "content": message.content,
         } for message in messages]
+
+    @property
+    def _llm_type(self) -> str:
+        """Get the type of language model used by this chat model."""
+        return "venice"
+
+    @property
+    def _identifying_params(self) -> Dict[str, Any]:
+        """Return a dictionary of identifying parameters.
+
+        This information is used by the LangChain callback system, which
+        is used for tracing purposes make it possible to monitor LLMs.
+        """
+        return {
+            # The model name allows users to specify custom token counting
+            # rules in LLM monitoring applications (e.g., in LangSmith users
+            # can provide per token pricing for their model and monitor
+            # costs for the given LLM.)
+            "model_name": self.model_name,
+        }

@@ -64,5 +64,5 @@ def dialogue(dialogue_id):
     if request.method == "GET":
         return render_template("exercises/dialogue_training.html", data=dialogue)
     
-    dialogue = DialogueTraining(g.user_id).process_input(dialogue_id, request.form["input"])
+    dialogue = DialogueTraining(g.user_id).submit_dialogue_statement(dialogue_id, request.form["input"])
     return render_template("exercises/dialogue_training.html", data=dialogue)
