@@ -47,6 +47,19 @@ class UserExpressionsRepo:
             .limit(limit)
             .all()
         )
+    
+    def get_oldest_trained_expressions_with_excludes(self, limit: int, excludes: List[str]) -> List[UserExpression]:
+        return (
+            self.session.query(UserExpression)
+            .filter(
+                UserExpression.user_id == self.user_id,
+                UserExpression.last_practice_time.is_not(None),
+                UserExpression.expression_id.not_in(excludes),
+            )
+            .order_by(UserExpression.last_practice_time.asc())
+            .limit(limit)
+            .all()
+        )
 
     def get_oldest_trained_expression_with_context(
         self,

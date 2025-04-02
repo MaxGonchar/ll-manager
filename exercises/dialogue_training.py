@@ -162,9 +162,8 @@ class DialogueTraining:
                         "failed",
                         judgement.comment,
                     )
-                # TOFIX: trained expression isn't updated
                 for user_expression in user_expressions_to_update:
-                    if user_expression.expression.id == expression_id:
+                    if str(user_expression.expression.id) == expression_id:
                         user_expression.knowledge_level = calculate_knowledge_level(
                             user_expression.knowledge_level,
                             user_expression.practice_count,
@@ -175,8 +174,10 @@ class DialogueTraining:
                         self.user_expr_repo.put(user_expression)
             
             if dif := int(dialogue.settings["maxExpressionsToTrain"]) - len(dialogue.expressions) > 0:
-                # TOFIX: exclude expressions already in dialogue
-                user_expressions_to_add = self.user_expr_repo.get_oldest_trained_expressions(dif)
+                existing_expression_ids = [
+                    expression["id"] for expression in dialogue.expressions
+                ]
+                user_expressions_to_add = self.user_expr_repo.get_oldest_trained_expressions_with_excludes(dif, excludes=existing_expression_ids)
                 dialogue.add_expressions(
                     [user_expression.expression for user_expression in user_expressions_to_add]
                 )

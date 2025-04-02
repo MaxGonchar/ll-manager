@@ -14,6 +14,7 @@
 
 {% block content %}
 
+<!-- TODO: add icons for displaying tooltips when hovering over -->
 <div class="dialogue-main">
   <div class="item-list-container dialogue-expressions">
     {% for item in data.expressions %}
@@ -36,7 +37,7 @@
     <div class="dialogue-flow">
         {% for item in data.dialogue %}
             <div class="dialogue-item">
-                <div class="{{item.author}}">
+                <div class="{{item.role}}">
                     <h3>{{ item.role }}</h3>
                     <p>{{ item.text }}</p>
                 </div>
@@ -56,4 +57,11 @@
 
   </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollableDiv = document.querySelector('.dialogue-flow');
+        scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
+    });
+</script>
 {% endblock %}
