@@ -566,6 +566,10 @@ main {
     padding: 5px;
 }
 
+.comment-item {
+    padding: 5px;
+}
+
 .dialogue-item:hover .dialogue-comment {
     visibility: visible;
 }

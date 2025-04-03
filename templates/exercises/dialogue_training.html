@@ -43,8 +43,13 @@
                 </div>
                 {% if item.comment %}
                     <div class="dialogue-comment">
-                        <h4>Comment</h4>
-                        <p>{{ item.comment }}</p>
+                        {% for comment_item in item.comment  %}
+                            <div class="comment-item">
+                                <p><b>Problem: </b>{{ comment_item.problem }}</p>
+                                <p><b>Explanation: </b>{{ comment_item.explanation }}</p>
+                                <p><b>Solution: </b>{{ comment_item.solution }}</p>
+                            </div>
+                        {% endfor %}
                     </div>
                 {% endif %}
             </div>

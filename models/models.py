@@ -213,14 +213,15 @@ class Dialogue(db.Model):
             self.expressions.append({"id": str(expression.id), "expression": expression.expression, "definition": expression.definition, "status": "not_checked"})
         attributes.flag_modified(self, "expressions")
     
-    def add_message(self, message: str, role: str, comment: str | None = None) -> None:
+    def add_message(self, message: str, role: str, comment: list[dict] | None = None) -> None:
         message_to_add = {
             "id": len(self.dialogues) + 1,
             "role": role,
             "text": message,
         }
-        if comment:
+        if comment is not None:
             message_to_add["comment"] = comment
+
         self.dialogues.append(message_to_add)
         attributes.flag_modified(self, "dialogues")
     

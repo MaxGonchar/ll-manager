@@ -182,9 +182,16 @@ class DialogueTraining:
                     [user_expression.expression for user_expression in user_expressions_to_add]
                 )
         
-        # TOFIX: report is hard to read - orr in one string
-        # TOFIX: don't show if problem is none
-        dialogue.add_message(statement, "user", comment=general_judgement.generate_report())
+        comment = [
+            {
+                "problem": item.problem,
+                "explanation": item.explanation,
+                "solution": item.solution,
+            }
+            for item in general_judgement.problems
+            if item.problem is not None
+        ]
+        dialogue.add_message(statement, "user", comment=comment)
         dialogue.add_message(assistant_message, "assistant")
         dialogue.updated = get_current_utc_time()
         self.dialogue_repo.update(dialogue)
