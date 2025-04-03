@@ -1,7 +1,12 @@
 # TODO: analyze from the langchain best practices perspective
 from typing import TypedDict
 import os
-from langchain_core.messages import BaseMessage, SystemMessage, HumanMessage, AIMessage
+from langchain_core.messages import (
+    BaseMessage,
+    SystemMessage,
+    HumanMessage,
+    AIMessage,
+)
 from langchain.output_parsers import PydanticOutputParser
 from langchain.prompts.prompt import PromptTemplate
 from pydantic import BaseModel, Field
@@ -55,13 +60,16 @@ class Problem(BaseModel):
     explanation: str = Field(description="Explanation of the problem")
     solution: str = Field(description="Corrected part of text")
 
+
 class GeneralJudgementResponse(BaseModel):
     problems: list[Problem] = Field(description="List of problems")
 
     def generate_report(self) -> str:
         report = []
         for problem in self.problems:
-            report.append(f"Problem: {problem.problem}\nExplanation: {problem.explanation}\nSolution: {problem.solution}\n")
+            report.append(
+                f"Problem: {problem.problem}\nExplanation: {problem.explanation}\nSolution: {problem.solution}\n"
+            )
         return "\n".join(report)
 
 
@@ -106,7 +114,9 @@ class ExpressionUsageRequest(TypedDict):
 class ExpressionUsageResponse(BaseModel):
     id: str | None = Field(default=None, description="Id of the expression")
     is_correct: bool = Field(description="Is the expression used correctly")
-    comment: str = Field(description="Comment about the usage of the expression")
+    comment: str = Field(
+        description="Comment about the usage of the expression"
+    )
 
 
 class VeniceAssistant:
@@ -117,7 +127,7 @@ class VeniceAssistant:
             api_key=os.environ.get("VENICE_API_KEY"),
             temperature=self.default_temperature,
         )
-    
+
     def complete_dialogue(self, dialogue: list[dict]) -> str:
         print("Completing dialogue...")
         self.chat_model.temperature = 0.8
@@ -127,42 +137,63 @@ class VeniceAssistant:
         self.chat_model.temperature = self.default_temperature
         return answer.content
 
-    def _generate_dialogue_messages(self, dialogue: list[dict]) -> list[BaseMessage]:
+    def _generate_dialogue_messages(
+        self, dialogue: list[dict]
+    ) -> list[BaseMessage]:
         type_mapping = {
             "user": HumanMessage,
             "assistant": AIMessage,
         }
-        return [type_mapping[message["role"]](content=message["content"]) for message in dialogue]
+        return [
+            type_mapping[message["role"]](content=message["content"])
+            for message in dialogue
+        ]
 
     def get_general_judgement(self, text: str) -> GeneralJudgementResponse:
         print("Getting general judgement...")
-        response_parser = PydanticOutputParser(pydantic_object=GeneralJudgementResponse)
+        response_parser = PydanticOutputParser(
+            pydantic_object=GeneralJudgementResponse
+        )
         template = PromptTemplate(
             input_variables=["text_to_analyze", "response_format"],
             template=general_judgement_template,
-            partial_variables={"response_format": response_parser.get_format_instructions()}
+            partial_variables={
+                "response_format": response_parser.get_format_instructions()
+            },
         )
         chain = template | self.chat_model | response_parser
         return chain.invoke({"text_to_analyze": text})
 
-    def detect_phrases_usage(self, text: str, expressions: list[ExpressionDetectionRequest]) -> ExpressionDetectionResponse:
+    def detect_phrases_usage(
+        self, text: str, expressions: list[ExpressionDetectionRequest]
+    ) -> ExpressionDetectionResponse:
         print("Detecting phrases usage...")
-        response_parser = PydanticOutputParser(pydantic_object=ExpressionDetectionResponse)
+        response_parser = PydanticOutputParser(
+            pydantic_object=ExpressionDetectionResponse
+        )
         template = PromptTemplate(
             input_variables=["text", "expression_list" "response_format"],
             template=expression_detection_template,
-            partial_variables={"response_format": response_parser.get_format_instructions()}
+            partial_variables={
+                "response_format": response_parser.get_format_instructions()
+            },
         )
         chain = template | self.chat_model | response_parser
         return chain.invoke({"text": text, "expression_list": expressions})
 
-
-    def get_expression_usage_judgement(self, text: str, expression: ExpressionUsageRequest) -> ExpressionUsageResponse:
-        response_parser = PydanticOutputParser(pydantic_object=ExpressionUsageResponse)
+    def get_expression_usage_judgement(
+        self, text: str, expression: ExpressionUsageRequest
+    ) -> ExpressionUsageResponse:
+        response_parser = PydanticOutputParser(
+            pydantic_object=ExpressionUsageResponse
+        )
         template = PromptTemplate(
             input_variables=["text", "expression", "meaning"],
             template=expression_usage_template,
-            partial_variables={"response_format": response_parser.get_format_instructions()})
+            partial_variables={
+                "response_format": response_parser.get_format_instructions()
+            },
+        )
 
         chain = template | self.chat_model | response_parser
         judgement = chain.invoke(
@@ -174,4 +205,3 @@ class VeniceAssistant:
         )
         judgement.id = expression["id"]
         return judgement
-

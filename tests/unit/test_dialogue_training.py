@@ -2,7 +2,11 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from exercises.dialogue_training import DialogueTraining
-from tests.unit.fixtures import get_dialogue, get_user_expression, get_expression
+from tests.unit.fixtures import (
+    get_dialogue,
+    get_user_expression,
+    get_expression,
+)
 
 
 class GetTests(TestCase):
@@ -46,7 +50,6 @@ class GetTests(TestCase):
 
         self.subject = DialogueTraining(self.user_id)
 
-
     def test_get_all(self):
         self.mock_dialogue_repo.return_value.get.return_value = self.dialogues
         expected = [
@@ -59,7 +62,7 @@ class GetTests(TestCase):
                 "id": "24d96f68-46e1-4fb3-b300-81cd89cea435",
                 "title": "Dialogue 2",
                 "description": "Dialogue 2 description",
-            }
+            },
         ]
         actual = self.subject.get_dialogues()
 
@@ -68,7 +71,9 @@ class GetTests(TestCase):
         self.mock_dialogue_repo.return_value.get.assert_called_once_with()
 
     def test_get_one(self):
-        self.mock_dialogue_repo.return_value.get.return_value = self.dialogues[0]
+        self.mock_dialogue_repo.return_value.get.return_value = self.dialogues[
+            0
+        ]
         expected = {
             "id": "4d7993aa-d897-4647-994b-e0625c88f349",
             "title": "Dialogue 1",
@@ -77,11 +82,15 @@ class GetTests(TestCase):
             "dialogue": [{"dialogue": "dialogue 1"}],
             "expressions": [{"expression": "expression 1"}],
         }
-        actual = self.subject.get_dialogue("4d7993aa-d897-4647-994b-e0625c88f349")
+        actual = self.subject.get_dialogue(
+            "4d7993aa-d897-4647-994b-e0625c88f349"
+        )
 
         self.assertEqual(expected, actual)
 
-        self.mock_dialogue_repo.return_value.get.assert_called_once_with("4d7993aa-d897-4647-994b-e0625c88f349")
+        self.mock_dialogue_repo.return_value.get.assert_called_once_with(
+            "4d7993aa-d897-4647-994b-e0625c88f349"
+        )
 
 
 class CreateDialogueTests(TestCase):
@@ -137,29 +146,49 @@ class CreateDialogueTests(TestCase):
             user_expression_2,
         ]
 
-        actual = self.subject.create_dialogue("Dialogue 1", "Dialogue 1 description")
+        actual = self.subject.create_dialogue(
+            "Dialogue 1", "Dialogue 1 description"
+        )
 
         self.assertEqual(self.dialogue_id, actual)
 
-        self.mock_user_expression_repo.return_value.get_oldest_trained_expressions.assert_called_once_with(10)
+        self.mock_user_expression_repo.return_value.get_oldest_trained_expressions.assert_called_once_with(
+            10
+        )
 
-        actual_dialogue = self.mock_dialogue_repo.return_value.create.call_args.args[0]
+        actual_dialogue = (
+            self.mock_dialogue_repo.return_value.create.call_args.args[0]
+        )
         self.assertEqual(self.dialogue_id, actual_dialogue.id)
         self.assertEqual(self.user_id, actual_dialogue.user_id)
         self.assertEqual("Dialogue 1", actual_dialogue.title)
         self.assertEqual("Dialogue 1 description", actual_dialogue.description)
-        self.assertEqual({'maxExpressionsToTrain': 10}, actual_dialogue.settings)
-        self.assertEqual([{'role': 'assistant', 'text': 'Hello! What are we going to talk about?'}], actual_dialogue.dialogues)
+        self.assertEqual(
+            {"maxExpressionsToTrain": 10}, actual_dialogue.settings
+        )
         self.assertEqual(
             [
-                {'definition': 'definition 1',
-                'expression': 'expression 1',
-                'id': 'ab856dd3-7a68-4693-a0bc-e14a1799c19b',
-                'status': 'not_checked'},
-                {'definition': 'definition 2',
-                'expression': 'expression 2',
-                'id': 'ab856dd3-7a68-4693-a0bc-e14a1799c19c',
-                'status': 'not_checked'}
+                {
+                    "role": "assistant",
+                    "text": "Hello! What are we going to talk about?",
+                }
+            ],
+            actual_dialogue.dialogues,
+        )
+        self.assertEqual(
+            [
+                {
+                    "definition": "definition 1",
+                    "expression": "expression 1",
+                    "id": "ab856dd3-7a68-4693-a0bc-e14a1799c19b",
+                    "status": "not_checked",
+                },
+                {
+                    "definition": "definition 2",
+                    "expression": "expression 2",
+                    "id": "ab856dd3-7a68-4693-a0bc-e14a1799c19c",
+                    "status": "not_checked",
+                },
             ],
             actual_dialogue.expressions,
         )

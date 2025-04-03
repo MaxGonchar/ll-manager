@@ -65,7 +65,7 @@ class BaseRepoTestUtils(TestCase):
     def _clean_expression_context(self):
         sql = "DELETE FROM expression_context"
         self._execute_sql(sql)
-    
+
     def _clean_dialogues(self):
         sql = "DELETE FROM dialogues"
         self._execute_sql(sql)
@@ -115,7 +115,7 @@ class BaseRepoTestUtils(TestCase):
         )
     """
         self._execute_sql(sql)
-    
+
     def _seed_dialogues(self, dialogues):
         sql = f"""
             INSERT INTO dialogues (
@@ -141,7 +141,7 @@ class BaseRepoTestUtils(TestCase):
             )
     """
         self._execute_sql(sql)
-    
+
     def _seed_user(self, user: dict | None = None) -> str:
         base_id = "d5c26549-74f7-4930-9c2c-16d10d46e55e"
         base_user = {
@@ -186,7 +186,6 @@ class BaseRepoTestUtils(TestCase):
         self._execute_sql(sql)
         return user["id"] if user else base_id
 
-
     def _assert_expression(self, expected_expression, actual_expression):
         self.assertEqual(expected_expression["id"], str(actual_expression.id))
         self.assertEqual(
@@ -215,14 +214,18 @@ class BaseRepoTestUtils(TestCase):
             self.assertEqual(
                 json.loads(properties), actual_expression.properties
             )
-    
+
     def _assert_dialogue(self, expected, actual):
         self.assertEqual(expected["id"], str(actual.id), "id")
         self.assertEqual(expected["title"], actual.title, "title")
-        self.assertEqual(expected["description"], actual.description, "description")
+        self.assertEqual(
+            expected["description"], actual.description, "description"
+        )
         self.assertEqual(expected["user_id"], str(actual.user_id), "user_id")
         self.assertEqual(expected["settings"], actual.settings, "settings")
         self.assertEqual(expected["dialogues"], actual.dialogues, "dialogues")
-        self.assertEqual(expected["expressions"], actual.expressions, "expressions")
+        self.assertEqual(
+            expected["expressions"], actual.expressions, "expressions"
+        )
         self.assertEqual(expected["added"], str(actual.added), "added")
         self.assertEqual(expected["updated"], str(actual.updated), "updated")

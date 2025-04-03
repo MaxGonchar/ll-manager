@@ -34,7 +34,7 @@ class ChatVeniceAI(BaseChatModel):
         run_manager: Optional[CallbackManagerForLLMRun] = None,
         **kwargs: Any,
     ) -> ChatResult:
-        
+
         client = self._init_venice_client()
 
         response = client.do_chat_completion(
@@ -47,22 +47,27 @@ class ChatVeniceAI(BaseChatModel):
                 "input_tokens": response["usage"]["prompt_tokens"],
                 "output_tokens": response["usage"]["completion_tokens"],
                 "total_tokens": response["usage"]["total_tokens"],
-            }
+            },
         )
 
         generation = ChatGeneration(message=message)
         return ChatResult(generations=[generation])
-    
-    def _get_chat_messages(self, messages: List[BaseMessage]) -> List[Dict[str, Any]]:
+
+    def _get_chat_messages(
+        self, messages: List[BaseMessage]
+    ) -> List[Dict[str, Any]]:
         role_mapping = {
             "system": "system",
             "human": "user",
             "ai": "assistant",
         }
-        return [{
-            "role": role_mapping[message.type],
-            "content": message.content,
-        } for message in messages]
+        return [
+            {
+                "role": role_mapping[message.type],
+                "content": message.content,
+            }
+            for message in messages
+        ]
 
     @property
     def _llm_type(self) -> str:

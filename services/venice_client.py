@@ -17,28 +17,36 @@ class VeniceClient:
         self.model = model
         self.temperature = temperature
         self.api_key = api_key
-    
+
     @property
     def headers(self) -> dict:
         return {
             "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
-    def do_chat_completion(self, messages: list[dict], timeout: int = 60) -> dict:
+    def do_chat_completion(
+        self, messages: list[dict], timeout: int = 60
+    ) -> dict:
         url = f"{self.base_url}/chat/completions"
         payload = {
             "model": self.model,
             "messages": messages,
-            "temperature": self.temperature
+            "temperature": self.temperature,
         }
         # pprint(payload)
         try:
-            response = requests.post(url, headers=self.headers, json=payload, timeout=timeout)
+            response = requests.post(
+                url, headers=self.headers, json=payload, timeout=timeout
+            )
         except requests.exceptions.Timeout:
-            raise VeniceClientError("Request timed out", http.HTTPStatus.REQUEST_TIMEOUT.value)
+            raise VeniceClientError(
+                "Request timed out", http.HTTPStatus.REQUEST_TIMEOUT.value
+            )
 
         if not response.ok:
-            raise VeniceClientError(f"Venice API error: {response.text}", response.status_code)
-        
+            raise VeniceClientError(
+                f"Venice API error: {response.text}", response.status_code
+            )
+
         return response.json()

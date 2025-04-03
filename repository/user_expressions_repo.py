@@ -34,9 +34,11 @@ class UserExpressionsRepo:
             .order_by(UserExpression.last_practice_time.asc())
             .first()
         )
-    
+
     # TODO: combine with get_oldest_trained_expression
-    def get_oldest_trained_expressions(self, limit: int) -> List[UserExpression]:
+    def get_oldest_trained_expressions(
+        self, limit: int
+    ) -> List[UserExpression]:
         return (
             self.session.query(UserExpression)
             .filter(
@@ -47,8 +49,10 @@ class UserExpressionsRepo:
             .limit(limit)
             .all()
         )
-    
-    def get_oldest_trained_expressions_with_excludes(self, limit: int, excludes: List[str]) -> List[UserExpression]:
+
+    def get_oldest_trained_expressions_with_excludes(
+        self, limit: int, excludes: List[str]
+    ) -> List[UserExpression]:
         return (
             self.session.query(UserExpression)
             .filter(

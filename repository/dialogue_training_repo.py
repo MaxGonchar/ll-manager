@@ -14,25 +14,22 @@ class DialogueTrainingRepo:
                 self.session.query(Dialogue)
                 .filter(
                     Dialogue.id == dialogue_id,
-                    Dialogue.user_id == self.user_id
+                    Dialogue.user_id == self.user_id,
                 )
                 .first()
             )
         return (
             self.session.query(
-                Dialogue.id,
-                Dialogue.title,
-                Dialogue.description
-            ).filter(
-                Dialogue.user_id == self.user_id
-            ).order_by(Dialogue.added.desc()).all()
+                Dialogue.id, Dialogue.title, Dialogue.description
+            )
+            .filter(Dialogue.user_id == self.user_id)
+            .order_by(Dialogue.added.desc())
+            .all()
         )
-
 
     def create(self, dialogue: Dialogue):
         self.session.add(dialogue)
         self.session.commit()
-
 
     def update(self, dialogue: Dialogue) -> None:
         self.session.add(dialogue)
@@ -40,5 +37,7 @@ class DialogueTrainingRepo:
         pass
 
     def delete(self, dialogue_id: str) -> None:
-        self.session.query(Dialogue).filter(Dialogue.id == dialogue_id).delete()
+        self.session.query(Dialogue).filter(
+            Dialogue.id == dialogue_id
+        ).delete()
         self.session.commit()

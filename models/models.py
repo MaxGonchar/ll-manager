@@ -175,7 +175,9 @@ class Dialogue(db.Model):
     __tablename__ = "dialogues"
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = db.Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=False
+    )
     title = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
     settings = db.Column(JSON, nullable=False)
@@ -188,8 +190,10 @@ class Dialogue(db.Model):
 
     def __repr__(self):
         return f"{self.id} - {self.title}"
-    
-    def update_expression_by_id(self, expression_id: str, status: str, comment: str):
+
+    def update_expression_by_id(
+        self, expression_id: str, status: str, comment: str
+    ):
         for expression in self.expressions:
             if expression["id"] == expression_id:
                 expression["status"] = status
@@ -197,8 +201,10 @@ class Dialogue(db.Model):
                 attributes.flag_modified(self, "expressions")
                 break
         else:
-            raise ValueError(f"Expression with id {expression_id} not found in the dialogue.")
-    
+            raise ValueError(
+                f"Expression with id {expression_id} not found in the dialogue."
+            )
+
     def remove_expression_by(self, expression_id: str):
         for expression in self.expressions:
             if expression["id"] == expression_id:
@@ -206,14 +212,25 @@ class Dialogue(db.Model):
                 attributes.flag_modified(self, "expressions")
                 break
         else:
-            raise ValueError(f"Expression with id {expression_id} not found in the dialogue.")
-    
-    def add_expressions(self, expressions:list[Expression]) -> None:
+            raise ValueError(
+                f"Expression with id {expression_id} not found in the dialogue."
+            )
+
+    def add_expressions(self, expressions: list[Expression]) -> None:
         for expression in expressions:
-            self.expressions.append({"id": str(expression.id), "expression": expression.expression, "definition": expression.definition, "status": "not_checked"})
+            self.expressions.append(
+                {
+                    "id": str(expression.id),
+                    "expression": expression.expression,
+                    "definition": expression.definition,
+                    "status": "not_checked",
+                }
+            )
         attributes.flag_modified(self, "expressions")
-    
-    def add_message(self, message: str, role: str, comment: list[dict] | None = None) -> None:
+
+    def add_message(
+        self, message: str, role: str, comment: list[dict] | None = None
+    ) -> None:
         message_to_add = {
             "id": len(self.dialogues) + 1,
             "role": role,
@@ -224,7 +241,7 @@ class Dialogue(db.Model):
 
         self.dialogues.append(message_to_add)
         attributes.flag_modified(self, "dialogues")
-    
+
     def get_dialogue_expression(self, expression_id: str) -> dict | None:
         for expression in self.expressions:
             print(expression_id)
@@ -232,4 +249,3 @@ class Dialogue(db.Model):
             if expression["id"] == expression_id:
                 return expression
         return None
-        

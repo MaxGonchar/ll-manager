@@ -39,7 +39,7 @@ class GetTests(BaseRepoTestUtils):
         self._seed_dialogues(self.dialogues[1])
 
         self.subject = DialogueTrainingRepo(self.user_id)
-    
+
     def _assert_dialogue_for_list(self, expected, actual):
         self.assertEqual(expected["id"], str(actual.id))
         self.assertEqual(expected["title"], actual.title)

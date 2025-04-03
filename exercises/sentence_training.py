@@ -72,7 +72,11 @@ class SentenceTraining:
             else:
                 self._register_challenge(user_expr, False)
 
-        return {"correctAnswer": correct, "usersAnswer": answer, "translation": context.translation["uk"]}
+        return {
+            "correctAnswer": correct,
+            "usersAnswer": answer,
+            "translation": context.translation["uk"],
+        }
 
     def _register_challenge(
         self, user_expr: UserExpression, successful: bool

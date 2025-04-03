@@ -4,7 +4,7 @@ from models.models import (
     User,
     UserExpression,
     ExpressionContext,
-    Dialogue
+    Dialogue,
 )
 
 
