@@ -10,16 +10,13 @@
 ------ ToBeDone ----------
 ==========================
 
-- TRAIN IN DIALOGUE
-  - start page (page where I can start new dialogue or go on with old one)
-  - dialogue page
-  - BE for dialogue start
-  - BE for dialogue flow
-  - BE for dialogue continue
-
 ==========================
 ------ BackLog -----------
 ==========================
+  |- git actions to run tests
+  
+  |- implement voice reading expressions
+
   |- use MongoDB for different properties
 
   |- flake8
@@ -28,12 +25,12 @@
 
   |- test coverage
 
-  - exercises for grammar rules
+  |- exercises for grammar rules
 
-  - implement synonyms table
+  |- implement synonyms table
 
-  - implement antonym table
+  |- implement antonym table
 
-  - error handling
+  |- error handling
 
-  - create macro for html
+  |- create macro for html

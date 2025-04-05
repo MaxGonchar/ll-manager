@@ -6,6 +6,7 @@
 
 <div class="expression-sentences">
 
+    <!--TODO: display expression -->
     {% for sentence in sentences %}
     <div>
         <p>{{ sentence["template"]|expression_sentence|safe }}</p>

@@ -19,6 +19,7 @@ expressions_bp = Blueprint(
 )
 
 
+# TODO: add pagination
 @expressions_bp.route("", methods=["GET", "POST"])
 def user_expressions():
     role_required(

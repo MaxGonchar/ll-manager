@@ -44,6 +44,7 @@ def expressions():
     )
 
 
+# TODO: add pagination
 @admin_bp.route("/expressions/<expression_id>", methods=["GET", "POST"])
 def expression(expression_id: str):
     role_required([Role.SUPER_ADMIN.value, Role.ADMIN.value])
@@ -93,6 +94,7 @@ def expression(expression_id: str):
     )
 
 
+# TODO: add delete, update expression
 @admin_bp.route("/expressions/<expression_id>/sentences", methods=["GET"])
 def expression_sentences(expression_id):
     role_required([Role.SUPER_ADMIN.value, Role.ADMIN.value])

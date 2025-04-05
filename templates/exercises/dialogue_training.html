@@ -20,6 +20,7 @@
     {% for item in data.expressions %}
         <div class="dialogue-expression-item">
             <div class="{{ 'red-font' if item.status == 'failed' else '' }}">
+                <!-- TODO: make a link to the expression page -->
                 {{ item.expression }}
             </div>
             <div class="tooltip-content">
