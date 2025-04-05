@@ -1,0 +1,24 @@
+{% from "widgets/icons.html" import x_circle %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-dialogue-training{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="item-list-container">
+        <a class="link-button" href="{{ url_for('dialogue_training.dialogue_new') }}">New Dialogue</a>
+    
+        {% for dialogue in dialogues %}
+            <div class="button-box">
+                <!-- TODO: add modal confirmation when delete -->
+                <a class="link-icon" href="{{ url_for('dialogue_training.delete_dialogue', dialogue_id=dialogue.id) }}">
+                    {{ x_circle("") }}
+                </a>
+                <a class="link-list-item" href="{{ url_for('dialogue_training.dialogue', dialogue_id=dialogue.id) }}">{{ dialogue.title }}: {{ dialogue.description }}</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

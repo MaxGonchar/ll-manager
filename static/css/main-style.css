@@ -3,6 +3,10 @@
     font-size: 16px;
 }
 
+.red-font {
+    color: red;
+}
+
 /* GENERAL */
 * {
     margin: 0;
@@ -81,6 +85,12 @@ main {
     justify-content: center;
 }
 
+.item-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
 .flash-message {
     padding: 18px;
     text-align: center;
@@ -122,6 +132,41 @@ main {
     gap: 10px;
 }
 
+.button-box-center {
+    justify-content: center;
+}
+
+.link-button {
+    display: inline-block;
+    height: 38px;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #9c36b5;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 20px;
+    line-height: 38px; /* Center text vertically */
+    transition: background-color 0.3s;
+}
+
+.link-button-w100 {
+    width: 100px;
+}
+
+.link-list-item {
+    display: block;
+    padding: 10px 15px;
+    margin: 5px 0;
+    background-color: #f8f9fa;
+    color: #343a40;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.link-list-item:hover {
+    background-color: #e9ecef;
+}
 .h2-center {
     text-align: center;
     margin: 40px;
@@ -439,4 +484,132 @@ main {
 
 .sentence-train--word-box {
     letter-spacing: 2px;
+}
+
+/* DIALOGUE TRAINING */
+
+.dialogue-main {
+    display: flex;
+    gap: 20px;
+
+    padding: 40px;
+}
+
+.dialogue-expressions {
+    flex: 2;
+
+    border: 1px solid #862e9c;
+    border-radius: 5px;
+
+    /* position: relative; */
+}
+
+.dialogue-expression-item {
+    position: relative;
+}
+
+.tooltip-content {
+    position: absolute;
+    display: inline-block;
+    visibility: hidden;
+    z-index: 1000;
+    transform: translateY(-50%);
+    margin-left: 24px;
+    background-color: white;
+    border: 1px solid #862e9c;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.dialogue-expression-item:hover .tooltip-content {
+    visibility: visible;
+}
+
+
+.dialogue {
+    flex: 4;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    height: 80vh;
+}
+
+.dialogue-flow {
+    flex: 3;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    border: 1px solid #862e9c;
+    border-radius: 5px;
+
+    overflow-y: auto;
+
+    position: relative;
+}
+
+.dialogue-comment {
+    position: fixed;
+    display: inline-block;
+    visibility: hidden;
+    z-index: 1000;
+    top: 25vh;
+    left: 30vw;
+    width: 40vw;
+    height: 50vh;
+    background-color: white;
+    border: 1px solid #862e9c;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.comment-item {
+    padding: 5px;
+}
+
+.dialogue-item:hover .dialogue-comment {
+    visibility: visible;
+}
+
+.dialogue-item {
+    display: inline-block;
+
+    padding: 10px;
+}
+.dialogue-item .user h3 {
+    text-align: right;
+}
+.dialogue-item .user {
+    margin-left: 10%;
+    background-color: #e9c8f0;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.dialogue-item .assistant {
+    margin-right: 10%;
+    padding: 5px;
+}
+
+.dialogue-form {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+}
+
+.dialogue-form textarea {
+    height: 100%;
+    padding: 8px;
+    font-size: 20px;
+    border-radius: 5px;
+}
+
+.dialogue-form button {
+    margin: 10px auto 10px auto;
 }

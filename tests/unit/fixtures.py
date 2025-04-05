@@ -4,6 +4,7 @@ from models.models import (
     User,
     UserExpression,
     ExpressionContext,
+    Dialogue,
 )
 
 
@@ -137,6 +138,30 @@ def get_expression_context(
         sentence=sentence,
         translation=translation,
         template=template,
+        added=added,
+        updated=updated,
+    )
+
+
+def get_dialogue(
+    id_: str,
+    user_id: str,
+    title: str,
+    description: str,
+    settings: dict,
+    expressions: List[dict],
+    dialogues: List[dict],
+    added: str = "2023-04-12 10:10:25",
+    updated: str = "2023-04-12 10:10:25",
+) -> Dialogue:
+    return Dialogue(
+        id=id_,
+        user_id=user_id,
+        title=title,
+        description=description,
+        settings=settings,
+        expressions=expressions,
+        dialogues=dialogues,
         added=added,
         updated=updated,
     )

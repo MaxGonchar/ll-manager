@@ -1,4 +1,4 @@
-{% from "widgets/icons.html" import academic_cap, cloud_arrow_up, queue_list, chat_bubble_bottom_center_text %}
+{% from "widgets/icons.html" import academic_cap, cloud_arrow_up, queue_list, chat_bubble_bottom_center_text, chat_bubble_left_right %}
 
 {% extends 'user/base.html' %}
 
@@ -30,6 +30,14 @@
         <p>{{ exprs["sentenceTrainingExpressionsNumber"] }} expressions to train</p>
       </div>
     </a>
+    
+        <a class="menu-title-link" href="{{ url_for('dialogue_training.dialogues')}}">
+          <div class="menu-title-box">
+            {{ chat_bubble_left_right("menu-title-icon") }}
+            <h2>Train Chatting</h2>
+            <p>{{ exprs["recallExpressionsNumber"] }} expressions to recall</p>
+          </div>
+        </a>
 
     <a class="menu-title-link" href="{{ url_for('expressions.user_expressions')}}">
       <div class="menu-title-box">

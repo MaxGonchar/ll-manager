@@ -1,0 +1,21 @@
+{% from "widgets/forms.html" import render_field %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-dialogue-training-new{% endblock %}
+
+{% block content %}
+
+    <form class="post-expression-form" method="post" action="{{ url_for('dialogue_training.dialogue_new') }}">
+        {{ form.csrf_token }}
+        {{ render_field(form.title) }}
+        {{ render_field(form.description) }}
+        <div class="sentence-parts" id="parts"></div>
+
+        <div class="button-box button-box-center">
+            <button class="button button-filled">Start</button>
+            <a class="link-button link-button-w100" href="{{ url_for('dialogue_training.dialogues') }}">Back</a>
+        </div>
+    </form>
+
+{% endblock %}

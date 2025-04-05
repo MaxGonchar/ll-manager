@@ -66,6 +66,10 @@ class BaseRepoTestUtils(TestCase):
         sql = "DELETE FROM expression_context"
         self._execute_sql(sql)
 
+    def _clean_dialogues(self):
+        sql = "DELETE FROM dialogues"
+        self._execute_sql(sql)
+
     def _seed_db_expression_records(self, exprs: List[dict]):
         sql = """
             INSERT INTO expressions (
@@ -112,6 +116,76 @@ class BaseRepoTestUtils(TestCase):
     """
         self._execute_sql(sql)
 
+    def _seed_dialogues(self, dialogues):
+        sql = f"""
+            INSERT INTO dialogues (
+                id,
+                user_id,
+                title,
+                description,
+                settings,
+                dialogues,
+                expressions,
+                added,
+                updated
+            ) VALUES (
+                '{dialogues["id"]}',
+                '{dialogues["user_id"]}',
+                '{dialogues["title"]}',
+                '{dialogues["description"]}',
+                '{json.dumps(dialogues["settings"])}',
+                '{json.dumps(dialogues["dialogues"])}',
+                '{json.dumps(dialogues["expressions"])}',
+                '{dialogues["added"]}',
+                '{dialogues["updated"]}'
+            )
+    """
+        self._execute_sql(sql)
+
+    def _seed_user(self, user: dict | None = None) -> str:
+        base_id = "d5c26549-74f7-4930-9c2c-16d10d46e55e"
+        base_user = {
+            "id": base_id,
+            "first": "First",
+            "last": "Last",
+            "email": "test@test.mail",
+            "role": "self-educated",
+            "password_hash": "c1a4b7e252281a7649d17a0f9f1d5180d5b5b1783dca84e121bbfcadda4ecc12",
+            "properties": "{}",
+            "added": "2023-04-16 09:10:25",
+            "updated": "2023-04-16 09:10:25",
+            "last_login": "2023-04-16 09:10:25",
+        }
+        user = user or base_user
+        sql = f"""
+            INSERT INTO users (
+                id,
+                first,
+                last,
+                email,
+                role,
+                password_hash,
+                properties,
+                added,
+                updated,
+                last_login
+            )
+            VALUES (
+                '{user["id"]}',
+                '{user["first"]}',
+                '{user["last"]}',
+                '{user["email"]}',
+                '{user["role"]}',
+                '{user["password_hash"]}',
+                '{user["properties"]}',
+                '{user["added"]}',
+                '{user["updated"]}',
+                '{user["last_login"]}'
+            )
+        """
+        self._execute_sql(sql)
+        return user["id"] if user else base_id
+
     def _assert_expression(self, expected_expression, actual_expression):
         self.assertEqual(expected_expression["id"], str(actual_expression.id))
         self.assertEqual(
@@ -140,3 +214,18 @@ class BaseRepoTestUtils(TestCase):
             self.assertEqual(
                 json.loads(properties), actual_expression.properties
             )
+
+    def _assert_dialogue(self, expected, actual):
+        self.assertEqual(expected["id"], str(actual.id), "id")
+        self.assertEqual(expected["title"], actual.title, "title")
+        self.assertEqual(
+            expected["description"], actual.description, "description"
+        )
+        self.assertEqual(expected["user_id"], str(actual.user_id), "user_id")
+        self.assertEqual(expected["settings"], actual.settings, "settings")
+        self.assertEqual(expected["dialogues"], actual.dialogues, "dialogues")
+        self.assertEqual(
+            expected["expressions"], actual.expressions, "expressions"
+        )
+        self.assertEqual(expected["added"], str(actual.added), "added")
+        self.assertEqual(expected["updated"], str(actual.updated), "updated")

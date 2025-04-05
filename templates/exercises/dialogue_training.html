@@ -1,0 +1,72 @@
+{% from "widgets/icons.html" import list_bullet, cog_6_tooth %}
+{% from "widgets/link-icons.html" import link_icon %}
+{% from "widgets/nav-bars.html" import side_nav_bar %}
+
+{% extends 'user/base.html' %}
+
+{% block title %}LL-daily-training{% endblock %}
+
+{% block navigation %}
+  {% call side_nav_bar('exercise-navigation') %}
+    {{ link_icon("link-icon", "#", cog_6_tooth("icon")) }}
+  {% endcall %}
+{% endblock %}
+
+{% block content %}
+
+<!-- TODO: add icons for displaying tooltips when hovering over -->
+<div class="dialogue-main">
+  <div class="item-list-container dialogue-expressions">
+    {% for item in data.expressions %}
+        <div class="dialogue-expression-item">
+            <div class="{{ 'red-font' if item.status == 'failed' else '' }}">
+                {{ item.expression }}
+            </div>
+            <div class="tooltip-content">
+                <h4>Definition</h4>
+                <p>{{ item.definition }}</p>
+                {% if item.comment %}
+                    <h4>Comment</h4>
+                    <p>{{ item.comment }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+  </div>
+  <div class="dialogue">
+    <div class="dialogue-flow">
+        {% for item in data.dialogue %}
+            <div class="dialogue-item">
+                <div class="{{item.role}}">
+                    <h3>{{ item.role }}</h3>
+                    <p>{{ item.text }}</p>
+                </div>
+                {% if item.comment %}
+                    <div class="dialogue-comment">
+                        {% for comment_item in item.comment  %}
+                            <div class="comment-item">
+                                <p><b>Problem: </b>{{ comment_item.problem }}</p>
+                                <p><b>Explanation: </b>{{ comment_item.explanation }}</p>
+                                <p><b>Solution: </b>{{ comment_item.solution }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <form class="dialogue-form" action="{{url_for('dialogue_training.dialogue', dialogue_id=data['id'])}}" method="post">
+        <textarea name="input"></textarea>
+        <button class="button button-filled">Submit</button>
+    </form>
+
+  </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollableDiv = document.querySelector('.dialogue-flow');
+        scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
+    });
+</script>
+{% endblock %}

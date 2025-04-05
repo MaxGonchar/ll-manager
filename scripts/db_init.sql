@@ -80,11 +80,29 @@ CREATE TABLE IF NOT EXISTS expression_context (
     FOREIGN KEY    (expression_id) REFERENCES expressions (id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS dialogues (
+    id             uuid NOT NULL,
+    user_id        uuid NOT NULL,
+    title          TEXT NOT NULL,
+    description    TEXT,
+    settings       json NOT NULL,
+    dialogues      json NOT NULL DEFAULT '[]',
+    expressions    json NOT NULL DEFAULT '[]',
+    added          TIMESTAMP NOT NULL,
+    updated        TIMESTAMP NOT NULL,
+
+    PRIMARY KEY    (id, user_id),
+    FOREIGN KEY    (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+-- ============================================================================================================
+-- MIGRATIONS:
 -- ============================================================================================================
 
 ALTER TABLE users ADD COLUMN IF NOT EXISTS exprs_learn_list VARCHAR(43) [];
 ALTER TABLE user_expression DROP COLUMN IF EXISTS repeat_range;
 
+---------------------------------------------------------------------------------------------------------------
 
 DO $$
 BEGIN
@@ -96,8 +114,12 @@ BEGIN
   END IF;
 END $$;
 
+---------------------------------------------------------------------------------------------------------------
 
 ALTER TABLE users DROP COLUMN IF EXISTS exprs_learn_list;
 
+---------------------------------------------------------------------------------------------------------------
 
 ALTER TABLE expressions ADD COLUMN IF NOT EXISTS properties json NOT NULL DEFAULT '{}';
+
+---------------------------------------------------------------------------------------------------------------

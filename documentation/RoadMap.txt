@@ -5,14 +5,18 @@
 ------ In Progress -------
 ==========================
 
-as user I want to train en expression in context
-- get the context with gaps equivalent to letters of trained expression
 
 ==========================
 ------ ToBeDone ----------
 ==========================
 
-- exercises for grammar rules
+- TRAIN IN DIALOGUE
+  - start page (page where I can start new dialogue or go on with old one)
+  - dialogue page
+  - BE for dialogue start
+  - BE for dialogue flow
+  - BE for dialogue continue
+
 ==========================
 ------ BackLog -----------
 ==========================
@@ -23,7 +27,9 @@ as user I want to train en expression in context
   |- mypy
 
   |- test coverage
-  
+
+  - exercises for grammar rules
+
   - implement synonyms table
 
   - implement antonym table
@@ -31,8 +37,3 @@ as user I want to train en expression in context
   - error handling
 
   - create macro for html
-
-  - user can correct translations, definitions, ...
-    to not affect other users, edited expression should be saved as a new one
-    consider extract translation, ... from expression table
-    or keep custom translations, ... in user_expression table

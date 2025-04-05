@@ -25,4 +25,4 @@ def string_array(array: List[str]):
 
 
 def escape_double_quotas(string: str) -> str:
-    return string.replace('"', r'\"')
+    return string.replace('"', r"\"")
