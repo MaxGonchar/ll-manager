@@ -17,6 +17,7 @@
                     {{ x_circle("") }}
                 </a>
                 <!-- TODO: do not display "None" if no description -->
+                <!-- TODO: add counter of trained expressions -->
                 <a class="link-list-item" href="{{ url_for('dialogue_training.dialogue', dialogue_id=dialogue.id) }}">{{ dialogue.title }}: {{ dialogue.description }}</a>
             </div>
         {% endfor %}

@@ -140,13 +140,15 @@ class DialogueTraining:
             detected_expression_ids = future_detected_expression_ids.result()
         print("*" * 50)
         print("Assistant message: ", assistant_message)
+        print("---")
         print("General judgement: ", general_judgement)
+        print("---")
         print("Detected expression ids: ", detected_expression_ids)
         print("*" * 50)
         if detected_expression_ids.expressions:
-            print("*" * 50)
+            print("#" * 50)
             pprint(dialogue.expressions)
-            print("*" * 50)
+            print("#" * 50)
             with ThreadPoolExecutor() as executor:
                 futures = [
                     executor.submit(
@@ -199,23 +201,24 @@ class DialogueTraining:
                         )
                         self.user_expr_repo.put(user_expression)
 
-            if (
-                dif := int(dialogue.settings["maxExpressionsToTrain"])
-                - len(dialogue.expressions)
-                > 0
-            ):
-                existing_expression_ids = [
-                    expression["id"] for expression in dialogue.expressions
+        if (
+            (dif := int(dialogue.settings["maxExpressionsToTrain"])
+            - len(dialogue.expressions))
+            > 0
+        ):
+            print("dif", dif)
+            existing_expression_ids = [
+                expression["id"] for expression in dialogue.expressions
+            ]
+            user_expressions_to_add = self.user_expr_repo.get_oldest_trained_expressions_with_excludes(
+                dif, excludes=existing_expression_ids
+            )
+            dialogue.add_expressions(
+                [
+                    user_expression.expression
+                    for user_expression in user_expressions_to_add
                 ]
-                user_expressions_to_add = self.user_expr_repo.get_oldest_trained_expressions_with_excludes(
-                    dif, excludes=existing_expression_ids
-                )
-                dialogue.add_expressions(
-                    [
-                        user_expression.expression
-                        for user_expression in user_expressions_to_add
-                    ]
-                )
+            )
 
         comment = [
             {
@@ -224,7 +227,7 @@ class DialogueTraining:
                 "solution": item.solution,
             }
             for item in general_judgement.problems
-            if item.problem is not None
+            if item.problem not in (None, "None")
         ]
         dialogue.add_message(statement, "user", comment=comment)
         dialogue.add_message(assistant_message, "assistant")

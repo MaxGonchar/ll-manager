@@ -13,6 +13,8 @@
 ==========================
 ------ BackLog -----------
 ==========================
+  |- move expression out in the dialogue training
+  
   |- git actions to run tests
   
   |- implement voice reading expressions

@@ -38,6 +38,10 @@ Here are some additional facts about the assistant:
 - It isn't repetitive. If the conversation is going in circles, it moves it in a new direction.
 """
 
+# TODO: fix cases like:
+# Problem:
+# Explanation: The text does not contain any punctuation errors.
+# Solution: No solution needed
 general_judgement_template = """
 I need an language analysis of the following text:
 <text>
