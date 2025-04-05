@@ -13,6 +13,8 @@
 ==========================
 ------ BackLog -----------
 ==========================
+  |- git actions to run tests
+  
   |- implement voice reading expressions
 
   |- use MongoDB for different properties
