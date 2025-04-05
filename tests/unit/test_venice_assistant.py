@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 
+# TODO: Implement tests for the Venice Assistant
 class AssistantTests(TestCase):
     def test_complete_dialogue(self):
         pass

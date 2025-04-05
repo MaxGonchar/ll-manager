@@ -16,6 +16,7 @@
                 <a class="link-icon" href="{{ url_for('dialogue_training.delete_dialogue', dialogue_id=dialogue.id) }}">
                     {{ x_circle("") }}
                 </a>
+                <!-- TODO: do not display "None" if no description -->
                 <a class="link-list-item" href="{{ url_for('dialogue_training.dialogue', dialogue_id=dialogue.id) }}">{{ dialogue.title }}: {{ dialogue.description }}</a>
             </div>
         {% endfor %}

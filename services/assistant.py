@@ -96,6 +96,7 @@ class ExpressionDetectionResponse(BaseModel):
     expressions: list[str] = Field(description="List of expression ids")
 
 
+# TODO: not be too strict, also failed sometimes, try another model
 expression_usage_template = """
 In the text below:
 {text}
