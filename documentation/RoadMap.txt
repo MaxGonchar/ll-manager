@@ -13,7 +13,7 @@
 ==========================
 ------ BackLog -----------
 ==========================
-  |- move expression out in the dialogue training
+  |- move expression out in the dialogue training (black list) consider returning it back
   
   |- git actions to run tests
   
