@@ -208,3 +208,35 @@ class CreateDialogueTests(TestCase):
             ],
             actual_dialogue.expressions,
         )
+
+
+class DeleteDialogueTests(TestCase):
+    def setUp(self):
+        dialogue_repo_patcher = patch(
+            "exercises.dialogue_training.DialogueTrainingRepo"
+        )
+        self.mock_dialogue_repo = dialogue_repo_patcher.start()
+        self.addCleanup(dialogue_repo_patcher.stop)
+
+        os.environ["VENICE_MODEL"] = "test_model"
+        os.environ["VENICE_API_KEY"] = "test_api_key"
+
+        self.subject = DialogueTraining("test_user_id")
+    
+    def tearDown(self):
+        os.environ.pop("VENICE_MODEL", None)
+        os.environ.pop("VENICE_API_KEY", None)
+    
+    def test_delete_dialogue(self):
+        dialogue_id = "test_id"
+
+        self.subject.delete_dialogue(dialogue_id)
+
+        self.mock_dialogue_repo.return_value.delete.assert_called_once_with(
+            dialogue_id
+        )
+
+
+class SubmitDialogueStatementTests(TestCase):
+    def test_submit(self):
+        pass

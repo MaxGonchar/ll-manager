@@ -17,7 +17,6 @@ sentence_training_bp = Blueprint(
 )
 
 
-# TODO: (NEXT ITERATION) if failed - force to retry; consider hint as failure
 @sentence_training_bp.route("/sentence_training", methods=["GET", "POST"])
 def sentence_training_challenge():
     role_required(
