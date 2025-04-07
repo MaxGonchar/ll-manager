@@ -42,6 +42,10 @@ Here are some additional facts about the assistant:
 # Problem:
 # Explanation: The text does not contain any punctuation errors.
 # Solution: No solution needed
+#
+# too strict judgement
+#
+# complaining about luck of context
 general_judgement_template = """
 I need an language analysis of the following text:
 <text>
