@@ -202,10 +202,9 @@ class DialogueTraining:
                         self.user_expr_repo.put(user_expression)
 
         if (
-            (dif := int(dialogue.settings["maxExpressionsToTrain"])
-            - len(dialogue.expressions))
-            > 0
-        ):
+            dif := int(dialogue.settings["maxExpressionsToTrain"])
+            - len(dialogue.expressions)
+        ) > 0:
             print("dif", dif)
             existing_expression_ids = [
                 expression["id"] for expression in dialogue.expressions

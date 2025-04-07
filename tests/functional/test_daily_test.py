@@ -541,7 +541,10 @@ class DailyTrainingRemoveExpressionTests(FunctionalTestsHelper):
         actual_expressions = [
             expr["expression_id"] for expr in context["exprs"]
         ]
-        expected_expressions = ["4d7993aa-d897-4647-994b-e0625c88f349"]
+        expected_expressions = [
+            "d5c26549-74f7-4930-9c2c-16d10d46e55e",
+            "4d7993aa-d897-4647-994b-e0625c88f349",
+        ]
 
         self.assertEqual(expected_expressions, actual_expressions)
 

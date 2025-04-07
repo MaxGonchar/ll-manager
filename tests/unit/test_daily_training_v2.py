@@ -1038,6 +1038,13 @@ class RemoveItemFromLearnListTests(TestCase):
         self.mock_dt_repo_put = mock_dt_repo.return_value.put
         self.addCleanup(dt_repo_patcher.stop)
 
+        user_expr_repo_patcher = patch(
+            "exercises.daily_training_v2.UserExpressionsRepo"
+        )
+        mock_user_expr_repo = user_expr_repo_patcher.start()
+        self.mock_user_expr_repo_get = mock_user_expr_repo.return_value.get
+        self.addCleanup(user_expr_repo_patcher.stop)
+
     def test_remove_item_from_learn_list(self):
         expr_id_1 = "test_expr_id_1"
         expr_id_2 = "test_expr_id_2"
@@ -1052,6 +1059,9 @@ class RemoveItemFromLearnListTests(TestCase):
         subject.remove_item_from_learn_list(expr_id_1)
 
         self.mock_dt_repo_put.assert_called_once_with(get_dt_data([item_2]))
+        self.mock_user_expr_repo_get.assert_called_once_with(
+            exclude=["test_expr_id_2"], limit=99
+        )
 
     def test_remove_nonexisting_item_from_learn_list_raises_exception(self):
         expr_id_1 = "test_expr_id_1"

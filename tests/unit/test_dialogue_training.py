@@ -1,3 +1,4 @@
+import os
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -48,7 +49,14 @@ class GetTests(TestCase):
         self.mock_user_expression_repo = user_expression_repo_patcher.start()
         self.addCleanup(user_expression_repo_patcher.stop)
 
+        os.environ["VENICE_MODEL"] = "test_model"
+        os.environ["VENICE_API_KEY"] = "test_api_key"
+
         self.subject = DialogueTraining(self.user_id)
+
+    def tearDown(self):
+        os.environ.pop("VENICE_MODEL", None)
+        os.environ.pop("VENICE_API_KEY", None)
 
     def test_get_all(self):
         self.mock_dialogue_repo.return_value.get.return_value = self.dialogues
@@ -116,7 +124,14 @@ class CreateDialogueTests(TestCase):
         uuid_patcher.start()
         self.addCleanup(uuid_patcher.stop)
 
+        os.environ["VENICE_MODEL"] = "test_model"
+        os.environ["VENICE_API_KEY"] = "test_api_key"
+
         self.subject = DialogueTraining(self.user_id)
+
+    def tearDown(self):
+        os.environ.pop("VENICE_MODEL", None)
+        os.environ.pop("VENICE_API_KEY", None)
 
     def test_create_dialogue(self):
         expression_id_1 = "ab856dd3-7a68-4693-a0bc-e14a1799c19b"
@@ -169,6 +184,7 @@ class CreateDialogueTests(TestCase):
         self.assertEqual(
             [
                 {
+                    "id": 1,
                     "role": "assistant",
                     "text": "Hello! What are we going to talk about?",
                 }

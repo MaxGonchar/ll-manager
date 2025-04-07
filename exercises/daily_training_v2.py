@@ -230,8 +230,8 @@ class DailyTraining:
         self.dt_repo.put(self.dt_data.serialize())
 
     def remove_item_from_learn_list(self, item_id: str) -> None:
-        # TODO: refresh after removing
         _ = self.dt_data.pop_item_by_id(item_id)
+        self._refresh_llist()
         self.dt_repo.put(self.dt_data.serialize())
 
     def update_settings(
