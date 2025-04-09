@@ -1,6 +1,7 @@
+from copy import deepcopy
 import os
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from exercises.dialogue_training import DialogueTraining
 from tests.unit.fixtures import (
@@ -238,5 +239,95 @@ class DeleteDialogueTests(TestCase):
 
 
 class SubmitDialogueStatementTests(TestCase):
-    def test_submit(self):
+    def setUp(self):
+        self.user_id = "464ed801-72ee-41c1-9e11-4ac08ff84ea4"
+        self.dialogue_id = "4d7993aa-d897-4647-994b-e0625c88f349"
+        self.statement = "test statement"
+
+        self.mock_dialogue_repo = Mock()
+        self.mock_user_expression_repo = Mock()
+        self.mock_assistant = Mock()
+        self.subject = DialogueTraining(
+            self.user_id,
+            self.mock_dialogue_repo,
+            self.mock_user_expression_repo,
+            self.mock_assistant,
+        )
+
+        self.dialogue = {
+            "id": self.dialogue_id,
+            "title": "Dialogue 1",
+            "description": "Dialogue 1 description",
+            "settings": {"maxExpressionsToTrain": 3},
+            "dialogues": [
+                {
+                    "id": 1,
+                    "role": "assistant",
+                    "text": "Hello! What are we going to talk about?",
+                },
+                {
+                    "id": 2,
+                    "role": "user",
+                    "text": "I want to talk about something.",
+                },
+                {
+                    "id": 3,
+                    "role": "assistant",
+                    "text": "Sure! What do you want to talk about?",
+                },
+            ],
+            "expressions": [
+                {
+                    "id": 1,
+                    "expression": "expression 1",
+                    "definition": "definition 1",
+                    "status": "not_checked",
+                },
+                {
+                    "id": 2,
+                    "expression": "expression 2",
+                    "definition": "definition 2",
+                    "status": "not_checked",
+                },
+                {
+                    "id": 3,
+                    "expression": "expression 3",
+                    "definition": "definition 3",
+                    "status": "not_checked",
+                },
+            ]
+        }
+
+    def test_handle_general_statement(self):
+        self.mock_dialogue_repo.get.return_value = deepcopy(self.dialogue)
+        self.mock_assistant.complete_dialogue.return_value = "test response"
+        self.mock_assistant.get_general_judgement.return_value = [{
+            "problem": "the problem",
+            "explanation": "the explanation",
+            "solution": "the solution",
+        }]
+        self.mock_assistant.detect_phrases_usage.return_value = []
+
+        actual = self.subject.submit_dialogue_statement(
+            self.dialogue_id, self.statement
+        )
+
+        self.assertEqual({}, actual)
+
+        self.mock_dialogue_repo.get.assert_called_once_with("")
+        self.mock_assistant.complete_dialogue.assert_called_once_with("")
+        self.mock_assistant.get_general_judgement.assert_called_once_with("")
+        self.mock_assistant.detect_phrases_usage.assert_called_once_with("")
+        self.mock_dialogue_repo.update.assert_called_once_with("")
+            
+    
+    def test(self):
+        # cases:
+
+        # get_general_judgement - yes, no, partially
+        #   if item.problem not in (None, "None", "")
+
+        # detect_phrases_usage - yes, no
+
+        # get_expression_usage_judgement - positive, negative
         pass

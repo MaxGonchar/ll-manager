@@ -128,6 +128,7 @@ class ExpressionUsageResponse(BaseModel):
     )
 
 
+# TODO: cover with tests
 class VeniceAssistant:
     def __init__(self):
         self.default_temperature = 0

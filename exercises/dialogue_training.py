@@ -32,7 +32,7 @@ class DialogueDict(TypedDict):
     title: str
     description: str
     settings: dict
-    dialogue: list[dict]
+    dialogues: list[dict]
     expressions: list[dict]
 
 
@@ -106,6 +106,7 @@ class DialogueTraining:
         }
 
     # TODO: cover with tests
+    # TODO: refactor
     def submit_dialogue_statement(
         self, dialogue_id: str, statement: str
     ) -> dict:
@@ -226,7 +227,7 @@ class DialogueTraining:
                 "solution": item.solution,
             }
             for item in general_judgement.problems
-            if item.problem not in (None, "None")
+            if item.problem not in (None, "None", "")
         ]
         dialogue.add_message(statement, "user", comment=comment)
         dialogue.add_message(assistant_message, "assistant")
