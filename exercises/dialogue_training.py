@@ -37,11 +37,17 @@ class DialogueDict(TypedDict):
 
 
 class DialogueTraining:
-    def __init__(self, user_id: str):
+    def __init__(
+            self,
+            user_id: str,
+            dialogue_repo: DialogueTrainingRepo = DialogueTrainingRepo,
+            user_expr_repo: UserExpressionsRepo = UserExpressionsRepo,
+            assistant: VeniceAssistant = VeniceAssistant,
+        ):
         self.user_id = user_id
-        self.dialogue_repo = DialogueTrainingRepo(user_id)
-        self.user_expr_repo = UserExpressionsRepo(user_id)
-        self.assistant = VeniceAssistant()
+        self.dialogue_repo = dialogue_repo(user_id)
+        self.user_expr_repo = user_expr_repo(user_id)
+        self.assistant = assistant()
 
     def get_dialogues(self):
         """Return a list of dialogues for the user"""
