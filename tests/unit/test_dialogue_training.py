@@ -1,8 +1,11 @@
+from copy import deepcopy
 import os
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
+from services.assistant import ExpressionDetectionResponse, Problem, GeneralJudgementResponse
 from exercises.dialogue_training import DialogueTraining
+from models.models import Dialogue
 from tests.unit.fixtures import (
     get_dialogue,
     get_user_expression,
@@ -10,9 +13,30 @@ from tests.unit.fixtures import (
 )
 
 
-class GetTests(TestCase):
+class BaseDialogueTrainingTest(TestCase):
     def setUp(self):
         self.user_id = "464ed801-72ee-41c1-9e11-4ac08ff84ea4"
+        os.environ["VENICE_MODEL"] = "test_model"
+        os.environ["VENICE_API_KEY"] = "test_api_key"
+
+        self.mock_dialogue_repo = Mock()
+        self.mock_user_expression_repo = Mock()
+        self.mock_assistant = Mock()
+        self.subject = DialogueTraining(
+            self.user_id,
+            self.mock_dialogue_repo,
+            self.mock_user_expression_repo,
+            self.mock_assistant,
+        )
+    
+    def tearDown(self):
+        os.environ.pop("VENICE_MODEL", None)
+        os.environ.pop("VENICE_API_KEY", None)
+
+
+class GetTests(BaseDialogueTrainingTest):
+    def setUp(self):
+        super().setUp()
         self.dialogues = [
             get_dialogue(
                 id_="4d7993aa-d897-4647-994b-e0625c88f349",
@@ -37,26 +61,6 @@ class GetTests(TestCase):
                 updated="2016-06-22 19:10:25",
             ),
         ]
-        dialogue_repo_patcher = patch(
-            "exercises.dialogue_training.DialogueTrainingRepo"
-        )
-        self.mock_dialogue_repo = dialogue_repo_patcher.start()
-        self.addCleanup(dialogue_repo_patcher.stop)
-
-        user_expression_repo_patcher = patch(
-            "exercises.dialogue_training.UserExpressionsRepo"
-        )
-        self.mock_user_expression_repo = user_expression_repo_patcher.start()
-        self.addCleanup(user_expression_repo_patcher.stop)
-
-        os.environ["VENICE_MODEL"] = "test_model"
-        os.environ["VENICE_API_KEY"] = "test_api_key"
-
-        self.subject = DialogueTraining(self.user_id)
-
-    def tearDown(self):
-        os.environ.pop("VENICE_MODEL", None)
-        os.environ.pop("VENICE_API_KEY", None)
 
     def test_get_all(self):
         self.mock_dialogue_repo.return_value.get.return_value = self.dialogues
@@ -101,20 +105,9 @@ class GetTests(TestCase):
         )
 
 
-class CreateDialogueTests(TestCase):
+class CreateDialogueTests(BaseDialogueTrainingTest):
     def setUp(self):
-        self.user_id = "464ed801-72ee-41c1-9e11-4ac08ff84ea4"
-        dialogue_repo_patcher = patch(
-            "exercises.dialogue_training.DialogueTrainingRepo"
-        )
-        self.mock_dialogue_repo = dialogue_repo_patcher.start()
-        self.addCleanup(dialogue_repo_patcher.stop)
-
-        user_expression_repo_patcher = patch(
-            "exercises.dialogue_training.UserExpressionsRepo"
-        )
-        self.mock_user_expression_repo = user_expression_repo_patcher.start()
-        self.addCleanup(user_expression_repo_patcher.stop)
+        super().setUp()
 
         self.dialogue_id = "4d7993aa-d897-4647-994b-e0625c88f349"
         uuid_patcher = patch(
@@ -123,15 +116,6 @@ class CreateDialogueTests(TestCase):
         )
         uuid_patcher.start()
         self.addCleanup(uuid_patcher.stop)
-
-        os.environ["VENICE_MODEL"] = "test_model"
-        os.environ["VENICE_API_KEY"] = "test_api_key"
-
-        self.subject = DialogueTraining(self.user_id)
-
-    def tearDown(self):
-        os.environ.pop("VENICE_MODEL", None)
-        os.environ.pop("VENICE_API_KEY", None)
 
     def test_create_dialogue(self):
         expression_id_1 = "ab856dd3-7a68-4693-a0bc-e14a1799c19b"
@@ -208,3 +192,193 @@ class CreateDialogueTests(TestCase):
             ],
             actual_dialogue.expressions,
         )
+
+
+class DeleteDialogueTests(BaseDialogueTrainingTest):
+    
+    def test_delete_dialogue(self):
+        dialogue_id = "test_id"
+
+        self.subject.delete_dialogue(dialogue_id)
+
+        self.mock_dialogue_repo.return_value.delete.assert_called_once_with(
+            dialogue_id
+        )
+
+
+class SubmitDialogueStatementTests(BaseDialogueTrainingTest):
+    def setUp(self):
+        super().setUp()
+        self.maxDiff = None
+        self.dialogue_id = "4d7993aa-d897-4647-994b-e0625c88f349"
+        self.statement = "test statement"
+
+        self.dialogue = Dialogue(
+            id=self.dialogue_id,
+            user_id=self.user_id,
+            title="Dialogue 1",
+            description="Dialogue 1 description",
+            settings={"maxExpressionsToTrain": 3},
+            dialogues=[
+                {
+                    "id": 1,
+                    "role": "assistant",
+                    "text": "Hello! What are we going to talk about?",
+                },
+            ],
+            expressions=[
+                {
+                    "id": 1,
+                    "expression": "expression 1",
+                    "definition": "definition 1",
+                    "status": "not_checked",
+                },
+                {
+                    "id": 2,
+                    "expression": "expression 2",
+                    "definition": "definition 2",
+                    "status": "not_checked",
+                },
+                {
+                    "id": 3,
+                    "expression": "expression 3",
+                    "definition": "definition 3",
+                    "status": "not_checked",
+                },
+            ],
+            added="2016-06-22 19:10:26",
+            updated="2016-06-22 19:10:25",
+        )
+        
+        self.updated = "2016-06-22 19:15:25"
+        current_patcher = patch(
+            "exercises.dialogue_training.get_current_utc_time",
+            return_value=self.updated,
+        )
+        current_patcher.start()
+        self.addCleanup(current_patcher.stop)
+
+    def test_handle_general_statement(self):
+        self.mock_dialogue_repo.return_value.get.return_value = deepcopy(self.dialogue)
+        self.mock_assistant.return_value.complete_dialogue.return_value = "test response"
+        self.mock_assistant.return_value.get_general_judgement.return_value = GeneralJudgementResponse(
+            problems=[
+                Problem(
+                    problem="the problem",
+                    explanation="the explanation",
+                    solution="the solution",
+                )
+            ]
+        )
+        self.mock_assistant.return_value.detect_phrases_usage.return_value = ExpressionDetectionResponse(expressions=[])
+
+        actual = self.subject.submit_dialogue_statement(
+            self.dialogue_id, self.statement
+        )
+
+        expected_response = {'description': 'Dialogue 1 description',
+  'dialogue': [{'id': 1,
+                'role': 'assistant',
+                'text': 'Hello! What are we going to talk about?'},
+               {'comment': [{'explanation': 'the explanation',
+                             'problem': 'the problem',
+                             'solution': 'the solution'}],
+                'id': 2,
+                'role': 'user',
+                'text': 'test statement'},
+               {'id': 3, 'role': 'assistant', 'text': 'test response'}],
+  'expressions': [{'definition': 'definition 1',
+                   'expression': 'expression 1',
+                   'id': 1,
+                   'status': 'not_checked'},
+                  {'definition': 'definition 2',
+                   'expression': 'expression 2',
+                   'id': 2,
+                   'status': 'not_checked'},
+                  {'definition': 'definition 3',
+                   'expression': 'expression 3',
+                   'id': 3,
+                   'status': 'not_checked'}],
+  'id': '4d7993aa-d897-4647-994b-e0625c88f349',
+  'title': 'Dialogue 1'}
+        
+        expected_updated_dialogue = Dialogue(
+            id=self.dialogue_id,
+            user_id=self.user_id,
+            title="Dialogue 1",
+            description="Dialogue 1 description",
+            settings={"maxExpressionsToTrain": 3},
+            dialogues=[
+                {
+                    "id": 1,
+                    "role": "assistant",
+                    "text": "Hello! What are we going to talk about?",
+                },
+                {
+                    "id": 2,
+                    "role": "user",
+                    "text": "test statement",
+                    "comment": [
+                        {
+                            "problem": "the problem",
+                            "explanation": "the explanation",
+                            "solution": "the solution",
+                        }
+                    ],
+                },
+                {"id": 3, "role": "assistant", "text": "test response"},
+            ],
+            expressions=[
+                {
+                    "id": 1,
+                    "expression": "expression 1",
+                    "definition": "definition 1",
+                    "status": "not_checked",
+                },
+                {
+                    "id": 2,
+                    "expression": "expression 2",
+                    "definition": "definition 2",
+                    "status": "not_checked",
+                },
+                {
+                    "id": 3,
+                    "expression": "expression 3",
+                    "definition": "definition 3",
+                    "status": "not_checked",
+                },
+            ],
+            added="2016-06-22 19:10:26",
+            updated=self.updated,
+        )
+        
+        self.assertEqual(expected_response, actual)
+
+        self.mock_dialogue_repo.return_value.get.assert_called_once_with(self.dialogue_id)
+        self.mock_assistant.return_value.complete_dialogue.assert_called_once_with([{'role': 'assistant', 'content': 'Hello! What are we going to talk about?'}, {'role': 'user', 'content': 'test statement'}])
+        self.mock_assistant.return_value.get_general_judgement.assert_called_once_with("test statement")
+        self.mock_assistant.return_value.detect_phrases_usage.assert_called_once_with('test statement', [{'id': 1, 'expression': 'expression 1'}, {'id': 2, 'expression': 'expression 2'}, {'id': 3, 'expression': 'expression 3'}])
+        self._assert_dialogue(expected_updated_dialogue, self.mock_dialogue_repo.return_value.update.call_args.args[0])
+
+    def _assert_dialogue(self, expected: Dialogue, actual: Dialogue):
+        self.assertEqual(expected.id, actual.id)
+        self.assertEqual(expected.user_id, actual.user_id)
+        self.assertEqual(expected.title, actual.title)
+        self.assertEqual(expected.description, actual.description)
+        self.assertEqual(expected.settings, actual.settings)
+        self.assertEqual(expected.dialogues, actual.dialogues)
+        self.assertEqual(expected.expressions, actual.expressions)
+        self.assertEqual(expected.added, actual.added)
+        self.assertEqual(expected.updated, actual.updated)
+            
+    
+#     def test(self):
+#         # cases:
+
+#         # get_general_judgement - yes, no, partially
+#         #   if item.problem not in (None, "None", "")
+
+#         # detect_phrases_usage - yes, no
+
+#         # get_expression_usage_judgement - positive, negative
+#         pass

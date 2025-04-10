@@ -46,6 +46,12 @@ Here are some additional facts about the assistant:
 # too strict judgement
 #
 # complaining about luck of context
+#
+# complaining about simple sentences
+#
+# complaining about vogue meaning
+#
+# complaining about informal sentences
 general_judgement_template = """
 I need an language analysis of the following text:
 <text>
@@ -105,6 +111,8 @@ class ExpressionDetectionResponse(BaseModel):
 
 
 # TODO: not be too strict, also failed sometimes, try another model
+#
+# complain about figurative usage
 expression_usage_template = """
 In the text below:
 {text}
@@ -128,6 +136,7 @@ class ExpressionUsageResponse(BaseModel):
     )
 
 
+# TODO: cover with tests
 class VeniceAssistant:
     def __init__(self):
         self.default_temperature = 0
