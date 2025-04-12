@@ -38,12 +38,12 @@ class DialogueDict(TypedDict):
 
 class DialogueTraining:
     def __init__(
-            self,
-            user_id: str,
-            dialogue_repo: DialogueTrainingRepo = DialogueTrainingRepo,
-            user_expr_repo: UserExpressionsRepo = UserExpressionsRepo,
-            assistant: VeniceAssistant = VeniceAssistant,
-        ):
+        self,
+        user_id: str,
+        dialogue_repo: DialogueTrainingRepo = DialogueTrainingRepo,
+        user_expr_repo: UserExpressionsRepo = UserExpressionsRepo,
+        assistant: VeniceAssistant = VeniceAssistant,
+    ):
         self.user_id = user_id
         self.dialogue_repo = dialogue_repo(user_id)
         self.user_expr_repo = user_expr_repo(user_id)
@@ -111,7 +111,6 @@ class DialogueTraining:
             "expressions": dialogue.expressions,
         }
 
-    # TODO: cover with tests
     # TODO: refactor
     def submit_dialogue_statement(
         self, dialogue_id: str, statement: str
@@ -233,7 +232,7 @@ class DialogueTraining:
                 "solution": item.solution,
             }
             for item in general_judgement.problems
-            if item.problem not in (None, "None", "")
+            if item.problem not in ("None", "")
         ]
         dialogue.add_message(statement, "user", comment=comment)
         dialogue.add_message(assistant_message, "assistant")
