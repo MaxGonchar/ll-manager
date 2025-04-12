@@ -17,7 +17,6 @@ expression_recall_bp = Blueprint(
 )
 
 
-# TODO: (NEXT ITERATION) if failed - force to retry; consider hint as failure
 @expression_recall_bp.route("/expression_recall", methods=["GET", "POST"])
 def expression_recall_challenge():
     role_required(

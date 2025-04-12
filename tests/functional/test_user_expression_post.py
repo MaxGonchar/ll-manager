@@ -173,6 +173,10 @@ class AddUserExpressionTest(FunctionalTestsHelper):
         self.assertEqual(example, actual_expression["example"])  # type: ignore
         self.assertEqual(expected_expression_properties, actual_expression["properties"])  # type: ignore
 
+        # TODO:
+        # AssertionError: 'noun' != 'grammar'
+        # - noun
+        # + grammar
         self.assertEqual(tag_1, actual_expressions[0]["tag"])  # type: ignore
         self.assertEqual(tag_2, actual_expressions[1]["tag"])  # type: ignore
 

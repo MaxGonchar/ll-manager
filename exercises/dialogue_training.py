@@ -32,16 +32,22 @@ class DialogueDict(TypedDict):
     title: str
     description: str
     settings: dict
-    dialogue: list[dict]
+    dialogues: list[dict]
     expressions: list[dict]
 
 
 class DialogueTraining:
-    def __init__(self, user_id: str):
+    def __init__(
+        self,
+        user_id: str,
+        dialogue_repo: DialogueTrainingRepo = DialogueTrainingRepo,
+        user_expr_repo: UserExpressionsRepo = UserExpressionsRepo,
+        assistant: VeniceAssistant = VeniceAssistant,
+    ):
         self.user_id = user_id
-        self.dialogue_repo = DialogueTrainingRepo(user_id)
-        self.user_expr_repo = UserExpressionsRepo(user_id)
-        self.assistant = VeniceAssistant()
+        self.dialogue_repo = dialogue_repo(user_id)
+        self.user_expr_repo = user_expr_repo(user_id)
+        self.assistant = assistant()
 
     def get_dialogues(self):
         """Return a list of dialogues for the user"""
@@ -105,7 +111,7 @@ class DialogueTraining:
             "expressions": dialogue.expressions,
         }
 
-    # TODO: cover with tests
+    # TODO: refactor
     def submit_dialogue_statement(
         self, dialogue_id: str, statement: str
     ) -> dict:
@@ -226,7 +232,7 @@ class DialogueTraining:
                 "solution": item.solution,
             }
             for item in general_judgement.problems
-            if item.problem not in (None, "None")
+            if item.problem not in ("None", "")
         ]
         dialogue.add_message(statement, "user", comment=comment)
         dialogue.add_message(assistant_message, "assistant")
