@@ -22,8 +22,10 @@ class ExpressionRecall:
     def get_challenge(self) -> Optional[ChallengeDict]:
         """return an expression with the latest 'last_practice_time'"""
 
-        if not (user_expr := self.repo.get_oldest_trained_expression()):
+        if not (user_exprs := self.repo.get_trained_expressions(limit=1)):
             return
+
+        user_expr = user_exprs[0]
 
         return get_challenge_object(user_expr.expression)
 
@@ -54,7 +56,7 @@ class ExpressionRecall:
         """returns list of expressions that are needed to be recalled,
         sorted by last practice time in ascending order"""
 
-        user_exprs = self.repo.get_all_trained_expressions()
+        user_exprs = self.repo.get_trained_expressions()
         return [
             get_exercise_expressions_list_item(
                 user_expr.expression_id,

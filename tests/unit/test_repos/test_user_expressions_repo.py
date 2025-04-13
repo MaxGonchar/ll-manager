@@ -127,7 +127,7 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
         }
         self.us_expr_3 = {
             "user_id": self.user_id_1,
-            "expression_id": "d5c26549-74f7-4930-9c2c-16d10d46e55e",
+            "expression_id": self.expr_3["id"],
             "added": "2023-04-11 10:10:25",
             "updated": "2023-04-16 10:10:25",
             "properties": "{}",
@@ -149,7 +149,7 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
         }
         self.us_expr_5 = {
             "user_id": self.user_id_2,
-            "expression_id": "d5c26549-74f7-4930-9c2c-16d10d46e55e",
+            "expression_id": self.expr_3["id"],
             "added": "2023-04-11 10:10:25",
             "updated": "2023-04-16 10:10:25",
             "properties": "{}",
@@ -193,13 +193,24 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
         }
         self.us_expr_9 = {
             "user_id": self.user_id_3,
-            "expression_id": "d5c26549-74f7-4930-9c2c-16d10d46e55e",
+            "expression_id": self.expr_3["id"],
             "added": "2023-04-11 10:10:25",
             "updated": "2023-04-16 10:10:25",
             "properties": "{}",
             "last_practice_time": None,
             "knowledge_level": 0,
             "practice_count": 0,
+            "active": 1,
+        }
+        self.us_expr_10 = {
+            "user_id": self.user_id_3,
+            "expression_id": self.expr_4["id"],
+            "added": "2023-04-12 10:10:25",
+            "updated": "2023-04-16 10:10:25",
+            "properties": "{}",
+            "last_practice_time": "2023-04-14 10:10:25",
+            "knowledge_level": 0,
+            "practice_count": 1,
             "active": 1,
         }
 
@@ -279,6 +290,7 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
             self.us_expr_7,
             self.us_expr_8,
             self.us_expr_9,
+            self.us_expr_10,
         ]
 
         for us_expr in us_exprs:
@@ -671,39 +683,89 @@ class PostTests(BaseRepoTestUtils):
         return data
 
 
-class GetOldestTrainedExpressionTests(UserExpressionsRepoTestHelper):
-    def test_expression_got(self):
-        subject = UserExpressionsRepo(self.user_id_3)
-
-        actual = subject.get_oldest_trained_expression()
-
-        self._deep_assert_user_expression(
-            actual, self.us_expr_8, self.expr_2, self.user_3
-        )
-
-    def test_no_trained_expressions(self):
-        subject = UserExpressionsRepo(self.user_id_2)
-
-        self.assertIsNone(subject.get_oldest_trained_expression())
-
-
 class CountTrainedExpressionsTests(UserExpressionsRepoTestHelper):
     def test_count_trained_expressions(self):
         self.assertEqual(
-            2, UserExpressionsRepo(self.user_id_3).count_trained_expressions()
+            3, UserExpressionsRepo(self.user_id_3).count_trained_expressions()
         )
 
 
-class GetAllTrainedExpressionsTests(UserExpressionsRepoTestHelper):
+class GetTrainedExpressionsTests(UserExpressionsRepoTestHelper):
     def test_get_all_trained_expressions(self):
         subject = UserExpressionsRepo(self.user_id_3)
 
-        actual = subject.get_all_trained_expressions()
+        actual = subject.get_trained_expressions()
 
         expected = [
+            [self.us_expr_10, self.expr_4],
             [self.us_expr_8, self.expr_2],
             [self.us_expr_7, self.expr_1],
         ]
+
+        self.assertEqual(len(expected), len(actual))
+
+        for actual_us_expr, expected_us_exp in zip(actual, expected):
+            self._deep_assert_user_expression(
+                actual_us_expr,
+                expected_us_exp[0],
+                expected_us_exp[1],
+                self.user_3,
+            )
+
+    def test_get_all_trained_expressions_with_limit(self):
+        subject = UserExpressionsRepo(self.user_id_3)
+
+        actual = subject.get_trained_expressions(limit=2)
+
+        expected = [
+            [self.us_expr_10, self.expr_4],
+            [self.us_expr_8, self.expr_2],
+        ]
+
+        self.assertEqual(len(expected), len(actual))
+
+        for actual_us_expr, expected_us_exp in zip(actual, expected):
+            self._deep_assert_user_expression(
+                actual_us_expr,
+                expected_us_exp[0],
+                expected_us_exp[1],
+                self.user_3,
+            )
+
+    def test_get_all_trained_expressions_with_excludes(self):
+        subject = UserExpressionsRepo(self.user_id_3)
+
+        actual = subject.get_trained_expressions(
+            excludes=[self.us_expr_8["expression_id"]]
+        )
+
+        expected = [
+            [self.us_expr_10, self.expr_4],
+            [self.us_expr_7, self.expr_1],
+        ]
+
+        self.assertEqual(len(expected), len(actual))
+
+        for actual_us_expr, expected_us_exp in zip(actual, expected):
+            self._deep_assert_user_expression(
+                actual_us_expr,
+                expected_us_exp[0],
+                expected_us_exp[1],
+                self.user_3,
+            )
+
+    def test_get_all_trained_expressions_with_limit_and_exclude(self):
+        subject = UserExpressionsRepo(self.user_id_3)
+
+        actual = subject.get_trained_expressions(
+            limit=1, excludes=[self.us_expr_8["expression_id"]]
+        )
+
+        expected = [
+            [self.us_expr_10, self.expr_4],
+        ]
+
+        self.assertEqual(len(expected), len(actual))
 
         for actual_us_expr, expected_us_exp in zip(actual, expected):
             self._deep_assert_user_expression(
@@ -716,7 +778,7 @@ class GetAllTrainedExpressionsTests(UserExpressionsRepoTestHelper):
     def test_get_all_trained_expressions_no_trained_expressions(self):
         subject = UserExpressionsRepo(self.user_id_2)
 
-        actual = subject.get_all_trained_expressions()
+        actual = subject.get_trained_expressions()
 
         self.assertEqual([], actual)
 

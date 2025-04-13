@@ -12,7 +12,7 @@ class GetChallengeTests(TestCase):
 
         repo_patcher = patch("exercises.expression_recall.UserExpressionsRepo")
         mock_repo = repo_patcher.start()
-        self.mock_get = mock_repo.return_value.get_oldest_trained_expression
+        self.mock_get = mock_repo.return_value.get_trained_expressions
         self.addCleanup(repo_patcher.stop)
 
         self.subject = ExpressionRecall(self.user_id)
@@ -22,11 +22,15 @@ class GetChallengeTests(TestCase):
         definition = "test definition"
         expression_id = "test_expression_id"
 
-        self.mock_get.return_value = get_user_expression(
-            user_id=self.user_id,
-            user=get_user(self.user_id),
-            expression=get_expression(expression_id, expression, definition),
-        )
+        self.mock_get.return_value = [
+            get_user_expression(
+                user_id=self.user_id,
+                user=get_user(self.user_id),
+                expression=get_expression(
+                    expression_id, expression, definition
+                ),
+            )
+        ]
 
         actual = self.subject.get_challenge()
         expected = {
@@ -38,14 +42,14 @@ class GetChallengeTests(TestCase):
 
         self.assertEqual(expected, actual)
 
-        self.mock_get.assert_called_once_with()
+        self.mock_get.assert_called_once_with(limit=1)
 
     def test_no_expression_for_challenge_returns_none(self):
-        self.mock_get.return_value = None
+        self.mock_get.return_value = []
 
         self.assertIsNone(self.subject.get_challenge())
 
-        self.mock_get.assert_called_once_with()
+        self.mock_get.assert_called_once_with(limit=1)
 
 
 class SubmitChallengeTests(TestCase):
@@ -180,7 +184,8 @@ class GetExpressionsNeededRecallingTests(TestCase):
 
         repo_patcher = patch("exercises.expression_recall.UserExpressionsRepo")
         mock_repo = repo_patcher.start()
-        self.mock_get = mock_repo.return_value.get_all_trained_expressions
+        # self.mock_get = mock_repo.return_value.get_all_trained_expressions
+        self.mock_get = mock_repo.return_value.get_trained_expressions
         self.addCleanup(repo_patcher.stop)
 
         self.subject = ExpressionRecall(self.user_id)
