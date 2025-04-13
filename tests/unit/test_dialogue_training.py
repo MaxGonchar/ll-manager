@@ -150,7 +150,7 @@ class CreateDialogueTests(BaseDialogueTrainingTest):
             user=None,
             expression=expression_2,
         )
-        self.mock_user_expression_repo.return_value.get_oldest_trained_expressions.return_value = [
+        self.mock_user_expression_repo.return_value.get_trained_expressions.return_value = [
             user_expression_1,
             user_expression_2,
         ]
@@ -161,7 +161,7 @@ class CreateDialogueTests(BaseDialogueTrainingTest):
 
         self.assertEqual(self.dialogue_id, actual)
 
-        self.mock_user_expression_repo.return_value.get_oldest_trained_expressions.assert_called_once_with(
+        self.mock_user_expression_repo.return_value.get_trained_expressions.assert_called_once_with(
             10
         )
 
@@ -565,7 +565,7 @@ class SubmitDialogueStatementTests(BaseDialogueTrainingTest):
                 pc=1,
             ),
         ]
-        self.mock_user_expression_repo.return_value.get_oldest_trained_expressions_with_excludes.return_value = [
+        self.mock_user_expression_repo.return_value.get_trained_expressions.return_value = [
             get_user_expression(
                 user_id=self.user_id,
                 user=None,
@@ -674,8 +674,8 @@ class SubmitDialogueStatementTests(BaseDialogueTrainingTest):
             self.updated, put_expressions[1].args[0].last_practice_time
         )
 
-        self.mock_user_expression_repo.return_value.get_oldest_trained_expressions_with_excludes.assert_called_once_with(
-            1, excludes=["1", "3"]
+        self.mock_user_expression_repo.return_value.get_trained_expressions.assert_called_once_with(
+            limit=1, excludes=["1", "3"]
         )
         self._assert_dialogue(
             self._get_expected_updated_dialogue(

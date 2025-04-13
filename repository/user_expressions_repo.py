@@ -13,57 +13,25 @@ class UserExpressionsRepo:
         self.session: Session = db.session
         self.user_id = user_id
 
-    def get_all_trained_expressions(self) -> List[UserExpression]:
-        return (
-            self.session.query(UserExpression)
-            .filter(
-                UserExpression.user_id == self.user_id,
-                UserExpression.last_practice_time.is_not(None),
-            )
-            .order_by(UserExpression.last_practice_time.asc())
-            .all()
-        )
-
-    def get_oldest_trained_expression(self) -> Optional[UserExpression]:
-        return (
-            self.session.query(UserExpression)
-            .filter(
-                UserExpression.user_id == self.user_id,
-                UserExpression.last_practice_time.is_not(None),
-            )
-            .order_by(UserExpression.last_practice_time.asc())
-            .first()
-        )
-
-    # TODO: combine with get_oldest_trained_expression
-    def get_oldest_trained_expressions(
-        self, limit: int
+    def get_trained_expressions(
+        self, limit: int | None = None, excludes: list[str] | None = None
     ) -> List[UserExpression]:
-        return (
+        query = (
             self.session.query(UserExpression)
             .filter(
                 UserExpression.user_id == self.user_id,
                 UserExpression.last_practice_time.is_not(None),
             )
             .order_by(UserExpression.last_practice_time.asc())
-            .limit(limit)
-            .all()
         )
 
-    def get_oldest_trained_expressions_with_excludes(
-        self, limit: int, excludes: List[str]
-    ) -> List[UserExpression]:
-        return (
-            self.session.query(UserExpression)
-            .filter(
-                UserExpression.user_id == self.user_id,
-                UserExpression.last_practice_time.is_not(None),
-                UserExpression.expression_id.not_in(excludes),
-            )
-            .order_by(UserExpression.last_practice_time.asc())
-            .limit(limit)
-            .all()
-        )
+        if excludes is not None:
+            query = query.filter(UserExpression.expression_id.not_in(excludes))
+
+        if limit is not None:
+            query = query.limit(limit)
+
+        return query.all()
 
     def get_oldest_trained_expression_with_context(
         self,

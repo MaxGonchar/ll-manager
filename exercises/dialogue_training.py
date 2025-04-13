@@ -69,7 +69,7 @@ class DialogueTraining:
     def create_dialogue(self, title: str, description: str) -> str:
         """Create a new dialogue and return the dialogue id"""
         id_ = str(uuid4())
-        expressions = self.user_expr_repo.get_oldest_trained_expressions(
+        expressions = self.user_expr_repo.get_trained_expressions(
             int(DEFAULT_SETTINGS["maxExpressionsToTrain"])
         )
         expressions_list = [
@@ -292,8 +292,10 @@ class DialogueTraining:
             existing_expression_ids = [
                 expression["id"] for expression in dialogue.expressions
             ]
-            user_expressions_to_add = self.user_expr_repo.get_oldest_trained_expressions_with_excludes(
-                dif, excludes=existing_expression_ids
+            user_expressions_to_add = (
+                self.user_expr_repo.get_trained_expressions(
+                    limit=dif, excludes=existing_expression_ids
+                )
             )
             dialogue.add_expressions(
                 [
