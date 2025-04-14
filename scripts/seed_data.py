@@ -1,4 +1,3 @@
-# TODO: NEXT ITERATION fix seeded user properties to be consistent with current default
 import argparse
 
 from dotenv import dotenv_values

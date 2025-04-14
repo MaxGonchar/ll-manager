@@ -244,8 +244,6 @@ class Dialogue(db.Model):
 
     def get_dialogue_expression(self, expression_id: str) -> dict | None:
         for expression in self.expressions:
-            print(expression_id)
-            print(expression)
             if expression["id"] == expression_id:
                 return expression
         return None
