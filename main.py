@@ -107,7 +107,9 @@ def before_request():
 
 
 if __name__ == "__main__":
-    # TODO: making snapshot configurable
-    if os.environ.get("LL_ENV") == "prod":
+    if (
+        os.environ.get("LL_ENV") == "prod"
+        and os.environ.get("RUN_DB_SNAPSHOT") == "true"
+    ):
         snapshot_db()
     app.run(debug=True)

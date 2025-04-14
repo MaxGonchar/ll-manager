@@ -55,5 +55,12 @@ It's a Python Flask app, using Postgresql as DB.
 11. run main.py
 
 ## Development
-- linter: `python -m black . --exclude venv -l 79`
-- test: `./run_tests.sh`
+### linter:
+`python -m black . --exclude venv -l 79`
+### test:
+for Mac:  
+`./run_tests.sh`  
+platform independent:  
+`python run_tests.py`  
+`python run_tests.py tests.unit.test_daily_training_v2.GetChallengeTests.test_get_challenge_when_empty_llist_returns_None`
+

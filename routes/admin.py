@@ -53,7 +53,6 @@ def expression(expression_id: str):
     form = PostExpressionForm(TagsService().get_tag_names())
 
     if form.validate_on_submit():
-        # TODO: add flash with message
         properties = {}
         if form.grammar.data and form.grammar_tag.data:
             if grammar_tag := GrammarTag.new_from_display(
