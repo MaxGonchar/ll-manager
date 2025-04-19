@@ -45,11 +45,10 @@ class VeniceClientTests(TestCase):
         with self.assertRaises(VeniceClientError) as context:
             self.client.do_chat_completion(self.messages)
 
+        self.assertEqual(context.exception.message, "Request timed out")
         self.assertEqual(
-            context.exception.message, "Request timed out"
-        )
-        self.assertEqual(
-            context.exception.status_code, http.HTTPStatus.REQUEST_TIMEOUT.value
+            context.exception.status_code,
+            http.HTTPStatus.REQUEST_TIMEOUT.value,
         )
 
     def test_do_chat_completion_http_error(self):
@@ -66,5 +65,6 @@ class VeniceClientTests(TestCase):
             context.exception.message, "Venice API error: Error message"
         )
         self.assertEqual(
-            context.exception.status_code, http.HTTPStatus.INTERNAL_SERVER_ERROR.value
+            context.exception.status_code,
+            http.HTTPStatus.INTERNAL_SERVER_ERROR.value,
         )

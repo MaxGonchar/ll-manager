@@ -1,8 +1,9 @@
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 from langchain_core.messages import BaseMessage
 from services.venice_chat_model import ChatVeniceAI
 from langchain_core.outputs import ChatResult
+
 
 class ChatVeniceAITests(TestCase):
     @patch("services.venice_chat_model.VeniceClient")
@@ -33,7 +34,9 @@ class ChatVeniceAITests(TestCase):
                 "total_tokens": 15,
             },
         }
-        mock_venice_client.return_value.do_chat_completion.return_value = mock_response
+        mock_venice_client.return_value.do_chat_completion.return_value = (
+            mock_response
+        )
 
         chat_model = ChatVeniceAI(
             model="test_model",
@@ -44,12 +47,12 @@ class ChatVeniceAITests(TestCase):
         result = chat_model._generate(messages)
 
         mock_venice_client.return_value.do_chat_completion.assert_called_once_with(
-            messages=[
-                {"role": "user", "content": "Hello"}
-            ]
+            messages=[{"role": "user", "content": "Hello"}]
         )
         self.assertIsInstance(result, ChatResult)
-        self.assertEqual(result.generations[0].message.content, "response content")
+        self.assertEqual(
+            result.generations[0].message.content, "response content"
+        )
         self.assertEqual(
             result.generations[0].message.usage_metadata,
             {
