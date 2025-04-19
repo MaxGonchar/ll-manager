@@ -345,31 +345,6 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
                 actual.last_practice_time.strftime("%Y-%m-%d %H:%M:%S"),
             )
 
-    # TODO:
-    # def _assert_expression(self, expected_expression, actual_expression):
-    #     self.assertEqual(expected_expression["id"], str(actual_expression.id))
-    #     self.assertEqual(
-    #         expected_expression["expression"], actual_expression.expression
-    #     )
-    #     self.assertEqual(
-    #         expected_expression["definition"], actual_expression.definition
-    #     )
-    #     self.assertEqual(
-    #         expected_expression["example"], actual_expression.example
-    #     )
-    #     self.assertEqual(
-    #         expected_expression["translation"],
-    #         json.dumps(actual_expression.translations, ensure_ascii=False),
-    #     )
-    #     self.assertEqual(
-    #         expected_expression["added"],
-    #         actual_expression.added.strftime("%Y-%m-%d %H:%M:%S"),
-    #     )
-    #     self.assertEqual(
-    #         expected_expression["updated"],
-    #         actual_expression.updated.strftime("%Y-%m-%d %H:%M:%S"),
-    #     )
-
     def _assert_user(self, expected_user, actual_user):
         self.assertEqual(expected_user["id"], str(actual_user.id))
         self.assertEqual(expected_user["properties"], actual_user.properties)

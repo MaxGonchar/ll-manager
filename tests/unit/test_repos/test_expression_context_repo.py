@@ -162,7 +162,6 @@ class GetTests(ExpressionContextTestHelper):
             self._assert_expression_context(exp, act)
 
     def test_get_no_expression_returns_empty_list(self):
-        # TODO: raise an exception for not existing expression
         actual = ExpressionContextRepo(
             "9cc5ac45-fedd-4730-a6f6-de4953363ed8"
         ).get()

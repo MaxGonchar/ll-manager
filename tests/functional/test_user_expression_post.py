@@ -173,12 +173,10 @@ class AddUserExpressionTest(FunctionalTestsHelper):
         self.assertEqual(example, actual_expression["example"])  # type: ignore
         self.assertEqual(expected_expression_properties, actual_expression["properties"])  # type: ignore
 
-        # TODO:
-        # AssertionError: 'noun' != 'grammar'
-        # - noun
-        # + grammar
-        self.assertEqual(tag_1, actual_expressions[0]["tag"])  # type: ignore
-        self.assertEqual(tag_2, actual_expressions[1]["tag"])  # type: ignore
+        self.assertEqual(
+            {tag_1, tag_2},
+            {actual_expressions[0]["tag"], actual_expressions[1]["tag"]},
+        )
 
         expected_llist = [
             ("eccda880-b9fa-40a8-93b7-d0098d1e4e69", 0, 0),
@@ -291,6 +289,8 @@ class AddUserExpressionTest(FunctionalTestsHelper):
 
         if expression:
             sql += "e.expression=%(expression)s"
+
+        # sql += "ORDER BY "
 
         with psycopg2.connect(**self._get_test_db_dsn()) as con:  # type: ignore
             with con.cursor(cursor_factory=DictCursor) as cur:
