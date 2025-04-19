@@ -136,7 +136,6 @@ class ExpressionUsageResponse(BaseModel):
     )
 
 
-# TODO: cover with tests
 class VeniceAssistant:
     def __init__(self):
         self.default_temperature = 0
@@ -147,6 +146,7 @@ class VeniceAssistant:
         )
 
     def complete_dialogue(self, dialogue: list[dict]) -> str:
+        # TODO: logging
         print("Completing dialogue...")
         self.chat_model.temperature = 0.8
         messages = self._generate_dialogue_messages(dialogue)
@@ -168,6 +168,7 @@ class VeniceAssistant:
         ]
 
     def get_general_judgement(self, text: str) -> GeneralJudgementResponse:
+        # TODO: logging
         print("Getting general judgement...")
         response_parser = PydanticOutputParser(
             pydantic_object=GeneralJudgementResponse
@@ -185,6 +186,7 @@ class VeniceAssistant:
     def detect_phrases_usage(
         self, text: str, expressions: list[ExpressionDetectionRequest]
     ) -> ExpressionDetectionResponse:
+        # TODO: logging
         print("Detecting phrases usage...")
         response_parser = PydanticOutputParser(
             pydantic_object=ExpressionDetectionResponse

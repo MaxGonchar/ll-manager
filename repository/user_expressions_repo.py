@@ -151,6 +151,7 @@ class UserExpressionsRepo:
                 UserExpression.user_id == self.user_id,
                 UserExpression.expression_id.in_(include),
             )
+            .order_by(UserExpression.added.desc())
             .all()
         )
 
