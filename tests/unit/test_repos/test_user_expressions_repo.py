@@ -81,7 +81,7 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
             "definition": "the complete loss or absence of hope",
             "translation": '{"uk": "відчай"}',
             "example": "in despair, I hit the bottle",
-            "added": "2016-06-22 19:10:25",
+            "added": "2016-06-22 19:10:26",
             "updated": "2016-06-22 19:10:25",
         }
         self.expr_3 = {
@@ -90,7 +90,7 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
             "definition": "occurring once every year",
             "translation": '{"uk": "щорічний"}',
             "example": "the sponsored walk became an annual event",
-            "added": "2016-06-22 19:10:25",
+            "added": "2016-06-22 19:10:27",
             "updated": "2016-06-22 19:10:25",
         }
         self.expr_4 = {
@@ -99,7 +99,7 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
             "definition": "a vote carried out among a group by the raising of hands",
             "translation": '{"uk": "підняття рук"}',
             "example": "By a show of hands, how many of you would prefer to have the test on Friday?",
-            "added": "2016-06-22 19:10:25",
+            "added": "2016-06-22 19:10:28",
             "updated": "2016-06-22 19:10:25",
         }
 
@@ -309,17 +309,6 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
         expected_expression,
         expected_user,
     ):
-        # TODO: flaky test
-        # Traceback (most recent call last):
-        # File "/Users/mhonc/MyProjects/ll-manager/tests/unit/test_repos/test_user_expressions_repo.py", line 402, in test_get_particular_set_of_items
-        # self._deep_assert_user_expression(
-        # File "/Users/mhonc/MyProjects/ll-manager/tests/unit/test_repos/test_user_expressions_repo.py", line 300, in _deep_assert_user_expression
-        # self._assert_user_expression(expected_user_expression, actual)
-        # File "/Users/mhonc/MyProjects/ll-manager/tests/unit/test_repos/test_user_expressions_repo.py", line 308, in _assert_user_expression
-        # self.assertEqual(
-        # AssertionError: '4d7993aa-d897-4647-994b-e0625c88f349' != '24d96f68-46e1-4fb3-b300-81cd89cea435'
-        # - 4d7993aa-d897-4647-994b-e0625c88f349
-        # + 24d96f68-46e1-4fb3-b300-81cd89cea435
         self._assert_user_expression(expected_user_expression, actual)
         self._assert_expression(expected_expression, actual.expression)
         self._assert_user(expected_user, actual.user)
@@ -418,8 +407,8 @@ class GetAllTests(UserExpressionsRepoTestHelper):
         self.assertEqual(2, len(actual))
 
         expected = [
-            [self.us_expr_1, self.expr_1],
             [self.us_expr_2, self.expr_2],
+            [self.us_expr_1, self.expr_1],
         ]
 
         for actual_us_expr, expected_us_exp in zip(actual, expected):
@@ -431,17 +420,6 @@ class GetAllTests(UserExpressionsRepoTestHelper):
             )
 
     def test_get_particular_set_of_items_with_nonexisting_item(self):
-        # TODO: flaky test
-        # Traceback (most recent call last):
-        # File "/Users/mhonc/MyProjects/ll-manager/tests/unit/test_repos/test_user_expressions_repo.py", line 426, in test_get_particular_set_of_items_with_nonexisting_item
-        # self._deep_assert_user_expression(
-        # File "/Users/mhonc/MyProjects/ll-manager/tests/unit/test_repos/test_user_expressions_repo.py", line 300, in _deep_assert_user_expression
-        # self._assert_user_expression(expected_user_expression, actual)
-        # File "/Users/mhonc/MyProjects/ll-manager/tests/unit/test_repos/test_user_expressions_repo.py", line 308, in _assert_user_expression
-        # self.assertEqual(
-        # AssertionError: '4d7993aa-d897-4647-994b-e0625c88f349' != '24d96f68-46e1-4fb3-b300-81cd89cea435'
-        # - 4d7993aa-d897-4647-994b-e0625c88f349
-        # + 24d96f68-46e1-4fb3-b300-81cd89cea435
         include = [
             self.us_expr_1["expression_id"],
             self.us_expr_2["expression_id"],
@@ -453,8 +431,8 @@ class GetAllTests(UserExpressionsRepoTestHelper):
         self.assertEqual(2, len(actual))
 
         expected = [
-            [self.us_expr_1, self.expr_1],
             [self.us_expr_2, self.expr_2],
+            [self.us_expr_1, self.expr_1],
         ]
 
         for actual_us_expr, expected_us_exp in zip(actual, expected):
