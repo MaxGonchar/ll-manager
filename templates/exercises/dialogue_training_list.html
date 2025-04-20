@@ -12,13 +12,30 @@
     
         {% for dialogue in dialogues %}
             <div class="button-box">
-                <!-- TODO: add modal confirmation when delete -->
-                <a class="link-icon" href="{{ url_for('dialogue_training.delete_dialogue', dialogue_id=dialogue.id) }}">
+                <button class="button-icon" onclick="showModal('{{ dialogue.id }}')">
                     {{ x_circle("") }}
-                </a>
-                <!-- TODO: do not display "None" if no description -->
-                <!-- TODO: add counter of trained expressions -->
-                <a class="link-list-item" href="{{ url_for('dialogue_training.dialogue', dialogue_id=dialogue.id) }}">{{ dialogue.title }}: {{ dialogue.description }}</a>
+                </button>
+                <div id="modal-{{ dialogue.id }}" class="modal" style="display: none;" onclick="handleOutsideClick(event, '{{ dialogue.id }}')">
+                    <div class="modal-content">
+                        <p>Are you sure you want to delete this dialogue?</p>
+                            <button class="button button-filled" onclick="confirmDelete('{{ dialogue.id }}')">Yes</button>
+                            <button class="button" onclick="hideModal('{{ dialogue.id }}')">No</button>
+                    </div>
+                </div>
+                <script>
+                    function showModal(dialogueId) {
+                        document.getElementById(`modal-${dialogueId}`).style.display = 'flex';
+                    }
+
+                    function hideModal(dialogueId) {
+                        document.getElementById(`modal-${dialogueId}`).style.display = 'none';
+                    }
+
+                    function confirmDelete(dialogueId) {
+                        window.location.href = `/exercise/dialogues/${dialogueId}/delete`;
+                    }
+                </script>
+                <a class="link-list-item" href="{{ url_for('dialogue_training.dialogue', dialogue_id=dialogue.id) }}">{{ dialogue.title }}. {{ dialogue.trainedExpressionsCount}} expressions trained</a>
             </div>
         {% endfor %}
     </div>

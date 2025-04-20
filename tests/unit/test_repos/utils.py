@@ -123,6 +123,7 @@ class BaseRepoTestUtils(TestCase):
                 user_id,
                 title,
                 description,
+                properties,
                 settings,
                 dialogues,
                 expressions,
@@ -133,6 +134,7 @@ class BaseRepoTestUtils(TestCase):
                 '{dialogues["user_id"]}',
                 '{dialogues["title"]}',
                 '{dialogues["description"]}',
+                '{json.dumps(dialogues["properties"])}',
                 '{json.dumps(dialogues["settings"])}',
                 '{json.dumps(dialogues["dialogues"])}',
                 '{json.dumps(dialogues["expressions"])}',
@@ -220,6 +222,9 @@ class BaseRepoTestUtils(TestCase):
         self.assertEqual(expected["title"], actual.title, "title")
         self.assertEqual(
             expected["description"], actual.description, "description"
+        )
+        self.assertEqual(
+            expected["properties"], actual.properties, "properties"
         )
         self.assertEqual(expected["user_id"], str(actual.user_id), "user_id")
         self.assertEqual(expected["settings"], actual.settings, "settings")

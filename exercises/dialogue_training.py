@@ -23,6 +23,9 @@ DEFAULT_DIALOGUE = [
         "text": "Hello! What are we going to talk about?",
     },
 ]
+DEFAULT_PROPERTIES = {
+    "trainedExpressionsCount": 0,
+}
 
 
 class DialogueListItemDict(TypedDict):
@@ -61,6 +64,9 @@ class DialogueTraining:
                 "id": dialogue.id,
                 "title": dialogue.title,
                 "description": dialogue.description,
+                "trainedExpressionsCount": dialogue.properties[
+                    "trainedExpressionsCount"
+                ],
             }
             for dialogue in dialogues
         ]
@@ -85,6 +91,7 @@ class DialogueTraining:
             id=id_,
             user_id=self.user_id,
             title=title,
+            properties=DEFAULT_PROPERTIES,
             settings=DEFAULT_SETTINGS,
             dialogues=DEFAULT_DIALOGUE,
             expressions=expressions_list,
@@ -257,6 +264,7 @@ class DialogueTraining:
             expression_id = judgement.id
             if judgement.is_correct:
                 dialogue.remove_expression_by(expression_id)
+                dialogue.increase_trained_expressions_count()
             else:
                 dialogue.update_expression_by_id(
                     expression_id,

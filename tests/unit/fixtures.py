@@ -151,6 +151,7 @@ def get_dialogue(
     settings: dict,
     expressions: List[dict],
     dialogues: List[dict],
+    properties: dict = {"trainedExpressionsCount": 0},
     added: str = "2023-04-12 10:10:25",
     updated: str = "2023-04-12 10:10:25",
 ) -> Dialogue:
@@ -159,6 +160,7 @@ def get_dialogue(
         user_id=user_id,
         title=title,
         description=description,
+        properties=properties,
         settings=settings,
         expressions=expressions,
         dialogues=dialogues,

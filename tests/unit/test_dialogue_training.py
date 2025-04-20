@@ -79,11 +79,13 @@ class GetTests(BaseDialogueTrainingTest):
                 "id": "4d7993aa-d897-4647-994b-e0625c88f349",
                 "title": "Dialogue 1",
                 "description": "Dialogue 1 description",
+                "trainedExpressionsCount": 0,
             },
             {
                 "id": "24d96f68-46e1-4fb3-b300-81cd89cea435",
                 "title": "Dialogue 2",
                 "description": "Dialogue 2 description",
+                "trainedExpressionsCount": 0,
             },
         ]
         actual = self.subject.get_dialogues()
@@ -202,6 +204,10 @@ class CreateDialogueTests(BaseDialogueTrainingTest):
             ],
             actual_dialogue.expressions,
         )
+        self.assertEqual(
+            {"trainedExpressionsCount": 0},
+            actual_dialogue.properties,
+        )
 
 
 class DeleteDialogueTests(BaseDialogueTrainingTest):
@@ -227,6 +233,7 @@ class SubmitDialogueStatementTests(BaseDialogueTrainingTest):
             user_id=self.user_id,
             title="Dialogue 1",
             description="Dialogue 1 description",
+            properties={"trainedExpressionsCount": 0},
             settings={"maxExpressionsToTrain": 3},
             dialogues=[
                 {
@@ -267,12 +274,15 @@ class SubmitDialogueStatementTests(BaseDialogueTrainingTest):
         current_patcher.start()
         self.addCleanup(current_patcher.stop)
 
-    def _get_expected_updated_dialogue(self, problems=None, expressions=None):
+    def _get_expected_updated_dialogue(
+        self, problems=None, expressions=None, trained_expressions_count=0
+    ):
         res = Dialogue(
             id=self.dialogue_id,
             user_id=self.user_id,
             title="Dialogue 1",
             description="Dialogue 1 description",
+            properties={"trainedExpressionsCount": trained_expressions_count},
             settings={"maxExpressionsToTrain": 3},
             dialogues=[
                 {
@@ -679,7 +689,9 @@ class SubmitDialogueStatementTests(BaseDialogueTrainingTest):
         )
         self._assert_dialogue(
             self._get_expected_updated_dialogue(
-                problems=[], expressions=expected_expressions
+                problems=[],
+                expressions=expected_expressions,
+                trained_expressions_count=1,
             ),
             self.mock_dialogue_repo.return_value.update.call_args.args[0],
         )
@@ -689,6 +701,7 @@ class SubmitDialogueStatementTests(BaseDialogueTrainingTest):
         self.assertEqual(expected.user_id, actual.user_id)
         self.assertEqual(expected.title, actual.title)
         self.assertEqual(expected.description, actual.description)
+        self.assertEqual(expected.properties, actual.properties)
         self.assertEqual(expected.settings, actual.settings)
         self.assertEqual(expected.dialogues, actual.dialogues)
         self.assertEqual(expected.expressions, actual.expressions)
