@@ -16,6 +16,7 @@ class GetTests(BaseRepoTestUtils):
                 "user_id": self.user_id,
                 "title": "Dialogue 1",
                 "description": "Dialogue 1 description",
+                "properties": {"trainedExpressionsCount": 0},
                 "settings": {"setting": "value"},
                 "dialogues": [{"dialogue": "dialogue 1"}],
                 "expressions": [{"expression": "expression 1"}],
@@ -27,6 +28,7 @@ class GetTests(BaseRepoTestUtils):
                 "user_id": self.user_id,
                 "title": "Dialogue 2",
                 "description": "Dialogue 2 description",
+                "properties": {"trainedExpressionsCount": 1},
                 "settings": {"setting": "value"},
                 "dialogues": [{"dialogue": "dialogue 2"}],
                 "expressions": [{"expression": "expression 2"}],
@@ -44,6 +46,7 @@ class GetTests(BaseRepoTestUtils):
         self.assertEqual(expected["id"], str(actual.id))
         self.assertEqual(expected["title"], actual.title)
         self.assertEqual(expected["description"], actual.description)
+        self.assertEqual(expected["properties"], actual.properties)
 
         with self.assertRaises(AttributeError):
             actual.user_id
@@ -81,6 +84,7 @@ class CreateDialogueTests(BaseRepoTestUtils):
             user_id=self.user_id,
             title="Dialogue 1",
             description="Dialogue 1 description",
+            properties={"trainedExpressionsCount": 0},
             settings={"test": "value"},
             added="2016-06-22 19:10:26",
             updated="2016-06-22 19:10:25",
@@ -92,6 +96,7 @@ class CreateDialogueTests(BaseRepoTestUtils):
             "id": id_,
             "title": "Dialogue 1",
             "description": "Dialogue 1 description",
+            "properties": {"trainedExpressionsCount": 0},
             "user_id": self.user_id,
             "settings": {"test": "value"},
             "dialogues": [],
@@ -116,6 +121,7 @@ class DeleteDialogueTests(BaseRepoTestUtils):
             "user_id": self.user_id,
             "title": "Dialogue 1",
             "description": "Dialogue 1 description",
+            "properties": {"trainedExpressionsCount": 0},
             "settings": {"setting": "value"},
             "dialogues": [{"dialogue": "dialogue 1"}],
             "expressions": [{"expression": "expression 1"}],

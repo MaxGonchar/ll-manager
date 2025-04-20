@@ -20,7 +20,10 @@ class DialogueTrainingRepo:
             )
         return (
             self.session.query(
-                Dialogue.id, Dialogue.title, Dialogue.description
+                Dialogue.id,
+                Dialogue.title,
+                Dialogue.description,
+                Dialogue.properties,
             )
             .filter(Dialogue.user_id == self.user_id)
             .order_by(Dialogue.added.desc())

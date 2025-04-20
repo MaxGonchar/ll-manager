@@ -130,5 +130,7 @@ class UserExpressionService:
             )
             or "no translation",
             "tags": [tag.tag for tag in usr_expr.expression.tags],
-            "examples": [item.sentence for item in usr_expr.expression.context]
+            "examples": [
+                item.sentence for item in usr_expr.expression.context
+            ],
         }

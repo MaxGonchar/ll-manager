@@ -265,7 +265,7 @@ class GetExpressionByIDTests(TestCase):
             "definition": definition,
             "translation": translation,
             "tags": [tag],
-            "examples": []
+            "examples": [],
         }
 
         self.assertEqual(expected, actual)

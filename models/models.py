@@ -180,6 +180,7 @@ class Dialogue(db.Model):
     )
     title = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
+    properties = db.Column(JSON, nullable=False, default={})
     settings = db.Column(JSON, nullable=False)
     dialogues = db.Column(JSON, nullable=False, default=[])
     expressions = db.Column(JSON, nullable=False, default=[])
@@ -247,3 +248,7 @@ class Dialogue(db.Model):
             if expression["id"] == expression_id:
                 return expression
         return None
+
+    def increase_trained_expressions_count(self) -> None:
+        self.properties["trainedExpressionsCount"] += 1
+        attributes.flag_modified(self, "properties")

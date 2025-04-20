@@ -85,6 +85,7 @@ CREATE TABLE IF NOT EXISTS dialogues (
     user_id        uuid NOT NULL,
     title          TEXT NOT NULL,
     description    TEXT,
+    properties     json NOT NULL DEFAULT '{}',
     settings       json NOT NULL,
     dialogues      json NOT NULL DEFAULT '[]',
     expressions    json NOT NULL DEFAULT '[]',
@@ -123,3 +124,5 @@ ALTER TABLE users DROP COLUMN IF EXISTS exprs_learn_list;
 ALTER TABLE expressions ADD COLUMN IF NOT EXISTS properties json NOT NULL DEFAULT '{}';
 
 ---------------------------------------------------------------------------------------------------------------
+
+ALTER TABLE dialogues ADD COLUMN IF NOT EXISTS properties json NOT NULL DEFAULT '{}';
