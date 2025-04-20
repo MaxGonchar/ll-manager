@@ -13,7 +13,10 @@
         <dd>{{ expression["translation"] }}</dd>
         <dt>Tags:</dt>
         <dd>{{ expression["tags"] }}</dd>
-        <!-- TODO: add examples of useage -->
+        <dt>Examples:</dt>
+        {% for example in expression["examples"] %}
+            <dd>{{ example }}</dd>
+        {% endfor %}
     </dl>
 </article>
 {% endblock %}
