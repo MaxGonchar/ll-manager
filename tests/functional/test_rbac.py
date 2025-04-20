@@ -10,12 +10,7 @@ INVALID_ROLE = "invalid-role"
 ALL_VALID_ROLES = (SUPER_ADMIN, ADMIN, SELF_EDUCATED)
 ADMINS = (SUPER_ADMIN, ADMIN)
 
-# print(app.url_map)
 ROUTS = [
-    # ('/static/<filename>', ("GET")),
-    # ('/login', ("POST", "GET")),
-    # ('/login/sign-on', ("POST", "GET")),
-    # ('/login/logout', ("GET")),
     {
         "url": "/",
         "methods": [{"method": "GET", "allowed_roles": ALL_VALID_ROLES}],
@@ -72,18 +67,6 @@ ROUTS = [
         "url": "/admin",
         "methods": [{"method": "GET", "allowed_roles": ADMINS}],
     },
-    # {
-    #     "url": "/admin/expressions/<expression_id>/sentences",
-    #     "methods": [
-    #         {"method": "GET", "allowed_roles": ADMINS},
-    #         {"method": "POST", "allowed_roles": ADMINS},
-    #     ],
-    # },
-    # ('/', ("GET")),
-    # ('/admin', ("GET")),
-    # ('/status', ("GET")),
-    # ('/expressions', ("GET")),
-    # ('/expressions/<expression_id>', ("POST", "GET")),
 ]
 
 ROLES = {

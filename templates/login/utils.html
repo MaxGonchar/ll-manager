@@ -2,7 +2,7 @@
 <div class="{{ class }}">{{ field.label }} {{ field }}</div>
 {% if field.errors %}
     {% for error in field.errors %}
-        <div class="form-row error">{{ error }}</div>
+        <div class="error">{{ error }}</div>
     {% endfor %}
 {% endif %}
 {% endmacro %}
@@ -12,8 +12,7 @@
 {% with messages = get_flashed_messages() %}
     {% if messages %}
         {% for message in messages %}
-        <!-- TODO: looks like "form-row" not exist -->
-            <div class="form-row error">{{ message }}</div>
+            <div class="error">{{ message }}</div>
         {% endfor %}
     {% endif %}
 {% endwith %}
