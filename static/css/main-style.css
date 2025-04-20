@@ -30,6 +30,10 @@ header {
     padding: 24px 44px;
 
     background-color: #e599f7;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 header a:link, header a:visited {

@@ -2,7 +2,7 @@
     {% for field in form.all_fields %}
         {% if field.errors %}
             {% for error in field.errors %}
-                <div class="form-row error">{{ error }}</div>
+                <div class="error">{{ error }}</div>
             {% endfor %}
         {% endif %}
     {% endfor %}
@@ -34,7 +34,7 @@
 {% macro render_field(field, class="form-row-post-expression") %}
 <div class="{{ class }}">{{ field.label }}{{ field }}</div>
   {% if field.errors %}
-    <ul class="form-row error">
+    <ul class="error">
     {% for error in field.errors %}
       <li>{{ error }}</li>
     {% endfor %}
