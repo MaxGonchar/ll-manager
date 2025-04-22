@@ -1,4 +1,4 @@
-{% from "widgets/icons.html" import list_bullet, cog_6_tooth %}
+{% from "widgets/icons.html" import information_circle_micro, cog_6_tooth %}
 {% from "widgets/link-icons.html" import link_icon %}
 {% from "widgets/nav-bars.html" import side_nav_bar %}
 
@@ -19,7 +19,8 @@
   <div class="item-list-container dialogue-expressions">
     {% for item in data.expressions %}
         <div class="dialogue-expression-item">
-            <div class="{{ 'red-font' if item.status == 'failed' else '' }}">
+            <div class="{{ 'red-font' if item.status == 'failed' else '' }} inline-container">
+                {{ information_circle_micro("micro_icon") }}
                 <a class="expression-link" href="{{ url_for('expressions.user_expression', expression_id=item.id) }}" target="_blank">
                     {{ item.expression }}
                 </a>

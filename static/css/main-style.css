@@ -55,6 +55,12 @@ main {
     text-decoration: none;
 }
 
+.micro_icon {
+    display: inline-block;
+    height: 12px;
+    width: 12px;
+}
+
 .menu-title-icon {
     height: 61px;
     width: 61px;
@@ -402,7 +408,7 @@ main {
     font-size: 20px
 }
 
-.tags-container {
+.inline-container {
     display: inline;
 }
 
