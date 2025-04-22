@@ -578,6 +578,7 @@ main {
     border: 1px solid #862e9c;
     border-radius: 5px;
     padding: 5px;
+    overflow-y: auto;
 }
 
 .comment-item {
