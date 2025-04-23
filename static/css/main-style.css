@@ -55,6 +55,12 @@ main {
     text-decoration: none;
 }
 
+.micro_icon {
+    display: inline-block;
+    height: 12px;
+    width: 12px;
+}
+
 .menu-title-icon {
     height: 61px;
     width: 61px;
@@ -402,7 +408,7 @@ main {
     font-size: 20px
 }
 
-.tags-container {
+.inline-container {
     display: inline;
 }
 
@@ -518,7 +524,7 @@ main {
     /* position: relative; */
 }
 
-.dialogue-expression-item {
+.tooltip-target {
     position: relative;
 }
 
@@ -535,7 +541,7 @@ main {
     padding: 5px;
 }
 
-.dialogue-expression-item:hover .tooltip-content {
+.tooltip-target:hover + .tooltip-content {
     visibility: visible;
 }
 
@@ -570,10 +576,10 @@ main {
     display: inline-block;
     visibility: hidden;
     z-index: 1000;
-    top: 25vh;
+    top: 15vh;
     left: 30vw;
-    width: 40vw;
-    height: 50vh;
+    width: 60vw;
+    height: 80vh;
     background-color: white;
     border: 1px solid #862e9c;
     border-radius: 5px;
@@ -583,10 +589,6 @@ main {
 
 .comment-item {
     padding: 5px;
-}
-
-.dialogue-item:hover .dialogue-comment {
-    visibility: visible;
 }
 
 .dialogue-item {

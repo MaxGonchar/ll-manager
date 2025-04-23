@@ -1,4 +1,4 @@
-{% from "widgets/icons.html" import list_bullet, cog_6_tooth %}
+{% from "widgets/icons.html" import information_circle_micro, cog_6_tooth %}
 {% from "widgets/link-icons.html" import link_icon %}
 {% from "widgets/nav-bars.html" import side_nav_bar %}
 
@@ -14,16 +14,11 @@
 
 {% block content %}
 
-<!-- TODO: add icons for displaying tooltips when hovering over -->
 <div class="dialogue-main">
   <div class="item-list-container dialogue-expressions">
     {% for item in data.expressions %}
-        <div class="dialogue-expression-item">
-            <div class="{{ 'red-font' if item.status == 'failed' else '' }}">
-                <a class="expression-link" href="{{ url_for('expressions.user_expression', expression_id=item.id) }}" target="_blank">
-                    {{ item.expression }}
-                </a>
-            </div>
+        <div class="{{ 'red-font' if item.status == 'failed' else '' }} inline-container">
+            {{ information_circle_micro("micro_icon tooltip-target") }}
             <div class="tooltip-content">
                 <h4>Definition</h4>
                 <p>{{ item.definition }}</p>
@@ -32,6 +27,9 @@
                     <p>{{ item.comment }}</p>
                 {% endif %}
             </div>
+            <a class="expression-link" href="{{ url_for('expressions.user_expression', expression_id=item.id) }}" target="_blank">
+                {{ item.expression }}
+            </a>
         </div>
     {% endfor %}
   </div>
@@ -39,21 +37,21 @@
     <div class="dialogue-flow">
         {% for item in data.dialogue %}
             <div class="dialogue-item">
-                <div class="{{item.role}}">
-                    <h3>{{ item.role }}</h3>
+                <div class="{{item.role}} ">
+                    <h3>{% if item.role == "user" %}{{ information_circle_micro("micro_icon tooltip-target") }}{% endif %}{{ item.role }}</h3>
                     <p>{{ item.text }}</p>
+                    {% if item.comment %}
+                        <div class="dialogue-comment">
+                            {% for comment_item in item.comment  %}
+                                <div class="comment-item">
+                                    <p><b>Problem: </b>{{ comment_item.problem }}</p>
+                                    <p><b>Explanation: </b>{{ comment_item.explanation }}</p>
+                                    <p><b>Solution: </b>{{ comment_item.solution }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
-                {% if item.comment %}
-                    <div class="dialogue-comment">
-                        {% for comment_item in item.comment  %}
-                            <div class="comment-item">
-                                <p><b>Problem: </b>{{ comment_item.problem }}</p>
-                                <p><b>Explanation: </b>{{ comment_item.explanation }}</p>
-                                <p><b>Solution: </b>{{ comment_item.solution }}</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
             </div>
         {% endfor %}
     </div>
@@ -70,5 +68,17 @@
         const scrollableDiv = document.querySelector('.dialogue-flow');
         scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
     });
+
+    const dialogueTooltipTarget = document.querySelector('h3 .micro_icon.tooltip-target');
+    const dialogueTooltipContent = document.querySelector('.dialogue-comment');
+
+    dialogueTooltipTarget.addEventListener('mouseover', function() {
+        dialogueTooltipContent.style.visibility = 'visible';
+    });
+
+    dialogueTooltipTarget.addEventListener('mouseout', function() {
+        dialogueTooltipContent.style.visibility = 'hidden';
+    });
+
 </script>
 {% endblock %}
