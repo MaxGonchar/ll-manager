@@ -69,15 +69,21 @@
         scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
     });
 
-    const dialogueTooltipTarget = document.querySelector('h3 .micro_icon.tooltip-target');
-    const dialogueTooltipContent = document.querySelector('.dialogue-comment');
+    document.querySelectorAll('h3 .micro_icon.tooltip-target').forEach(function(target) {
 
-    dialogueTooltipTarget.addEventListener('mouseover', function() {
-        dialogueTooltipContent.style.visibility = 'visible';
-    });
+        target.addEventListener('mouseover', function() {
+            const tooltipContent = target.closest('.dialogue-item').querySelector('.dialogue-comment');
+            if (tooltipContent) {
+                tooltipContent.style.visibility = 'visible';
+            }
+        });
 
-    dialogueTooltipTarget.addEventListener('mouseout', function() {
-        dialogueTooltipContent.style.visibility = 'hidden';
+        target.addEventListener('mouseout', function() {
+            const tooltipContent = target.closest('.dialogue-item').querySelector('.dialogue-comment');
+            if (tooltipContent) {
+                tooltipContent.style.visibility = 'hidden';
+            }
+        });
     });
 
 </script>
