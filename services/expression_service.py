@@ -48,6 +48,14 @@ class ExpressionService:
 
         return self._format_expression(expr)
 
+    def get_expression(self, expression_id) -> Expression:
+        expr = self.expressions_repo.get_by_id(expression_id)
+
+        if not expr:
+            raise ExpressionNotFoundException
+
+        return expr
+
     def get_expressions(self):
         exprs = self.expressions_repo.get()
         return [

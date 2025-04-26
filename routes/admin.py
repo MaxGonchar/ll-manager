@@ -97,11 +97,9 @@ def expression(expression_id: str):
 @admin_bp.route("/expressions/<expression_id>/sentences", methods=["GET"])
 def expression_sentences(expression_id):
     role_required([Role.SUPER_ADMIN.value, Role.ADMIN.value])
-    sentences = ExpressionContextService(expression_id).get_context()
     return render_template(
         "admin/sentences.html",
-        sentences=sentences,
-        expression_id=expression_id,
+        expression=ExpressionService().get_expression(expression_id),
     )
 
 
@@ -110,6 +108,7 @@ def expression_sentences(expression_id):
 )
 def add_expression_sentence(expression_id):
     role_required([Role.SUPER_ADMIN.value, Role.ADMIN.value])
+    expression = ExpressionService().get_expression(expression_id)
     form = ExpressionSentenceForm()
 
     if form.validate_on_submit():
@@ -119,9 +118,9 @@ def add_expression_sentence(expression_id):
             json.loads(form.template.data),
         )
         return redirect(
-            url_for("admin.expression_sentences", expression_id=expression_id)
+            url_for("admin.expression_sentences", expression_id=expression.id)
         )
 
     return render_template(
-        "admin/add_sentence.html", form=form, expression_id=expression_id
+        "admin/sentence_add.html", form=form, expression=expression
     )

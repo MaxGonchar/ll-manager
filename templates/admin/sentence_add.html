@@ -6,7 +6,8 @@
 
 {% block content%}
 
-<form class="post-expression-form" method="post" action="{{url_for('admin.add_expression_sentence', expression_id=expression_id)}}">
+<form class="post-expression-form" method="post" action="{{url_for('admin.add_expression_sentence', expression_id=expression.id)}}">
+    <h2>{{ expression.expression }}</h2>
     {{ form.csrf_token }}
     {{ render_field(form.sentence) }}
     {{ render_field(form.translation) }}

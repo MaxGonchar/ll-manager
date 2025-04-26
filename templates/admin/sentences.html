@@ -6,14 +6,15 @@
 
 <div class="expression-sentences">
 
-    <!--TODO: display expression -->
-    {% for sentence in sentences %}
+    <h2>{{ expression.expression }}</h2>
+    <hr>
+    {% for sentence in expression.context %}
     <div>
         <p>{{ sentence["template"]|expression_sentence|safe }}</p>
     </div>
     {% endfor %}
 
-    <a href="{{url_for('admin.add_expression_sentence', expression_id=expression_id)}}">
+    <a href="{{url_for('admin.add_expression_sentence', expression_id=expression.id)}}">
         <button class="button button-filled">Add</button>
     </a>
 </div>
