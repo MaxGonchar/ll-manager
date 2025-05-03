@@ -13,7 +13,11 @@
 ==========================
 ------ BackLog -----------
 ==========================
+  |- new exercise: "create a sentence with an expression in it"
+
   |- move expression out in the dialogue training (black list) consider returning it back
+
+  |- allow user to create a set of expressions to train in dialogue
   
   |- git actions to run tests
   

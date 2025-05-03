@@ -9,7 +9,6 @@ from pydantic import Field, SecretStr
 from services.venice_client import VeniceClient
 
 
-# TODO: log model prompts and responses
 class ChatVeniceAI(BaseChatModel):
 
     model_name: str = Field(alias="model")

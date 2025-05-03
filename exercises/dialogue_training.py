@@ -136,13 +136,6 @@ class DialogueTraining:
             statement,
             self._build_expressions_to_detect_message(dialogue),
         )
-        print("*" * 50)
-        print("Assistant message: ", dialogue_completion_response)
-        print("---")
-        print("General judgement: ", general_judgement)
-        print("---")
-        print("Detected expression ids: ", detected_expression_ids)
-        print("*" * 50)
         if detected_expression_ids.expressions:
             judgments = self._get_expression_usage_judgement(
                 statement,
