@@ -7,5 +7,7 @@ token.json
 credentials.json
 app_state.json
 
+/logs
+
 .env*
 !.env.sample

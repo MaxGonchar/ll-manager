@@ -1,6 +1,7 @@
 # TODO: analyze from the langchain best practices perspective
 from typing import TypedDict
 import os
+import logging
 from langchain_core.messages import (
     BaseMessage,
     SystemMessage,
@@ -12,6 +13,10 @@ from langchain.prompts.prompt import PromptTemplate
 from pydantic import BaseModel, Field
 
 from services.venice_chat_model import ChatVeniceAI
+from services.llm_callbacks import ModelCallbackHandler
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 character = """
 The assistant is the following character:
@@ -143,11 +148,11 @@ class VeniceAssistant:
             model=os.environ.get("VENICE_MODEL"),
             api_key=os.environ.get("VENICE_API_KEY"),
             temperature=self.default_temperature,
+            callbacks=[ModelCallbackHandler()],
         )
 
     def complete_dialogue(self, dialogue: list[dict]) -> str:
-        # TODO: logging
-        print("Completing dialogue...")
+        logger.info("Completing dialogue")
         self.chat_model.temperature = 0.8
         messages = self._generate_dialogue_messages(dialogue)
         messages.insert(0, SystemMessage(content=character))
@@ -168,8 +173,7 @@ class VeniceAssistant:
         ]
 
     def get_general_judgement(self, text: str) -> GeneralJudgementResponse:
-        # TODO: logging
-        print("Getting general judgement...")
+        logger.info("Getting general judgement")
         response_parser = PydanticOutputParser(
             pydantic_object=GeneralJudgementResponse
         )
@@ -181,13 +185,15 @@ class VeniceAssistant:
             },
         )
         chain = template | self.chat_model | response_parser
-        return chain.invoke({"text_to_analyze": text})
+        return chain.invoke(
+            {"text_to_analyze": text},
+            config={"metadata": {"run_type": "general_judgement"}},
+        )
 
     def detect_phrases_usage(
         self, text: str, expressions: list[ExpressionDetectionRequest]
     ) -> ExpressionDetectionResponse:
-        # TODO: logging
-        print("Detecting phrases usage...")
+        logger.info("Detecting phrases usage")
         response_parser = PydanticOutputParser(
             pydantic_object=ExpressionDetectionResponse
         )
@@ -199,7 +205,10 @@ class VeniceAssistant:
             },
         )
         chain = template | self.chat_model | response_parser
-        return chain.invoke({"text": text, "expression_list": expressions})
+        return chain.invoke(
+            {"text": text, "expression_list": expressions},
+            config={"metadata": {"run_type": "phrase_usage_detection"}},
+        )
 
     def get_expression_usage_judgement(
         self, text: str, expression: ExpressionUsageRequest
@@ -221,7 +230,8 @@ class VeniceAssistant:
                 "text": text,
                 "expression": expression["expression"],
                 "meaning": expression["meaning"],
-            }
+            },
+            config={"metadata": {"run_type": "expression_usage_judgement"}},
         )
         judgement.id = expression["id"]
         return judgement
