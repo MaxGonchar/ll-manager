@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS user_expression (
 CREATE TABLE IF NOT EXISTS expression_context (
     id             uuid NOT NULL,
     expression_id  uuid NOT NULL,
-    sentence        TEXT NOT NULL,
+    sentence       TEXT NOT NULL,
     template       json NOT NULL,
     added          TIMESTAMP NOT NULL,
     updated        TIMESTAMP NOT NULL,
