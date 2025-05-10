@@ -96,6 +96,19 @@ CREATE TABLE IF NOT EXISTS dialogues (
     FOREIGN KEY    (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS writings (
+    id             uuid NOT NULL,
+    user_id        uuid NOT NULL,
+    properties     json NOT NULL,
+    writings       json NOT NULL DEFAULT '[]',
+    expressions    json NOT NULL DEFAULT '[]',
+    added          TIMESTAMP NOT NULL,
+    updated        TIMESTAMP NOT NULL,
+
+    PRIMARY KEY    (id, user_id),
+    FOREIGN KEY    (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
 -- ============================================================================================================
 -- MIGRATIONS:
 -- ============================================================================================================
