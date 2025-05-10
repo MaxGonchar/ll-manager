@@ -7,6 +7,8 @@ from langchain.callbacks.base import BaseCallbackHandler
 from langchain.schema import LLMResult
 
 
+# TODO: don't log when testing
+# TODO: Error in ModelCallbackHandler.on_llm_end callback: KeyError('metadata') during testing
 class ModelCallbackHandler(BaseCallbackHandler):
     def __init__(self) -> None:
         super().__init__()
