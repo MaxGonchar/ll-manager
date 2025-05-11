@@ -269,3 +269,15 @@ class Writings(db.Model):
     updated = db.Column(db.DateTime, nullable=False)
 
     user: Mapped["User"] = relationship(back_populates="writings")
+
+    def add_expressions(self, expressions: list[Expression]) -> None:
+        for expression in expressions:
+            self.expressions.append(
+                {
+                    "id": str(expression.id),
+                    "expression": expression.expression,
+                    "definition": expression.definition,
+                    "status": "not_checked",
+                }
+            )
+        attributes.flag_modified(self, "expressions")
