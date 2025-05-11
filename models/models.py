@@ -281,3 +281,47 @@ class Writings(db.Model):
                 }
             )
         attributes.flag_modified(self, "expressions")
+
+    def get_expression(self, expression_id: str) -> dict | None:
+        for expression in self.expressions:
+            if expression["id"] == expression_id:
+                return expression
+        return None
+
+    def remove_expression_by(self, expression_id: str):
+        for expression in self.expressions:
+            if expression["id"] == expression_id:
+                self.expressions.remove(expression)
+                attributes.flag_modified(self, "expressions")
+                break
+        else:
+            raise ValueError(
+                f"Expression with id {expression_id} not found in the writings."
+            )
+
+    def update_expression_by_id(
+        self, expression_id: str, status: str, comment: str
+    ):
+        for expression in self.expressions:
+            if expression["id"] == expression_id:
+                expression["status"] = status
+                expression["comment"] = comment
+                attributes.flag_modified(self, "expressions")
+                break
+        else:
+            raise ValueError(
+                f"Expression with id {expression_id} not found in the writings."
+            )
+
+    def add_message(
+        self, message: str, comment: list[dict] | None = None
+    ) -> None:
+        message_to_add = {
+            "id": len(self.dialogues) + 1,
+            "text": message,
+        }
+        if comment is not None:
+            message_to_add["comment"] = comment
+
+        self.writings.append(message_to_add)
+        attributes.flag_modified(self, "writings")

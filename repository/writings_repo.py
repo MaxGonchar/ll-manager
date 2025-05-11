@@ -11,7 +11,7 @@ class WritingsRepo:
     def add(self, writings: Writings) -> None:
         self.session.add(writings)
         self.session.commit()
-    
+
     def get(self, writings_id: str) -> Writings | None:
         return (
             self.session.query(Writings)
@@ -21,7 +21,7 @@ class WritingsRepo:
             )
             .first()
         )
-    
+
     def delete(self, writings_id: str) -> None:
         self.session.query(Writings).filter(
             Writings.id == writings_id

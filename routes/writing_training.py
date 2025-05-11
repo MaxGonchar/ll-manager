@@ -28,7 +28,7 @@ def writing_training():
                         "explanation": "Some explanation here",
                         "solution": "Some solution here",
                     }
-                ]
+                ],
             },
             {
                 "id": 2,
@@ -39,30 +39,30 @@ def writing_training():
                         "explanation": "Some explanation here",
                         "solution": "Some solution here",
                     }
-                ]
-            }
+                ],
+            },
         ],
         "expressions": [
             {
                 "id": "68788dbb-e16b-4b44-a8c5-b1338fd4aac9",
                 "expression": "Some phrase here",
                 "definition": "Some meaning here",
-                "status": "not_checked"
+                "status": "not_checked",
             },
             {
                 "id": "68788dbb-e16b-4b44-a8c5-b1338fd4aac8",
                 "expression": "Some phrase here",
                 "definition": "Some definition here",
                 "comment": "Some comment here",
-                "status": "failed"
+                "status": "failed",
             },
-        ]
+        ],
     }
     if request.method == "POST":
         input_data = request.form["input"]
         print(input_data)
 
     return render_template(
-            "exercises/writing_training.html",
-            data=data,
-        )
+        "exercises/writing_training.html",
+        data=data,
+    )
