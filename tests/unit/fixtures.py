@@ -5,6 +5,7 @@ from models.models import (
     UserExpression,
     ExpressionContext,
     Dialogue,
+    Writings,
 )
 
 
@@ -164,6 +165,48 @@ def get_dialogue(
         settings=settings,
         expressions=expressions,
         dialogues=dialogues,
+        added=added,
+        updated=updated,
+    )
+
+
+def get_writings(
+    id_: str,
+    user_id: str,
+    properties: dict = {
+        "maxExpressionsToTrain": 10,
+        "maxWritingsToStore": 10,
+    },
+    writings: list[dict] = [
+        {
+            "id": 1,
+            "text": "Some sentence here",
+            "comment": [
+                {
+                    "problem": "Some problem here",
+                    "explanation": "Some explanation here",
+                    "solution": "Some solution here",
+                }
+            ],
+        },
+    ],
+    expressions: list[dict] = [
+        {
+            "id": "68788dbb-e16b-4b44-a8c5-b1338fd4aac9",
+            "expression": "Some phrase here",
+            "definition": "Some meaning here",
+            "status": "not_checked",
+        },
+    ],
+    added: str = "2023-04-12 10:10:25",
+    updated: str = "2023-04-12 10:10:25",
+):
+    return Writings(
+        id=id_,
+        user_id=user_id,
+        properties=properties,
+        writings=writings,
+        expressions=expressions,
         added=added,
         updated=updated,
     )

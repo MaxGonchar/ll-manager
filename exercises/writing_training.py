@@ -234,6 +234,7 @@ class WritingTraining:
 
         return writings
 
+    @staticmethod
     def _generate_writing_challenge(writings: Writings) -> WritingChallenge:
         return {
             "writings": writings.writings,
