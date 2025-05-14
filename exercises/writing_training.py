@@ -35,9 +35,9 @@ class WritingTraining:
         assistant: VeniceAssistant = VeniceAssistant,
     ):
         self.user_id = user_id
-        self.writings_repo = writings_repo(self.user_id)
-        self.user_expr_repo = user_expr_repo(self.user_id)
-        self.assistant = assistant()
+        self.writings_repo: WritingsRepo = writings_repo(self.user_id)
+        self.user_expr_repo: UserExpressionsRepo = user_expr_repo(self.user_id)
+        self.assistant: VeniceAssistant = assistant()
 
     # for now we store only one writing training per user
     def get_writings(self) -> WritingChallenge:
