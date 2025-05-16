@@ -58,6 +58,7 @@ class User(db.Model):
         back_populates="user"
     )
     dialogues: Mapped[List["Dialogue"]] = relationship(back_populates="user")
+    writings: Mapped[List["Writings"]] = relationship(back_populates="user")
 
     @property
     def native_lang(self):
@@ -252,3 +253,75 @@ class Dialogue(db.Model):
     def increase_trained_expressions_count(self) -> None:
         self.properties["trainedExpressionsCount"] += 1
         attributes.flag_modified(self, "properties")
+
+
+class Writings(db.Model):
+    __tablename__ = "writings"
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id = db.Column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=False
+    )
+    properties = db.Column(JSON, nullable=False)
+    writings = db.Column(JSON, nullable=False, default=[])
+    expressions = db.Column(JSON, nullable=False, default=[])
+    added = db.Column(db.DateTime, nullable=False)
+    updated = db.Column(db.DateTime, nullable=False)
+
+    user: Mapped["User"] = relationship(back_populates="writings")
+
+    def add_expressions(self, expressions: list[Expression]) -> None:
+        for expression in expressions:
+            self.expressions.append(
+                {
+                    "id": str(expression.id),
+                    "expression": expression.expression,
+                    "definition": expression.definition,
+                    "status": "not_checked",
+                }
+            )
+        attributes.flag_modified(self, "expressions")
+
+    def get_expression(self, expression_id: str) -> dict | None:
+        for expression in self.expressions:
+            if expression["id"] == expression_id:
+                return expression
+        return None
+
+    def remove_expression_by(self, expression_id: str):
+        for expression in self.expressions:
+            if expression["id"] == expression_id:
+                self.expressions.remove(expression)
+                attributes.flag_modified(self, "expressions")
+                break
+        else:
+            raise ValueError(
+                f"Expression with id {expression_id} not found in the writings."
+            )
+
+    def update_expression_by_id(
+        self, expression_id: str, status: str, comment: str
+    ):
+        for expression in self.expressions:
+            if expression["id"] == expression_id:
+                expression["status"] = status
+                expression["comment"] = comment
+                attributes.flag_modified(self, "expressions")
+                break
+        else:
+            raise ValueError(
+                f"Expression with id {expression_id} not found in the writings."
+            )
+
+    def add_message(
+        self, message: str, comment: list[dict] | None = None
+    ) -> None:
+        message_to_add = {
+            "id": len(self.writings) + 1,
+            "text": message,
+        }
+        if comment is not None:
+            message_to_add["comment"] = comment
+
+        self.writings.append(message_to_add)
+        attributes.flag_modified(self, "writings")

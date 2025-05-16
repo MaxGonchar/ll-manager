@@ -70,6 +70,10 @@ class BaseRepoTestUtils(TestCase):
         sql = "DELETE FROM dialogues"
         self._execute_sql(sql)
 
+    def _clean_writings(self):
+        sql = "DELETE FROM writings"
+        self._execute_sql(sql)
+
     def _seed_db_expression_records(self, exprs: List[dict]):
         sql = """
             INSERT INTO expressions (
@@ -140,6 +144,28 @@ class BaseRepoTestUtils(TestCase):
                 '{json.dumps(dialogues["expressions"])}',
                 '{dialogues["added"]}',
                 '{dialogues["updated"]}'
+            )
+    """
+        self._execute_sql(sql)
+
+    def _seed_writings(self, writings):
+        sql = f"""
+            INSERT INTO writings (
+                id,
+                user_id,
+                properties,
+                writings,
+                expressions,
+                added,
+                updated
+            ) VALUES (
+                '{writings["id"]}',
+                '{writings["user_id"]}',
+                '{json.dumps(writings["properties"])}',
+                '{json.dumps(writings["writings"])}',
+                '{json.dumps(writings["expressions"])}',
+                '{writings["added"]}',
+                '{writings["updated"]}'
             )
     """
         self._execute_sql(sql)
@@ -229,6 +255,19 @@ class BaseRepoTestUtils(TestCase):
         self.assertEqual(expected["user_id"], str(actual.user_id), "user_id")
         self.assertEqual(expected["settings"], actual.settings, "settings")
         self.assertEqual(expected["dialogues"], actual.dialogues, "dialogues")
+        self.assertEqual(
+            expected["expressions"], actual.expressions, "expressions"
+        )
+        self.assertEqual(expected["added"], str(actual.added), "added")
+        self.assertEqual(expected["updated"], str(actual.updated), "updated")
+
+    def _assert_writing(self, expected, actual):
+        self.assertEqual(expected["id"], str(actual.id), "id")
+        self.assertEqual(expected["user_id"], str(actual.user_id), "user_id")
+        self.assertEqual(
+            expected["properties"], actual.properties, "properties"
+        )
+        self.assertEqual(expected["writings"], actual.writings, "writings")
         self.assertEqual(
             expected["expressions"], actual.expressions, "expressions"
         )
