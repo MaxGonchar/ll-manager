@@ -61,15 +61,15 @@ class GetTests(BaseRepoTestUtils):
 
         self.writing = get_writing_dict(self.user_id)
 
-        self._seed_writings(self.writing)
         self.subject = WritingsRepo(self.user_id)
 
     def test_success(self):
-        writing = self.subject.get(self.writing["id"])
+        self._seed_writings(self.writing)
+        writing = self.subject.get()
         self._assert_writing(self.writing, writing)
 
     def test_not_found_returns_none(self):
-        writing = self.subject.get("4d7993aa-d897-4647-994b-e0625c88f348")
+        writing = self.subject.get()
         self.assertIsNone(writing)
 
 
@@ -85,7 +85,7 @@ class AddTests(BaseRepoTestUtils):
         writing = get_writing_dict(self.user_id)
         self.subject.add(Writings(**writing))
 
-        actual = self.subject.get(writing["id"])
+        actual = self.subject.get()
         expected = {
             "id": writing["id"],
             "user_id": writing["user_id"],
@@ -115,6 +115,6 @@ class DeleteTests(BaseRepoTestUtils):
     def test_success(self):
         self.subject.delete(self.writing_id)
 
-        actual = self.subject.get(self.writing_id)
+        actual = self.subject.get()
         expected = None
         self.assertEqual(actual, expected)

@@ -12,11 +12,10 @@ class WritingsRepo:
         self.session.add(writings)
         self.session.commit()
 
-    def get(self, writings_id: str) -> Writings | None:
+    def get(self) -> Writings | None:
         return (
             self.session.query(Writings)
             .filter(
-                Writings.id == writings_id,
                 Writings.user_id == self.user_id,
             )
             .first()

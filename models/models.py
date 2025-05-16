@@ -317,7 +317,7 @@ class Writings(db.Model):
         self, message: str, comment: list[dict] | None = None
     ) -> None:
         message_to_add = {
-            "id": len(self.dialogues) + 1,
+            "id": len(self.writings) + 1,
             "text": message,
         }
         if comment is not None:
