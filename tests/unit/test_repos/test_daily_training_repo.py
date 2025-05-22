@@ -1,4 +1,4 @@
-from repository.daily_training_repo import DailyTrainingRepo
+from dao.daily_training_dao import DailyTrainingRepoDAO
 from repository.exceptions import UserNotFoundException
 from tests.unit.test_repos.utils import BaseRepoTestUtils
 
@@ -13,7 +13,7 @@ class DailyTrainingRepoInitTests(BaseRepoTestUtils):
 
     def test_init_user_not_found_rise_exception(self):
         with self.assertRaises(UserNotFoundException):
-            DailyTrainingRepo("b5f55871-4a7d-4c27-aaa5-e3542d8554a7")
+            DailyTrainingRepoDAO("b5f55871-4a7d-4c27-aaa5-e3542d8554a7")
 
 
 class GetTests(BaseRepoTestUtils):
@@ -53,7 +53,7 @@ class GetTests(BaseRepoTestUtils):
         }
 
         self._seed_db_user_record()
-        self.subject = DailyTrainingRepo(self.user_id)
+        self.subject = DailyTrainingRepoDAO(self.user_id)
 
     def test_get(self):
         actual = self.subject.get()
@@ -129,7 +129,7 @@ class PutTests(BaseRepoTestUtils):
         }
 
         self._seed_db_user_record()
-        self.subject = DailyTrainingRepo(self.user_id)
+        self.subject = DailyTrainingRepoDAO(self.user_id)
 
     def test_post(self):
         new_props = {

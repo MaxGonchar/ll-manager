@@ -125,7 +125,7 @@ class PostTests(TestCase):
         )
         self.addCleanup(daily_training_patcher.stop)
 
-        user_repo_patcher = patch("services.user_expression_service.UsersRepo")
+        user_repo_patcher = patch("services.user_expression_service.UsersDAO")
         self.mock_get_user = user_repo_patcher.start().return_value.get_by_id
         self.addCleanup(user_repo_patcher.stop)
 
@@ -306,7 +306,7 @@ class GetAllTests(TestCase):
         )
         self.addCleanup(daily_training_patcher.stop)
 
-        user_repo_patcher = patch("services.user_expression_service.UsersRepo")
+        user_repo_patcher = patch("services.user_expression_service.UsersDAO")
         self.mock_get_user = user_repo_patcher.start().return_value.get_by_id
         self.addCleanup(user_repo_patcher.stop)
 

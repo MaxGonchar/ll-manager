@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from repository.user_expressions_repo import UserExpressionsRepo
 from models.models import Expression, UserExpression
-from repository.users_repo import UsersRepo
+from dao.user_dao import UsersDAO
 from repository.tags_repo import TagsRepo
 from helpers.time_helpers import get_current_utc_time
 from exercises.daily_training_v2 import DailyTraining
@@ -57,7 +57,7 @@ class UserExpressionService:
         properties: dict = {},
     ) -> None:
 
-        if not (user := UsersRepo().get_by_id(self.user_id)):
+        if not (user := UsersDAO().get_by_id(self.user_id)):
             raise UserNotFoundException
 
         tags = []

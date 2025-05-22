@@ -20,7 +20,7 @@ class GetChallengeTests(TestCase):
         self.user_id = "d32cd1e8-7111-4e0a-84aa-c5664df8a063"
 
         dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepo"
+            "exercises.daily_training_v2.DailyTrainingRepoDAO"
         )
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
@@ -101,7 +101,7 @@ class SubmitChallengeTests(TestCase):
         self.mock_time = "2023-05-19 09:34:15"
 
         dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepo"
+            "exercises.daily_training_v2.DailyTrainingRepoDAO"
         )
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
@@ -911,7 +911,7 @@ class GetLearnListExpressionsTests(TestCase):
         self.user_id = "test_user_id"
 
         dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepo"
+            "exercises.daily_training_v2.DailyTrainingRepoDAO"
         )
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
@@ -1031,7 +1031,7 @@ class RemoveItemFromLearnListTests(TestCase):
         self.user_id = "test_user_id"
 
         dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepo"
+            "exercises.daily_training_v2.DailyTrainingRepoDAO"
         )
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
@@ -1084,7 +1084,7 @@ class UpdateSettingsTests(TestCase):
         self.user = get_user(self.user_id)
 
         dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepo"
+            "exercises.daily_training_v2.DailyTrainingRepoDAO"
         )
         mock_dt_repo = dt_repo_patcher.start()
 
@@ -1201,7 +1201,7 @@ class RefreshLearningListTests(TestCase):
         self.user_id = "test_user_id"
 
         dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepo"
+            "exercises.daily_training_v2.DailyTrainingRepoDAO"
         )
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
@@ -1311,7 +1311,7 @@ class AddItemToLearnListTests(TestCase):
         self.user_id = "test_user_id"
 
         dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepo"
+            "exercises.daily_training_v2.DailyTrainingRepoDAO"
         )
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
@@ -1373,7 +1373,7 @@ class CountLearnListItemsTests(TestCase):
         self.user_id = "test_user_id"
 
         dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepo"
+            "exercises.daily_training_v2.DailyTrainingRepoDAO"
         )
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
@@ -1404,7 +1404,7 @@ class IsExpressionInLearnListTests(TestCase):
         self.user_id = "d32cd1e8-7111-4e0a-84aa-c5664df8a063"
 
         dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepo"
+            "exercises.daily_training_v2.DailyTrainingRepoDAO"
         )
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get

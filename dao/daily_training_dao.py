@@ -1,8 +1,10 @@
 from typing import List, Optional, TypedDict
 from extensions import db
-from sqlalchemy.orm import Session, attributes
 from models.models import User
 from repository.exceptions import UserNotFoundException
+
+
+from sqlalchemy.orm import Session, attributes
 
 
 class DailyTrainingLearnListItemDict(TypedDict):
@@ -20,7 +22,7 @@ class DailyTrainingDict(TypedDict):
     learning_list: List[DailyTrainingLearnListItemDict]
 
 
-class DailyTrainingRepo:
+class DailyTrainingRepoDAO:
     def __init__(self, user_id: str) -> None:
         self.session: Session = db.session
         self.user = self._get_user(user_id)
