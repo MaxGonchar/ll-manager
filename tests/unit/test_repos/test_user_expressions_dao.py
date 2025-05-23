@@ -5,7 +5,7 @@ from copy import deepcopy
 import psycopg2
 from psycopg2.extras import DictCursor
 
-from repository.user_expressions_repo import UserExpressionsRepo
+from dao.user_expressions_dao import UserExpressionsDAO
 from repository.exceptions import UserExpressionNotFoundException
 from tests.unit.fixtures import get_expression, get_user, get_user_expression
 from tests.unit.fixtures import (
@@ -221,7 +221,7 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
         )
         self._seed_db_user_expression_records()
 
-        self.subject = UserExpressionsRepo(self.user_id_1)
+        self.subject = UserExpressionsDAO(self.user_id_1)
 
     def _clear_db(self):
         self._clean_user_expressions()
@@ -463,7 +463,7 @@ class GetByIDTests(UserExpressionsRepoTestHelper):
 
 
 class PutTests(UserExpressionsRepoTestHelper):
-    @patch("repository.user_expressions_repo.get_current_utc_time")
+    @patch("dao.user_expressions_dao.get_current_utc_time")
     def test_put(self, mock_current_time):
         last_practice_time = "2023-05-19 09:34:15"
         knowledge_level = 99.9
@@ -524,7 +524,7 @@ class PutTests(UserExpressionsRepoTestHelper):
             actual_user_expression["updated"].strftime("%Y-%m-%d %H:%M:%S"),
         )
 
-    @patch("repository.user_expressions_repo.get_current_utc_time")
+    @patch("dao.user_expressions_dao.get_current_utc_time")
     def test_put_when_item_was_deleted_from_db_rises_exception(
         self, mock_current_time
     ):
@@ -604,7 +604,7 @@ class PostTests(BaseRepoTestUtils):
         expression.tags = [tag]
         user_expr = get_user_expression(user_id, user, expression)
 
-        UserExpressionsRepo(user_id).post(user_expr)
+        UserExpressionsDAO(user_id).post(user_expr)
 
         actual = self._get_db_data(expr_id)
 
@@ -639,13 +639,13 @@ class PostTests(BaseRepoTestUtils):
 class CountTrainedExpressionsTests(UserExpressionsRepoTestHelper):
     def test_count_trained_expressions(self):
         self.assertEqual(
-            3, UserExpressionsRepo(self.user_id_3).count_trained_expressions()
+            3, UserExpressionsDAO(self.user_id_3).count_trained_expressions()
         )
 
 
 class GetTrainedExpressionsTests(UserExpressionsRepoTestHelper):
     def test_get_all_trained_expressions(self):
-        subject = UserExpressionsRepo(self.user_id_3)
+        subject = UserExpressionsDAO(self.user_id_3)
 
         actual = subject.get_trained_expressions()
 
@@ -666,7 +666,7 @@ class GetTrainedExpressionsTests(UserExpressionsRepoTestHelper):
             )
 
     def test_get_all_trained_expressions_with_limit(self):
-        subject = UserExpressionsRepo(self.user_id_3)
+        subject = UserExpressionsDAO(self.user_id_3)
 
         actual = subject.get_trained_expressions(limit=2)
 
@@ -686,7 +686,7 @@ class GetTrainedExpressionsTests(UserExpressionsRepoTestHelper):
             )
 
     def test_get_all_trained_expressions_with_excludes(self):
-        subject = UserExpressionsRepo(self.user_id_3)
+        subject = UserExpressionsDAO(self.user_id_3)
 
         actual = subject.get_trained_expressions(
             excludes=[self.us_expr_8["expression_id"]]
@@ -708,7 +708,7 @@ class GetTrainedExpressionsTests(UserExpressionsRepoTestHelper):
             )
 
     def test_get_all_trained_expressions_with_limit_and_exclude(self):
-        subject = UserExpressionsRepo(self.user_id_3)
+        subject = UserExpressionsDAO(self.user_id_3)
 
         actual = subject.get_trained_expressions(
             limit=1, excludes=[self.us_expr_8["expression_id"]]
@@ -729,7 +729,7 @@ class GetTrainedExpressionsTests(UserExpressionsRepoTestHelper):
             )
 
     def test_get_all_trained_expressions_no_trained_expressions(self):
-        subject = UserExpressionsRepo(self.user_id_2)
+        subject = UserExpressionsDAO(self.user_id_2)
 
         actual = subject.get_trained_expressions()
 
@@ -777,7 +777,7 @@ class CountTrainedExpressionsHavingContextTests(UserExpressionsRepoTestHelper):
     def test_count(self):
         self.assertEqual(
             2,
-            UserExpressionsRepo(
+            UserExpressionsDAO(
                 self.user_3["id"]
             ).count_trained_expressions_having_context(),
         )

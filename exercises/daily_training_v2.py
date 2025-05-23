@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Dict, List, Optional
-from dao.daily_training_dao import DailyTrainingDict, DailyTrainingRepoDAO
+from dao.daily_training_dao import DailyTrainingDict, DailyTrainingDAO
 from models.models import UserExpression
 
 from exercises.common import (
@@ -12,7 +12,7 @@ from exercises.common import (
     get_challenge_solution_object,
     get_exercise_expressions_list_item,
 )
-from repository.user_expressions_repo import UserExpressionsRepo
+from dao.user_expressions_dao import UserExpressionsDAO
 from dao.daily_training_dao import (
     DailyTrainingLearnListItemDict,
 )
@@ -152,8 +152,8 @@ class DailyTrainingData:
 
 class DailyTraining:
     def __init__(self, user_id: str) -> None:
-        self.dt_repo = DailyTrainingRepoDAO(user_id)
-        self.user_expr_repo = UserExpressionsRepo(user_id)
+        self.dt_repo = DailyTrainingDAO(user_id)
+        self.user_expr_repo = UserExpressionsDAO(user_id)
         self.dt_data = DailyTrainingData(self.dt_repo.get())
 
     def _get_expression_by_id(self, id_: str) -> UserExpression:

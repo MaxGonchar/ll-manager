@@ -22,9 +22,9 @@ class DailyTrainingDict(TypedDict):
     learning_list: List[DailyTrainingLearnListItemDict]
 
 
-class DailyTrainingRepoDAO:
-    def __init__(self, user_id: str) -> None:
-        self.session: Session = db.session
+class DailyTrainingDAO:
+    def __init__(self, user_id: str, session: Session | None = None) -> None:
+        self.session: Session = session or db.session
         self.user = self._get_user(user_id)
 
     def _get_user(self, user_id: str) -> User:
@@ -39,8 +39,9 @@ class DailyTrainingRepoDAO:
         dt_dict = self.user.properties["challenges"]["dailyTraining"]
         return dt_dict
 
-    def put(self, dt_dict: DailyTrainingDict):
+    def put(self, dt_dict: DailyTrainingDict, commit: bool = True) -> None:
         self.user.properties["challenges"]["dailyTraining"] = dt_dict
         attributes.flag_modified(self.user, "properties")
         self.session.add(self.user)
-        self.session.commit()
+        if commit:
+            self.session.commit()

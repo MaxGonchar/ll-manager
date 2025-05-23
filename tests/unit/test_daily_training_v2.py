@@ -19,15 +19,13 @@ class GetChallengeTests(TestCase):
     def setUp(self):
         self.user_id = "d32cd1e8-7111-4e0a-84aa-c5664df8a063"
 
-        dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepoDAO"
-        )
+        dt_repo_patcher = patch("exercises.daily_training_v2.DailyTrainingDAO")
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
         self.addCleanup(dt_repo_patcher.stop)
 
         us_expr_patcher = patch(
-            "exercises.daily_training_v2.UserExpressionsRepo"
+            "exercises.daily_training_v2.UserExpressionsDAO"
         )
         mock_us_expr_repo = us_expr_patcher.start()
         self.mock_get_user_expr_by_id = (
@@ -100,16 +98,14 @@ class SubmitChallengeTests(TestCase):
         self.user_id = "test_user_id"
         self.mock_time = "2023-05-19 09:34:15"
 
-        dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepoDAO"
-        )
+        dt_repo_patcher = patch("exercises.daily_training_v2.DailyTrainingDAO")
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
         self.mock_dt_repo_put = mock_dt_repo.return_value.put
         self.addCleanup(dt_repo_patcher.stop)
 
         us_expr_patcher = patch(
-            "exercises.daily_training_v2.UserExpressionsRepo"
+            "exercises.daily_training_v2.UserExpressionsDAO"
         )
         mock_us_expr_repo = us_expr_patcher.start()
         self.mock_get_user_expr_by_id = (
@@ -910,15 +906,13 @@ class GetLearnListExpressionsTests(TestCase):
     def setUp(self):
         self.user_id = "test_user_id"
 
-        dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepoDAO"
-        )
+        dt_repo_patcher = patch("exercises.daily_training_v2.DailyTrainingDAO")
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
         self.addCleanup(dt_repo_patcher.stop)
 
         us_expr_patcher = patch(
-            "exercises.daily_training_v2.UserExpressionsRepo"
+            "exercises.daily_training_v2.UserExpressionsDAO"
         )
         mock_us_expr_repo = us_expr_patcher.start()
         self.mock_get_user_exprs = mock_us_expr_repo.return_value.get
@@ -1030,16 +1024,14 @@ class RemoveItemFromLearnListTests(TestCase):
     def setUp(self):
         self.user_id = "test_user_id"
 
-        dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepoDAO"
-        )
+        dt_repo_patcher = patch("exercises.daily_training_v2.DailyTrainingDAO")
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
         self.mock_dt_repo_put = mock_dt_repo.return_value.put
         self.addCleanup(dt_repo_patcher.stop)
 
         user_expr_repo_patcher = patch(
-            "exercises.daily_training_v2.UserExpressionsRepo"
+            "exercises.daily_training_v2.UserExpressionsDAO"
         )
         mock_user_expr_repo = user_expr_repo_patcher.start()
         self.mock_user_expr_repo_get = mock_user_expr_repo.return_value.get
@@ -1083,9 +1075,7 @@ class UpdateSettingsTests(TestCase):
         self.user_id = "test_user_id"
         self.user = get_user(self.user_id)
 
-        dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepoDAO"
-        )
+        dt_repo_patcher = patch("exercises.daily_training_v2.DailyTrainingDAO")
         mock_dt_repo = dt_repo_patcher.start()
 
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
@@ -1094,7 +1084,7 @@ class UpdateSettingsTests(TestCase):
         self.addCleanup(dt_repo_patcher.stop)
 
         user_expr_repo_patcher = patch(
-            "exercises.daily_training_v2.UserExpressionsRepo"
+            "exercises.daily_training_v2.UserExpressionsDAO"
         )
         mock_user_expr_repo = user_expr_repo_patcher.start()
         self.mock_user_expr_repo_get = mock_user_expr_repo.return_value.get
@@ -1200,16 +1190,14 @@ class RefreshLearningListTests(TestCase):
     def setUp(self):
         self.user_id = "test_user_id"
 
-        dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepoDAO"
-        )
+        dt_repo_patcher = patch("exercises.daily_training_v2.DailyTrainingDAO")
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
         self.mock_dt_repo_put = mock_dt_repo.return_value.put
         self.addCleanup(dt_repo_patcher.stop)
 
         us_expr_patcher = patch(
-            "exercises.daily_training_v2.UserExpressionsRepo"
+            "exercises.daily_training_v2.UserExpressionsDAO"
         )
         mock_us_expr_repo = us_expr_patcher.start()
         self.mock_get_user_exprs = mock_us_expr_repo.return_value.get
@@ -1310,9 +1298,7 @@ class AddItemToLearnListTests(TestCase):
     def setUp(self):
         self.user_id = "test_user_id"
 
-        dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepoDAO"
-        )
+        dt_repo_patcher = patch("exercises.daily_training_v2.DailyTrainingDAO")
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
         self.mock_dt_repo_put = mock_dt_repo.return_value.put
@@ -1372,9 +1358,7 @@ class CountLearnListItemsTests(TestCase):
     def setUp(self):
         self.user_id = "test_user_id"
 
-        dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepoDAO"
-        )
+        dt_repo_patcher = patch("exercises.daily_training_v2.DailyTrainingDAO")
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
         self.addCleanup(dt_repo_patcher.stop)
@@ -1403,9 +1387,7 @@ class IsExpressionInLearnListTests(TestCase):
     def setUp(self):
         self.user_id = "d32cd1e8-7111-4e0a-84aa-c5664df8a063"
 
-        dt_repo_patcher = patch(
-            "exercises.daily_training_v2.DailyTrainingRepoDAO"
-        )
+        dt_repo_patcher = patch("exercises.daily_training_v2.DailyTrainingDAO")
         mock_dt_repo = dt_repo_patcher.start()
         self.mock_dt_repo_get = mock_dt_repo.return_value.get
         self.addCleanup(dt_repo_patcher.stop)
