@@ -1,9 +1,9 @@
 from typing import List, Optional, TypedDict
 from uuid import uuid4
 
-from repository.user_expressions_repo import UserExpressionsRepo
+from dao.user_expressions_dao import UserExpressionsDAO
 from models.models import Expression, UserExpression
-from repository.users_repo import UsersRepo
+from dao.user_dao import UsersDAO
 from repository.tags_repo import TagsRepo
 from helpers.time_helpers import get_current_utc_time
 from exercises.daily_training_v2 import DailyTraining
@@ -34,7 +34,7 @@ class UserExpressionType(TypedDict):
 class UserExpressionService:
     def __init__(self, user_id: str) -> None:
         self.user_id = user_id
-        self.repo = UserExpressionsRepo(user_id)
+        self.repo = UserExpressionsDAO(user_id)
 
     def get_expression_by_id(self, expr_id: str) -> UserExpressionType:
         if not (expr := self.repo.get_by_id(expr_id)):
@@ -57,7 +57,7 @@ class UserExpressionService:
         properties: dict = {},
     ) -> None:
 
-        if not (user := UsersRepo().get_by_id(self.user_id)):
+        if not (user := UsersDAO().get_by_id(self.user_id)):
             raise UserNotFoundException
 
         tags = []
