@@ -66,8 +66,8 @@ class DailyTrainingLearnList:
     # def serialize(self) -> list[DailyTrainingLearnListItemDict]:
     #     return [item.serialize() for item in self.learn_list]
 
-    # def get_item_ids(self) -> list[str]:
-    #     return [item.expression_id for item in self.learn_list]
+    def get_item_ids(self) -> list[str]:
+        return [item.expression_id for item in self.learn_list]
 
     # def get_as_dict_by_item_id(self) -> dict[str, DailyTrainingLearnListItem]:
     #     return {item.expression_id: item for item in self.learn_list}
@@ -104,7 +104,7 @@ class DailyTrainingRepo:
         return DailyTrainingLearnList(training_list)
 
     def get_next(self, amount: int) -> list[UserExpression]:
-        # TODO: deal with expressions that can be None deleted or deactivated.
+        # TODO: deal with expressions that can be deleted or deactivated.
         # ??? Mark as deleted and allow a user to remove from the list
         # ??? remove from the list here
         if user_expression_ids := self._training_list.get_first_items_ids(
@@ -115,14 +115,18 @@ class DailyTrainingRepo:
             )
         return []
 
-    def get_list(self):
-        pass
-
-    def update(self, expressions: list):
-        pass
+    def get_list(self) -> list[UserExpression]:
+        if ids := self._training_list.get_item_ids():
+            return self.user_expressions_dao(self.user_id, self.session).get(
+                include=ids
+            )
+        return []
 
     def add(self, expression):
         pass
 
     def delete(self, expression):
+        pass
+
+    def update(self, expressions: list):
         pass

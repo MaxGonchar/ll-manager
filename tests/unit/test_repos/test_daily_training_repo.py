@@ -161,3 +161,46 @@ class GetNextTests(DailyTrainingRepoTestsHelper):
 
         self.mock_daily_training_dao.return_value.get.assert_called_once_with()
         self.mock_user_expressions_dao.return_value.get.assert_not_called()
+
+
+class GetListTests(DailyTrainingRepoTestsHelper):
+
+    def test_get_list(self):
+        self.mock_user_expressions_dao.return_value.get.return_value = [
+            self.user_expr_1,
+            self.user_expr_2,
+            self.user_expr_3,
+        ]
+
+        actual = self.subject.get_list()
+
+        self.assertEqual(3, len(actual))
+        self.assertEqual(self.expr_id_1, actual[0].expression_id)
+        self.assertEqual(self.expr_id_2, actual[1].expression_id)
+        self.assertEqual(self.expr_id_3, actual[2].expression_id)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            include=[self.expr_id_1, self.expr_id_2, self.expr_id_3]
+        )
+
+    def test_get_list_empty(self):
+        training_data = deepcopy(self.mock_daily_training_data)
+        training_data["learning_list"] = []
+        mock_daily_training_dao = Mock()
+        mock_daily_training_dao.return_value.get.return_value = training_data
+        self.mock_user_expressions_dao.return_value.get.return_value = []
+
+        subject = DailyTrainingRepo(
+            user_id=self.user_id,
+            session=self.mock_session,
+            daily_training_dao=mock_daily_training_dao,
+            user_expressions_dao=self.mock_user_expressions_dao,
+        )
+
+        actual = subject.get_list()
+
+        self.assertEqual([], actual)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_not_called()
