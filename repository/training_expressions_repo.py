@@ -45,11 +45,11 @@ class DailyTrainingLearnListItem:
 class DailyTrainingLearnList:
     learn_list: list[DailyTrainingLearnListItem]
 
-    # def __len__(self):
-    #     return len(self.learn_list)
+    def __len__(self):
+        return len(self.learn_list)
 
-    # def __iter__(self):
-    #     return iter(self.learn_list)
+    def __iter__(self):
+        return iter(self.learn_list)
 
     def insert(self, item: DailyTrainingLearnListItem) -> None:
         item.position = max(0, item.position) and min(len(self), item.position)
@@ -58,12 +58,12 @@ class DailyTrainingLearnList:
     def get_first_items_ids(self, amount: int) -> list[str]:
         return [item.expression_id for item in self.learn_list[:amount]]
 
-    # def pop_item_by_id(
-    #     self, item_id: str
-    # ) -> DailyTrainingLearnListItem | None:
-    #     for i, item in enumerate(self.learn_list):
-    #         if item.expression_id == item_id:
-    #             return self.learn_list.pop(i)
+    def pop_item_by_id(
+        self, item_id: str
+    ) -> DailyTrainingLearnListItem | None:
+        for i, item in enumerate(self.learn_list):
+            if item.expression_id == item_id:
+                return self.learn_list.pop(i)
 
     def serialize(self) -> list[DailyTrainingLearnListItemDict]:
         return [item.serialize() for item in self.learn_list]
@@ -103,13 +103,11 @@ class DailyTrainingData:
     # def get_next_expr_to_train_id(self) ->  str | None:
     #     return self.llist.get_first_item_id()
 
-    # def pop_item_by_id(self, item_id: str) -> DailyTrainingLearnListItem:
-    #     item = self.llist.pop_item_by_id(item_id)
+    def pop_item_by_id(self, item_id: str) -> DailyTrainingLearnListItem:
+        return self.llist.pop_item_by_id(item_id)
 
-    #     return item
-
-    # def get_llist_size(self) -> int:
-    #     return len(self.llist)
+    def get_llist_size(self) -> int:
+        return len(self.llist)
 
     # def insert_item(self, item: DailyTrainingLearnListItem) -> None:
     #     self.llist.insert(item)
@@ -179,9 +177,7 @@ class DailyTrainingRepo:
                     include=[expression_id]
                 ):
                     self.daily_training_data.add_item(expression_id)
-                    self.daily_training_dao(self.user_id, self.session).put(
-                        self.daily_training_data.serialize(), commit=False
-                    )
+                    self._store_daily_training_data(commit=False)
                     self.session.commit()
                 else:
                     raise UserExpressionNotFoundException(
@@ -191,8 +187,59 @@ class DailyTrainingRepo:
                 self.session.rollback()
                 raise
 
-    def delete(self, expression):
-        pass
+    def delete(self, expression_id: str):
+        self.daily_training_data.pop_item_by_id(expression_id)
+        self._refresh_llist()
 
     def update(self, expressions: list):
         pass
+
+    def refresh(self):
+        pass
+
+    def _refresh_llist(self):
+        self._remove_fully_trained_expressions()
+        self._add_new_expressions_if_vacancies()
+        self._store_daily_training_data()
+
+    def _remove_fully_trained_expressions(self):
+        item_ids_to_remove = [
+            item.expression_id
+            for item in self.daily_training_data.llist
+            if self._should_be_removed(item)
+        ]
+
+        for id_ in item_ids_to_remove:
+            self.daily_training_data.pop_item_by_id(id_)
+
+    def _should_be_removed(self, item: DailyTrainingLearnListItem) -> bool:
+        return (
+            item.knowledge_level
+            >= self.daily_training_data.knowledge_level_threshold
+            and item.practice_count
+            >= self.daily_training_data.practice_count_threshold
+        )
+
+    def _add_new_expressions_if_vacancies(self):
+        vacancies = (
+            self.daily_training_data.max_llist_size
+            - self.daily_training_data.get_llist_size()
+        )
+        if vacancies > 0:
+            llist_expr_ids = (
+                self.daily_training_data.get_llist_expressions_ids()
+            )
+            ids_to_add = [
+                str(expr.expression_id)
+                for expr in self.user_expressions_dao(
+                    self.user_id, self.session
+                ).get(exclude=llist_expr_ids, limit=vacancies)
+            ]
+
+            for id_ in reversed(ids_to_add):
+                self.daily_training_data.add_item(id_)
+
+    def _store_daily_training_data(self, commit: bool = True):
+        self.daily_training_dao(self.user_id, self.session).put(
+            self.daily_training_data.serialize(), commit=commit
+        )

@@ -85,7 +85,7 @@ class DailyTrainingRepoTestsHelper(TestCase):
             user_id=self.user_id,
             user=self.user,
             expression=get_expression(
-                expression_id=self,
+                expression_id=self.expr_id_4,
                 expression=self.expression_4,
             ),
         )
@@ -264,3 +264,33 @@ class AddTests(DailyTrainingRepoTestsHelper):
         self.mock_daily_training_dao.return_value.put.assert_not_called()
         self.mock_session.commit.assert_not_called()
         self.mock_session.rollback.assert_called_once()
+
+
+class DeleteTests(DailyTrainingRepoTestsHelper):
+    def test_delete(self):
+        self.mock_user_expressions_dao.return_value.get.return_value = [
+            self.user_expr_4,
+        ]
+
+        self.subject.delete(self.expr_id_1)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            exclude=[self.expr_id_2, self.expr_id_3], limit=48
+        )
+        expected_daily_training_data = {
+            **self.mock_daily_training_data,
+            "learning_list": [
+                {
+                    "expressionId": self.expr_id_4,
+                    "position": 0,
+                    "practiceCount": 0,
+                    "knowledgeLevel": 0,
+                    "lastPracticeTime": None,
+                },
+                *self.mock_daily_training_data["learning_list"][1:],
+            ],
+        }
+        self.mock_daily_training_dao.return_value.put.assert_called_once_with(
+            expected_daily_training_data, commit=True
+        )
