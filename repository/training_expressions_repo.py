@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import TypedDict
 from dao.daily_training_dao import (
     DailyTrainingDict,
     DailyTrainingLearnListItemDict,
@@ -9,6 +10,13 @@ from extensions import db
 from models.models import UserExpression
 from sqlalchemy.orm import Session
 from repository.exceptions import UserExpressionNotFoundException
+from exercises.common import calculate_knowledge_level
+from helpers.time_helpers import get_current_utc_time
+
+
+class UpdateTrainedExpression(TypedDict):
+    user_expression: UserExpression
+    is_trained_successfully: bool
 
 
 @dataclass
@@ -109,8 +117,8 @@ class DailyTrainingData:
     def get_llist_size(self) -> int:
         return len(self.llist)
 
-    # def insert_item(self, item: DailyTrainingLearnListItem) -> None:
-    #     self.llist.insert(item)
+    def insert_item(self, item: DailyTrainingLearnListItem) -> None:
+        self.llist.insert(item)
 
     def serialize(self) -> DailyTrainingDict:
         return {
@@ -191,10 +199,31 @@ class DailyTrainingRepo:
         self.daily_training_data.pop_item_by_id(expression_id)
         self._refresh_llist()
 
-    def update(self, expressions: list):
+    def update(self, data: list[UpdateTrainedExpression]) -> None:
+        # calculate local kn and lpt
+        for item in data:
+            user_expression = item["user_expression"]
+            success = item["is_trained_successfully"]
+            id_ = user_expression.expression_id
+            llist_item = self.daily_training_data.pop_item_by_id(id_)
+            llist_item.knowledge_level = calculate_knowledge_level(
+                llist_item.knowledge_level,
+                llist_item.practice_count,
+                success
+            )
+            llist_item.practice_count += 1
+            llist_item.position += 1 if success else -1
+            llist_item.last_practice_time = get_current_utc_time()
+            self.daily_training_data.insert_item(llist_item)
+
+        # update llist
+        # save llist and userexpr in transaction
         pass
 
     def refresh(self):
+        pass
+
+    def get_by_id(self, expression_id) -> UserExpression:
         pass
 
     def _refresh_llist(self):
