@@ -207,9 +207,7 @@ class DailyTrainingRepo:
             id_ = user_expression.expression_id
             llist_item = self.daily_training_data.pop_item_by_id(id_)
             llist_item.knowledge_level = calculate_knowledge_level(
-                llist_item.knowledge_level,
-                llist_item.practice_count,
-                success
+                llist_item.knowledge_level, llist_item.practice_count, success
             )
             llist_item.practice_count += 1
             llist_item.position += 1 if success else -1

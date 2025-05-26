@@ -147,9 +147,10 @@ class UserExpressionsDAO:
             .filter(UserExpression.user_id == self.user_id)
             .count()
         )
-    
+
     def bulk_update(self, user_expressions: list[UserExpression]):
-        pass
+        self.session.bulk_save_objects(user_expressions)
+        self.session.commit()
 
     def _get_include(self, include: List[str]) -> List[UserExpression]:
         return (

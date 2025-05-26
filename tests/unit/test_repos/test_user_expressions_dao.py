@@ -1,3 +1,4 @@
+from decimal import Decimal
 from unittest.mock import patch
 import json
 from copy import deepcopy
@@ -14,7 +15,7 @@ from tests.unit.fixtures import (
 from tests.unit.test_repos.utils import BaseRepoTestUtils
 
 
-class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
+class UserExpressionsDAOTestHelper(BaseRepoTestUtils):
     def setUp(self):
         self.user_id_1 = "04aa4f4e-a53e-4b6c-96c5-3604e3fcc4ef"
         self.user_properties_1 = {
@@ -350,7 +351,7 @@ class UserExpressionsRepoTestHelper(BaseRepoTestUtils):
         self.assertEqual(expected_user["properties"], actual_user.properties)
 
 
-class GetAllTests(UserExpressionsRepoTestHelper):
+class GetAllTests(UserExpressionsDAOTestHelper):
     def test_get_all_items(self):
         actual = self.subject.get()
 
@@ -448,7 +449,7 @@ class GetAllTests(UserExpressionsRepoTestHelper):
             self.subject.get(include=["1"], exclude=["2"])
 
 
-class GetByIDTests(UserExpressionsRepoTestHelper):
+class GetByIDTests(UserExpressionsDAOTestHelper):
     def test_get_by_id(self):
         actual = self.subject.get_by_id(self.expr_1["id"])
 
@@ -462,7 +463,7 @@ class GetByIDTests(UserExpressionsRepoTestHelper):
         self.assertIsNone(actual)
 
 
-class PutTests(UserExpressionsRepoTestHelper):
+class PutTests(UserExpressionsDAOTestHelper):
     @patch("dao.user_expressions_dao.get_current_utc_time")
     def test_put(self, mock_current_time):
         last_practice_time = "2023-05-19 09:34:15"
@@ -561,7 +562,7 @@ class PutTests(UserExpressionsRepoTestHelper):
         return data
 
 
-class SearchTests(UserExpressionsRepoTestHelper):
+class SearchTests(UserExpressionsDAOTestHelper):
     def test_search(self):
         query = "hand"
 
@@ -577,7 +578,7 @@ class SearchTests(UserExpressionsRepoTestHelper):
             )
 
 
-class CountTests(UserExpressionsRepoTestHelper):
+class CountTests(UserExpressionsDAOTestHelper):
     def test_count(self):
         self.assertEqual(4, self.subject.count())
 
@@ -636,14 +637,14 @@ class PostTests(BaseRepoTestUtils):
         return data
 
 
-class CountTrainedExpressionsTests(UserExpressionsRepoTestHelper):
+class CountTrainedExpressionsTests(UserExpressionsDAOTestHelper):
     def test_count_trained_expressions(self):
         self.assertEqual(
             3, UserExpressionsDAO(self.user_id_3).count_trained_expressions()
         )
 
 
-class GetTrainedExpressionsTests(UserExpressionsRepoTestHelper):
+class GetTrainedExpressionsTests(UserExpressionsDAOTestHelper):
     def test_get_all_trained_expressions(self):
         subject = UserExpressionsDAO(self.user_id_3)
 
@@ -736,7 +737,7 @@ class GetTrainedExpressionsTests(UserExpressionsRepoTestHelper):
         self.assertEqual([], actual)
 
 
-class CountTrainedExpressionsHavingContextTests(UserExpressionsRepoTestHelper):
+class CountTrainedExpressionsHavingContextTests(UserExpressionsDAOTestHelper):
     def setUp(self):
         super().setUp()
 
@@ -780,4 +781,40 @@ class CountTrainedExpressionsHavingContextTests(UserExpressionsRepoTestHelper):
             UserExpressionsDAO(
                 self.user_3["id"]
             ).count_trained_expressions_having_context(),
+        )
+
+
+class BulkUpdateTests(UserExpressionsDAOTestHelper):
+    def test_update(self):
+        subject = UserExpressionsDAO(self.user_id_1)
+
+        user_expr_1 = subject.get_by_id(self.expr_1["id"])
+        user_expr_2 = subject.get_by_id(self.expr_2["id"])
+
+        user_expr_1.knowledge_level = 0.5
+        user_expr_1.practice_count = 1
+        user_expr_2.knowledge_level = 0.7
+        user_expr_2.practice_count = 2
+        user_expr_1.last_practice_time = "2023-05-19 09:34:15"
+        user_expr_2.last_practice_time = "2023-05-19 09:34:16"
+
+        subject.bulk_update([user_expr_1, user_expr_2])
+
+        updated_user_expr_1 = subject.get_by_id(self.expr_1["id"])
+        updated_user_expr_2 = subject.get_by_id(self.expr_2["id"])
+        self.assertEqual(Decimal("0.5"), updated_user_expr_1.knowledge_level)
+        self.assertEqual(1, updated_user_expr_1.practice_count)
+        self.assertEqual(
+            "2023-05-19 09:34:15",
+            updated_user_expr_1.last_practice_time.strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
+        )
+        self.assertEqual(Decimal("0.7"), updated_user_expr_2.knowledge_level)
+        self.assertEqual(2, updated_user_expr_2.practice_count)
+        self.assertEqual(
+            "2023-05-19 09:34:16",
+            updated_user_expr_2.last_practice_time.strftime(
+                "%Y-%m-%d %H:%M:%S"
+            ),
         )
