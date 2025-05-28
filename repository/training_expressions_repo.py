@@ -200,34 +200,50 @@ class DailyTrainingRepo:
         self._refresh_llist()
 
     def update(self, data: list[UpdateTrainedExpression]) -> None:
-        # calculate local kn and lpt
         for item in data:
-            user_expression = item["user_expression"]
-            success = item["is_trained_successfully"]
-            id_ = user_expression.expression_id
-            llist_item = self.daily_training_data.pop_item_by_id(id_)
-            llist_item.knowledge_level = calculate_knowledge_level(
-                llist_item.knowledge_level, llist_item.practice_count, success
+            self._update_item_training_data(
+                item["user_expression"].expression_id,
+                item["is_trained_successfully"],
             )
-            llist_item.practice_count += 1
-            llist_item.position += 1 if success else -1
-            llist_item.last_practice_time = get_current_utc_time()
-            self.daily_training_data.insert_item(llist_item)
 
-        # update llist
-        # save llist and userexpr in transaction
-        pass
+        with self.session.begin():
+            try:
+                self._refresh_llist(commit=False)
+                self.user_expressions_dao(
+                    self.user_id, self.session
+                ).bulk_update([item["user_expression"] for item in data])
+            except Exception:
+                self.session.rollback()
+                raise
 
     def refresh(self):
+        # in tests test all possible combinations
         pass
 
     def get_by_id(self, expression_id) -> UserExpression:
         pass
 
-    def _refresh_llist(self):
+    def update_settings(self):
+        pass
+
+    def _update_item_training_data(
+        self, user_expression_id: str, success: bool
+    ) -> None:
+        llist_item = self.daily_training_data.pop_item_by_id(
+            user_expression_id
+        )
+        llist_item.knowledge_level = calculate_knowledge_level(
+            llist_item.knowledge_level, llist_item.practice_count, success
+        )
+        llist_item.practice_count += 1
+        llist_item.position += 1 if success else -1
+        llist_item.last_practice_time = get_current_utc_time()
+        self.daily_training_data.insert_item(llist_item)
+
+    def _refresh_llist(self, commit: bool = True):
         self._remove_fully_trained_expressions()
         self._add_new_expressions_if_vacancies()
-        self._store_daily_training_data()
+        self._store_daily_training_data(commit)
 
     def _remove_fully_trained_expressions(self):
         item_ids_to_remove = [

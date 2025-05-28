@@ -294,3 +294,10 @@ class DeleteTests(DailyTrainingRepoTestsHelper):
         self.mock_daily_training_dao.return_value.put.assert_called_once_with(
             expected_daily_training_data, commit=True
         )
+
+
+class UpdateTests(DailyTrainingRepoTestsHelper):
+    def test_update(self):
+        # create a llist with 3 items
+        # submit the result of training with 2 items (1 - success, 2 - fail)
+        pass
