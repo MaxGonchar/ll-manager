@@ -1,212 +1,303 @@
-from repository.daily_training_repo import DailyTrainingRepo
-from repository.exceptions import UserNotFoundException
-from tests.unit.test_repos.utils import BaseRepoTestUtils
+from copy import deepcopy
+from unittest import TestCase
+from unittest.mock import Mock, MagicMock
 
-import psycopg2
-
-import json
-
-
-class DailyTrainingRepoInitTests(BaseRepoTestUtils):
-    def setUp(self) -> None:
-        self._clean_users()
-
-    def test_init_user_not_found_rise_exception(self):
-        with self.assertRaises(UserNotFoundException):
-            DailyTrainingRepo("b5f55871-4a7d-4c27-aaa5-e3542d8554a7")
+from repository.training_expressions_repo import DailyTrainingRepo
+from tests.unit.fixtures import (
+    get_dt_data,
+    get_expression,
+    get_learn_list_item,
+    get_user,
+    get_user_expression,
+)
+from repository.exceptions import UserExpressionNotFoundException
 
 
-class GetTests(BaseRepoTestUtils):
+class DailyTrainingRepoTestsHelper(TestCase):
     def setUp(self):
-        self._clean_users()
+        self.user_id = "test_user_id"
+        self.mock_daily_training_dao = Mock()
+        self.mock_user_expressions_dao = Mock()
+        self.mock_session = MagicMock()
 
-        self.user_id = "04aa4f4e-a53e-4b6c-96c5-3604e3fcc4ef"
-        self.user_properties = {
-            "nativeLang": "uk",
-            "challenges": {
-                "dailyTraining": {
-                    "learnListSize": 50,
-                    "practiceCountThreshold": 50,
-                    "knowledgeLevelThreshold": 0.9,
-                    "learning_list": [
-                        {
-                            "expressionId": "4d7993aa-d897-4647-994b-e0625c88f349",
-                            "position": 0,
-                            "practiceCount": 0,
-                            "knowledgeLevel": 0,
-                        },
-                        {
-                            "expressionId": "24d96f68-46e1-4fb3-b300-81cd89cea435",
-                            "position": 0,
-                            "practiceCount": 0,
-                            "knowledgeLevel": 0,
-                        },
-                        {
-                            "expressionId": "d5c26549-74f7-4930-9c2c-16d10d46e55e",
-                            "position": 0,
-                            "practiceCount": 0,
-                            "knowledgeLevel": 0,
-                        },
-                    ],
-                }
-            },
+        self.expr_id_1 = "4d7993aa-d897-4647-994b-e0625c88f349"
+        self.expr_id_2 = "24d96f68-46e1-4fb3-b300-81cd89cea435"
+        self.expr_id_3 = "d5c26549-74f7-4930-9c2c-16d10d46e55e"
+        self.expr_id_4 = "4d7993aa-d897-4647-994b-e0625c88f350"
+
+        self.expression_1 = "test_expression_1"
+        self.expression_2 = "test_expression_2"
+        self.expression_3 = "test_expression_3"
+        self.expression_4 = "test_expression_4"
+
+        self.mock_daily_training_data = {
+            "learnListSize": 50,
+            "practiceCountThreshold": 50,
+            "knowledgeLevelThreshold": 0.9,
+            "learning_list": [
+                {
+                    "expressionId": self.expr_id_1,
+                    "position": 0,
+                    "practiceCount": 0,
+                    "knowledgeLevel": 0,
+                    "lastPracticeTime": None,
+                },
+                {
+                    "expressionId": self.expr_id_2,
+                    "position": 0,
+                    "practiceCount": 0,
+                    "knowledgeLevel": 0,
+                    "lastPracticeTime": None,
+                },
+                {
+                    "expressionId": self.expr_id_3,
+                    "position": 0,
+                    "practiceCount": 0,
+                    "knowledgeLevel": 0,
+                    "lastPracticeTime": None,
+                },
+            ],
         }
 
-        self._seed_db_user_record()
-        self.subject = DailyTrainingRepo(self.user_id)
-
-    def test_get(self):
-        actual = self.subject.get()
-
-        self.assertEqual(
-            self.user_properties["challenges"]["dailyTraining"], actual
+        self.user = get_user(user_id=self.user_id)
+        self.user_expr_1 = get_user_expression(
+            user_id=self.user_id,
+            user=self.user,
+            expression=get_expression(
+                expression_id=self.expr_id_1, expression=self.expression_1
+            ),
+        )
+        self.user_expr_2 = get_user_expression(
+            user_id=self.user_id,
+            user=self.user,
+            expression=get_expression(
+                expression_id=self.expr_id_2, expression=self.expression_2
+            ),
+        )
+        self.user_expr_3 = get_user_expression(
+            user_id=self.user_id,
+            user=self.user,
+            expression=get_expression(
+                expression_id=self.expr_id_3, expression=self.expression_3
+            ),
+        )
+        self.user_expr_4 = get_user_expression(
+            user_id=self.user_id,
+            user=self.user,
+            expression=get_expression(
+                expression_id=self.expr_id_4,
+                expression=self.expression_4,
+            ),
         )
 
-    def _seed_db_user_record(self):
-        sql = f"""
-            INSERT INTO users (
-                id,
-                first,
-                last,
-                email,
-                role,
-                password_hash,
-                properties,
-                added,
-                updated,
-                last_login
-            )
-            VALUES (
-                '{self.user_id}',
-                'First',
-                'Last',
-                'daily_training@test.mail',
-                'self-educated',
-                'c1a4b7e252281a7649d17a0f9f1d5180d5b5b1783dca84e121bbfcadda4ecc12',
-                '{json.dumps(self.user_properties)}',
-                '2023-04-16 09:10:25',
-                '2023-04-16 09:10:25',
-                '2023-04-16 09:10:25'
-            )
-        """
-        self._execute_sql(sql)
+        self.mock_daily_training_dao.return_value.get.return_value = (
+            self.mock_daily_training_data
+        )
+
+        self.subject = DailyTrainingRepo(
+            user_id=self.user_id,
+            session=self.mock_session,
+            daily_training_dao=self.mock_daily_training_dao,
+            user_expressions_dao=self.mock_user_expressions_dao,
+        )
 
 
-class PutTests(BaseRepoTestUtils):
-    def setUp(self):
-        self._clean_users()
+class GetNextTests(DailyTrainingRepoTestsHelper):
+    def test_get_one(self):
+        self.mock_user_expressions_dao.return_value.get.return_value = [
+            self.user_expr_1,
+        ]
 
-        self.user_id = "04aa4f4e-a53e-4b6c-96c5-3604e3fcc4ef"
-        self.properties = {
-            "nativeLang": "uk",
-            "challenges": {
-                "dailyTraining": {
-                    "learnListSize": 50,
-                    "practiceCountThreshold": 50,
-                    "knowledgeLevelThreshold": 0.9,
-                    "learning_list": [
-                        {
-                            "expressionId": "4d7993aa-d897-4647-994b-e0625c88f349",
-                            "position": 0,
-                            "practiceCount": 0,
-                            "knowledgeLevel": "0",
-                        },
-                        {
-                            "expressionId": "24d96f68-46e1-4fb3-b300-81cd89cea435",
-                            "position": 0,
-                            "practiceCount": 0,
-                            "knowledgeLevel": "0",
-                        },
-                        {
-                            "expressionId": "d5c26549-74f7-4930-9c2c-16d10d46e55e",
-                            "position": 0,
-                            "practiceCount": 0,
-                            "knowledgeLevel": "0",
-                        },
-                    ],
-                }
-            },
+        actual = self.subject.get_next(1)
+
+        self.assertEqual(self.expr_id_1, actual[0].expression_id)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            include=[self.expr_id_1]
+        )
+
+    def test_get_few(self):
+        self.mock_user_expressions_dao.return_value.get.return_value = [
+            self.user_expr_1,
+            self.user_expr_2,
+        ]
+
+        actual = self.subject.get_next(2)
+
+        self.assertEqual(2, len(actual))
+        self.assertEqual(self.expr_id_1, actual[0].expression_id)
+        self.assertEqual(self.expr_id_2, actual[1].expression_id)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            include=[self.expr_id_1, self.expr_id_2]
+        )
+
+    def test_get_more_than_in_the_training_list(self):
+        self.mock_user_expressions_dao.return_value.get.return_value = [
+            self.user_expr_1,
+            self.user_expr_2,
+            self.user_expr_3,
+        ]
+
+        actual = self.subject.get_next(4)
+
+        self.assertEqual(3, len(actual))
+        self.assertEqual(self.expr_id_1, actual[0].expression_id)
+        self.assertEqual(self.expr_id_2, actual[1].expression_id)
+        self.assertEqual(self.expr_id_3, actual[2].expression_id)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            include=[self.expr_id_1, self.expr_id_2, self.expr_id_3]
+        )
+
+    def test_get_from_empty_list(self):
+        training_data = deepcopy(self.mock_daily_training_data)
+        training_data["learning_list"] = []
+        mock_daily_training_dao = Mock()
+        mock_daily_training_dao.return_value.get.return_value = training_data
+        self.mock_user_expressions_dao.return_value.get.return_value = []
+
+        subject = DailyTrainingRepo(
+            user_id=self.user_id,
+            session=self.mock_session,
+            daily_training_dao=mock_daily_training_dao,
+            user_expressions_dao=self.mock_user_expressions_dao,
+        )
+
+        actual = subject.get_next(1)
+        self.assertEqual([], actual)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_not_called()
+
+
+class GetListTests(DailyTrainingRepoTestsHelper):
+    def test_get_list(self):
+        self.mock_user_expressions_dao.return_value.get.return_value = [
+            self.user_expr_1,
+            self.user_expr_2,
+            self.user_expr_3,
+        ]
+
+        actual = self.subject.get_list()
+
+        self.assertEqual(3, len(actual))
+        self.assertEqual(self.expr_id_1, actual[0].expression_id)
+        self.assertEqual(self.expr_id_2, actual[1].expression_id)
+        self.assertEqual(self.expr_id_3, actual[2].expression_id)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            include=[self.expr_id_1, self.expr_id_2, self.expr_id_3]
+        )
+
+    def test_get_list_empty(self):
+        training_data = deepcopy(self.mock_daily_training_data)
+        training_data["learning_list"] = []
+        mock_daily_training_dao = Mock()
+        mock_daily_training_dao.return_value.get.return_value = training_data
+        self.mock_user_expressions_dao.return_value.get.return_value = []
+
+        subject = DailyTrainingRepo(
+            user_id=self.user_id,
+            session=self.mock_session,
+            daily_training_dao=mock_daily_training_dao,
+            user_expressions_dao=self.mock_user_expressions_dao,
+        )
+
+        actual = subject.get_list()
+
+        self.assertEqual([], actual)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_not_called()
+
+
+class AddTests(DailyTrainingRepoTestsHelper):
+    def test_add_success(self):
+        self.mock_user_expressions_dao.return_value.get.return_value = [
+            self.user_expr_4,
+        ]
+
+        self.subject.add(self.expr_id_4)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            include=[self.expr_id_4]
+        )
+        expected_daily_training_data = {
+            **self.mock_daily_training_data,
+            "learning_list": [
+                {
+                    "expressionId": self.expr_id_4,
+                    "position": 0,
+                    "practiceCount": 0,
+                    "knowledgeLevel": 0,
+                    "lastPracticeTime": None,
+                },
+                *self.mock_daily_training_data["learning_list"],
+            ],
         }
+        self.mock_daily_training_dao.return_value.put.assert_called_once_with(
+            expected_daily_training_data, commit=False
+        )
+        self.mock_session.commit.assert_called_once()
 
-        self._seed_db_user_record()
-        self.subject = DailyTrainingRepo(self.user_id)
+    def test_add_user_expression_not_found(self):
+        self.mock_user_expressions_dao.return_value.get.return_value = []
 
-    def test_post(self):
-        new_props = {
-            "nativeLang": "uk",
-            "challenges": {
-                "dailyTraining": {
-                    "learnListSize": 60,
-                    "practiceCountThreshold": 50,
-                    "knowledgeLevelThreshold": 0.95,
-                    "learning_list": [
-                        {
-                            "expressionId": "ee8e74ca-8f1a-4e5b-9a86-54d6c35f4fcd",
-                            "position": 0,
-                            "practiceCount": 0,
-                            "knowledgeLevel": 0,
-                        },
-                        {
-                            "expressionId": "4d7993aa-d897-4647-994b-e0625c88f349",
-                            "position": 0,
-                            "practiceCount": 0,
-                            "knowledgeLevel": 0,
-                        },
-                        {
-                            "expressionId": "24d96f68-46e1-4fb3-b300-81cd89cea435",
-                            "position": 2,
-                            "practiceCount": 2,
-                            "knowledgeLevel": 0.5,
-                        },
-                    ],
-                }
-            },
+        with self.assertRaises(UserExpressionNotFoundException) as exception:
+            self.subject.add(self.expr_id_4)
+
+        self.assertEqual(
+            f"User expression with id {self.expr_id_4} not found for user {self.user_id}",
+            str(exception.exception),
+        )
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            include=[self.expr_id_4]
+        )
+        self.mock_daily_training_dao.return_value.put.assert_not_called()
+        self.mock_session.commit.assert_not_called()
+        self.mock_session.rollback.assert_called_once()
+
+
+class DeleteTests(DailyTrainingRepoTestsHelper):
+    def test_delete(self):
+        self.mock_user_expressions_dao.return_value.get.return_value = [
+            self.user_expr_4,
+        ]
+
+        self.subject.delete(self.expr_id_1)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            exclude=[self.expr_id_2, self.expr_id_3], limit=48
+        )
+        expected_daily_training_data = {
+            **self.mock_daily_training_data,
+            "learning_list": [
+                {
+                    "expressionId": self.expr_id_4,
+                    "position": 0,
+                    "practiceCount": 0,
+                    "knowledgeLevel": 0,
+                    "lastPracticeTime": None,
+                },
+                *self.mock_daily_training_data["learning_list"][1:],
+            ],
         }
-        self.subject.put(new_props["challenges"]["dailyTraining"])
+        self.mock_daily_training_dao.return_value.put.assert_called_once_with(
+            expected_daily_training_data, commit=True
+        )
 
-        updated_properties = self._get_db_user_properties()
 
-        self.assertEqual(new_props, updated_properties)
-
-    def _seed_db_user_record(self):
-        sql = f"""
-            INSERT INTO users (
-                id,
-                first,
-                last,
-                email,
-                role,
-                password_hash,
-                properties,
-                added,
-                updated,
-                last_login
-            )
-            VALUES (
-                '{self.user_id}',
-                'First',
-                'Last',
-                'daily_training@test.mail',
-                'self-educated',
-                'c1a4b7e252281a7649d17a0f9f1d5180d5b5b1783dca84e121bbfcadda4ecc12',
-                '{json.dumps(self.properties)}',
-                '2023-04-16 09:10:25',
-                '2023-04-16 09:10:25',
-                '2023-04-16 09:10:25'
-            )
-        """
-        self._execute_sql(sql)
-
-    def _get_db_user_properties(self):
-        sql = """
-            SELECT properties
-            FROM users
-            WHERE id=%(user_id)s
-        """
-        with psycopg2.connect(**self._get_test_db_dsn()) as con:  # type: ignore
-            with con.cursor() as cur:
-                cur.execute(sql, {"user_id": self.user_id})
-                data = cur.fetchone()
-        con.close()
-
-        return data[0]
+class UpdateTests(DailyTrainingRepoTestsHelper):
+    def test_update(self):
+        # create a llist with 3 items
+        # submit the result of training with 2 items (1 - success, 2 - fail)
+        pass

@@ -4,7 +4,7 @@ import psycopg2
 from psycopg2.extras import DictCursor
 
 from tests.unit.test_repos.utils import BaseRepoTestUtils
-from repository.users_repo import UsersRepo
+from dao.user_dao import UsersDAO
 from repository.exceptions import UserAlreadyExistsException
 from tests.unit.fixtures import get_user
 
@@ -37,7 +37,7 @@ class UsersRepoTestsHelper(BaseRepoTestUtils):
         self._clean_users()
         self._seed_db_user_record()
 
-        self.subject = UsersRepo()
+        self.subject = UsersDAO()
 
     def _seed_db_user_record(self):
         sql = f"""
@@ -100,7 +100,7 @@ class GetByEmailTests(UsersRepoTestsHelper):
         self._assert_user(actual)
 
     def test_get_by_email_notfound_returns_none(self):
-        self.assertIsNone(UsersRepo().get_by_email("wrong@test.email"))
+        self.assertIsNone(UsersDAO().get_by_email("wrong@test.email"))
 
 
 class PostTests(UsersRepoTestsHelper):
