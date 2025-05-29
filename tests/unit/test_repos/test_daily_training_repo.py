@@ -1,6 +1,6 @@
 from copy import deepcopy
 from unittest import TestCase
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock, MagicMock, ANY
 
 from repository.training_expressions_repo import DailyTrainingRepo
 from tests.unit.fixtures import (
@@ -296,8 +296,170 @@ class DeleteTests(DailyTrainingRepoTestsHelper):
         )
 
 
-class UpdateTests(DailyTrainingRepoTestsHelper):
-    def test_update(self):
-        # create a llist with 3 items
-        # submit the result of training with 2 items (1 - success, 2 - fail)
+class UpdateExpressionsTests(DailyTrainingRepoTestsHelper):
+    def setUp(self):
+        super().setUp()
+        self.mock_daily_training_data["learnListSize"] = 3
+        self.mock_daily_training_data["learning_list"][0][
+            "knowledgeLevel"
+        ] = 0.5
+        self.mock_daily_training_data["learning_list"][0]["practiceCount"] = 2
+        self.mock_daily_training_data["learning_list"][1][
+            "knowledgeLevel"
+        ] = 0.8
+        self.mock_daily_training_data["learning_list"][1]["practiceCount"] = 3
+
+        self.user_expr_1.knowledge_level = 0.5
+        self.user_expr_1.practice_count = 2
+        self.user_expr_1.knowledge_level = 0.8
+        self.user_expr_1.practice_count = 3
+
+    def _mock_daily_training_dao(self, get_return_data):
+        mock_daily_training_dao = Mock()
+        mock_daily_training_dao.return_value.get.return_value = get_return_data
+        return mock_daily_training_dao
+
+    def _get_subject(self, mock_daily_training_dao):
+        return DailyTrainingRepo(
+            user_id=self.user_id,
+            session=self.mock_session,
+            daily_training_dao=mock_daily_training_dao,
+            user_expressions_dao=self.mock_user_expressions_dao,
+        )
+
+    def test_update_expression(self):
+        mock_daily_training_dao = self._mock_daily_training_dao(
+            self.mock_daily_training_data
+        )
+
+        subject = self._get_subject(mock_daily_training_dao)
+
+        subject.update_expressions(
+            [
+                {
+                    "user_expression": self.user_expr_1,
+                    "is_trained_successfully": True,
+                },
+                {
+                    "user_expression": self.user_expr_2,
+                    "is_trained_successfully": False,
+                },
+            ]
+        )
+
+        mock_daily_training_dao.return_value.get.assert_called_once_with()
+        mock_daily_training_dao.return_value.put.assert_called_once_with(
+            {
+                "knowledgeLevelThreshold": 0.9,
+                "learnListSize": 3,
+                "practiceCountThreshold": 50,
+                "learning_list": [
+                    {
+                        "expressionId": self.user_expr_2.expression_id,
+                        "knowledgeLevel": 0.6000000000000001,
+                        "position": 0,
+                        "practiceCount": 4,
+                        "lastPracticeTime": ANY,
+                    },
+                    {
+                        "expressionId": self.user_expr_1.expression_id,
+                        "knowledgeLevel": 0.6666666666666666,
+                        "position": 1,
+                        "practiceCount": 3,
+                        "lastPracticeTime": ANY,
+                    },
+                    {
+                        "expressionId": self.expr_id_3,
+                        "knowledgeLevel": 0,
+                        "position": 0,
+                        "practiceCount": 0,
+                        "lastPracticeTime": None,
+                    },
+                ],
+            },
+            commit=False,
+        )
+        self.mock_user_expressions_dao.return_value.bulk_update.assert_called_once_with(
+            [
+                self.user_expr_1,
+                self.user_expr_2,
+            ]
+        )
+
+    def test_update_expression_new_position_bigger_than_learn_list_len(self):
+        self.mock_daily_training_data["learning_list"][0]["position"] = 3
+
+        mock_daily_training_dao = self._mock_daily_training_dao(
+            self.mock_daily_training_data
+        )
+
+        subject = self._get_subject(mock_daily_training_dao)
+
+        subject.update_expressions(
+            [
+                {
+                    "user_expression": self.user_expr_1,
+                    "is_trained_successfully": True,
+                },
+                {
+                    "user_expression": self.user_expr_2,
+                    "is_trained_successfully": False,
+                },
+            ]
+        )
+
+        mock_daily_training_dao.return_value.get.assert_called_once_with()
+        mock_daily_training_dao.return_value.put.assert_called_once_with(
+            {
+                "knowledgeLevelThreshold": 0.9,
+                "learnListSize": 3,
+                "practiceCountThreshold": 50,
+                "learning_list": [
+                    {
+                        "expressionId": self.user_expr_2.expression_id,
+                        "knowledgeLevel": 0.6000000000000001,
+                        "position": 0,
+                        "practiceCount": 4,
+                        "lastPracticeTime": ANY,
+                    },
+                    {
+                        "expressionId": self.expr_id_3,
+                        "knowledgeLevel": 0,
+                        "position": 0,
+                        "practiceCount": 0,
+                        "lastPracticeTime": None,
+                    },
+                    {
+                        "expressionId": self.user_expr_1.expression_id,
+                        "knowledgeLevel": 0.6666666666666666,
+                        "position": 2,
+                        "practiceCount": 3,
+                        "lastPracticeTime": ANY,
+                    },
+                ],
+            },
+            commit=False,
+        )
+        self.mock_user_expressions_dao.return_value.bulk_update.assert_called_once_with(
+            [
+                self.user_expr_1,
+                self.user_expr_2,
+            ]
+        )
+
+
+class RefreshTests(DailyTrainingRepoTestsHelper):
+    def test_refresh_when_item_is_removed(self):
+        pass
+
+    def test_refresh_when_item_has_not_enough_practice_count(self):
+        pass
+
+    def test_refresh_when_item_has_not_enough_knowledge_level(self):
+        pass
+
+    def test_refresh_when_nothing_to_add(self):
+        pass
+
+    def test_refresh_when_when_result_list_is_igger_than_max_size(self):
         pass

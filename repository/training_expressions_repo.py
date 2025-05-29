@@ -199,7 +199,7 @@ class DailyTrainingRepo:
         self.daily_training_data.pop_item_by_id(expression_id)
         self._refresh_llist()
 
-    def update(self, data: list[UpdateTrainedExpression]) -> None:
+    def update_expressions(self, data: list[UpdateTrainedExpression]) -> None:
         for item in data:
             self._update_item_training_data(
                 item["user_expression"].expression_id,
@@ -212,13 +212,13 @@ class DailyTrainingRepo:
                 self.user_expressions_dao(
                     self.user_id, self.session
                 ).bulk_update([item["user_expression"] for item in data])
+                self.session.commit()
             except Exception:
                 self.session.rollback()
                 raise
 
     def refresh(self):
-        # in tests test all possible combinations
-        pass
+        self._refresh_llist()
 
     def get_by_id(self, expression_id) -> UserExpression:
         pass
