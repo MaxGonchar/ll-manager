@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from exercises.common import calculate_knowledge_level
 from repository.writings_repo import WritingsRepo
-from repository.user_expressions_repo import UserExpressionsRepo
+from dao.user_expressions_dao import UserExpressionsDAO
 from helpers.time_helpers import get_current_utc_time
 from models.models import UserExpression, Writings
 from services.assistant import (
@@ -31,12 +31,12 @@ class WritingTraining:
         self,
         user_id: str,
         writings_repo: WritingsRepo = WritingsRepo,
-        user_expr_repo: UserExpressionsRepo = UserExpressionsRepo,
+        user_expr_repo: UserExpressionsDAO = UserExpressionsDAO,
         assistant: VeniceAssistant = VeniceAssistant,
     ):
         self.user_id = user_id
         self.writings_repo: WritingsRepo = writings_repo(self.user_id)
-        self.user_expr_repo: UserExpressionsRepo = user_expr_repo(self.user_id)
+        self.user_expr_repo: UserExpressionsDAO = user_expr_repo(self.user_id)
         self.assistant: VeniceAssistant = assistant()
 
     # for now we store only one writing training per user

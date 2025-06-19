@@ -19,7 +19,7 @@ class SearchTests(TestCase):
         self.user_id = "test_user_id"
 
         user_expr_repo_patcher = patch(
-            "services.user_expression_service.UserExpressionsRepo"
+            "services.user_expression_service.UserExpressionsDAO"
         )
         mock_ue_repo = user_expr_repo_patcher.start()
         self.mock_search = mock_ue_repo.return_value.search
@@ -110,7 +110,7 @@ class PostTests(TestCase):
         self.user_id = "test_user_id"
 
         user_expr_repo_patcher = patch(
-            "services.user_expression_service.UserExpressionsRepo"
+            "services.user_expression_service.UserExpressionsDAO"
         )
         mock_ue_repo = user_expr_repo_patcher.start()
         self.mock_post = mock_ue_repo.return_value.post
@@ -125,7 +125,7 @@ class PostTests(TestCase):
         )
         self.addCleanup(daily_training_patcher.stop)
 
-        user_repo_patcher = patch("services.user_expression_service.UsersRepo")
+        user_repo_patcher = patch("services.user_expression_service.UsersDAO")
         self.mock_get_user = user_repo_patcher.start().return_value.get_by_id
         self.addCleanup(user_repo_patcher.stop)
 
@@ -229,7 +229,7 @@ class GetExpressionByIDTests(TestCase):
         self.user_id = "test_user_id"
 
         user_expr_repo_patcher = patch(
-            "services.user_expression_service.UserExpressionsRepo"
+            "services.user_expression_service.UserExpressionsDAO"
         )
         mock_ue_repo = user_expr_repo_patcher.start()
         self.mock_get_us_expr_by_id = mock_ue_repo.return_value.get_by_id
@@ -284,7 +284,7 @@ class GetAllTests(TestCase):
         self.user_id = "test_user_id"
 
         user_expr_repo_patcher = patch(
-            "services.user_expression_service.UserExpressionsRepo"
+            "services.user_expression_service.UserExpressionsDAO"
         )
         mock_ue_repo = user_expr_repo_patcher.start()
         self.mock_get = mock_ue_repo.return_value.get
@@ -306,7 +306,7 @@ class GetAllTests(TestCase):
         )
         self.addCleanup(daily_training_patcher.stop)
 
-        user_repo_patcher = patch("services.user_expression_service.UsersRepo")
+        user_repo_patcher = patch("services.user_expression_service.UsersDAO")
         self.mock_get_user = user_repo_patcher.start().return_value.get_by_id
         self.addCleanup(user_repo_patcher.stop)
 
@@ -414,7 +414,7 @@ class CountTests(TestCase):
         self.user_id = "test_user_id"
 
         user_expr_repo_patcher = patch(
-            "services.user_expression_service.UserExpressionsRepo"
+            "services.user_expression_service.UserExpressionsDAO"
         )
         mock_ue_repo = user_expr_repo_patcher.start()
         self.mock_count = mock_ue_repo.return_value.count

@@ -4,7 +4,7 @@ import random
 from helpers.time_helpers import get_current_utc_time
 from models.models import UserExpression
 from repository.expression_context_repo import ExpressionContextRepo
-from repository.user_expressions_repo import UserExpressionsRepo
+from dao.user_expressions_dao import UserExpressionsDAO
 from exercises.exceptions import (
     ContextNotFoundException,
     ExpressionNotFoundException,
@@ -28,7 +28,7 @@ class SentenceTrainingChallengeSolution(TypedDict):
 
 class SentenceTraining:
     def __init__(self, user_id: str) -> None:
-        self.user_expr_repo: UserExpressionsRepo = UserExpressionsRepo(user_id)
+        self.user_expr_repo: UserExpressionsDAO = UserExpressionsDAO(user_id)
         self.context_repo = ExpressionContextRepo
 
     def get_expressions_number_can_be_trained_in_sentence(self):

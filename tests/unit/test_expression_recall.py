@@ -10,7 +10,7 @@ class GetChallengeTests(TestCase):
     def setUp(self):
         self.user_id = "test_user_id"
 
-        repo_patcher = patch("exercises.expression_recall.UserExpressionsRepo")
+        repo_patcher = patch("exercises.expression_recall.UserExpressionsDAO")
         mock_repo = repo_patcher.start()
         self.mock_get = mock_repo.return_value.get_trained_expressions
         self.addCleanup(repo_patcher.stop)
@@ -56,7 +56,7 @@ class SubmitChallengeTests(TestCase):
     def setUp(self):
         self.user_id = "test_user_id"
 
-        repo_patcher = patch("exercises.expression_recall.UserExpressionsRepo")
+        repo_patcher = patch("exercises.expression_recall.UserExpressionsDAO")
         mock_repo = repo_patcher.start()
         self.mock_get = mock_repo.return_value.get_by_id
         self.mock_put = mock_repo.return_value.put
@@ -163,7 +163,7 @@ class GetNumberOfExpressionsNeededRecallingTests(TestCase):
     def setUp(self):
         self.user_id = "test_user_id"
 
-        repo_patcher = patch("exercises.expression_recall.UserExpressionsRepo")
+        repo_patcher = patch("exercises.expression_recall.UserExpressionsDAO")
         mock_repo = repo_patcher.start()
         self.mock_get_count = mock_repo.return_value.count_trained_expressions
         self.addCleanup(repo_patcher.stop)
@@ -182,7 +182,7 @@ class GetExpressionsNeededRecallingTests(TestCase):
     def setUp(self):
         self.user_id = "test_user_id"
 
-        repo_patcher = patch("exercises.expression_recall.UserExpressionsRepo")
+        repo_patcher = patch("exercises.expression_recall.UserExpressionsDAO")
         mock_repo = repo_patcher.start()
         # self.mock_get = mock_repo.return_value.get_all_trained_expressions
         self.mock_get = mock_repo.return_value.get_trained_expressions

@@ -1,7 +1,7 @@
 from typing import Optional
 from uuid import uuid4
 
-from repository.users_repo import UsersRepo
+from dao.user_dao import UsersDAO
 from models.models import User
 from helpers.hash_helper import hash_psw, is_psw_matching
 from helpers.time_helpers import get_current_utc_time
@@ -26,7 +26,7 @@ DEFAULT_USER_PROPERTIES = {
 
 class UsersService:
     def __init__(self):
-        self.repo = UsersRepo()
+        self.repo = UsersDAO()
 
     def create_user(
         self,

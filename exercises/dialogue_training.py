@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from helpers.time_helpers import get_current_utc_time
 from repository.dialogue_training_repo import DialogueTrainingRepo
-from repository.user_expressions_repo import UserExpressionsRepo
+from dao.user_expressions_dao import UserExpressionsDAO
 from models.models import Dialogue, UserExpression
 from services.assistant import (
     ExpressionDetectionResponse,
@@ -48,7 +48,7 @@ class DialogueTraining:
         self,
         user_id: str,
         dialogue_repo: DialogueTrainingRepo = DialogueTrainingRepo,
-        user_expr_repo: UserExpressionsRepo = UserExpressionsRepo,
+        user_expr_repo: UserExpressionsDAO = UserExpressionsDAO,
         assistant: VeniceAssistant = VeniceAssistant,
     ):
         self.user_id = user_id

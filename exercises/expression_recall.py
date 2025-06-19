@@ -1,5 +1,5 @@
 from typing import List, Optional
-from repository.user_expressions_repo import UserExpressionsRepo
+from dao.user_expressions_dao import UserExpressionsDAO
 from exercises.common import (
     ChallengeDict,
     get_challenge_object,
@@ -17,7 +17,7 @@ from helpers.time_helpers import get_current_utc_time
 
 class ExpressionRecall:
     def __init__(self, user_id: str) -> None:
-        self.repo = UserExpressionsRepo(user_id)
+        self.repo = UserExpressionsDAO(user_id)
 
     def get_challenge(self) -> Optional[ChallengeDict]:
         """return an expression with the latest 'last_practice_time'"""
