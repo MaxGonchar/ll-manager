@@ -9,7 +9,9 @@
 ==========================
 ------ ToBeDone ----------
 ==========================
-
+- Replace existing daily training logic with the new one
+- Create a new exercise for training writing sentences and using daily training repo
+- think about adding and removing expressions out of the training classes
 ==========================
 ------ BackLog -----------
 ==========================

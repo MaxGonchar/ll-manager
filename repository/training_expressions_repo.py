@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TypedDict
 from dao.daily_training_dao import (
@@ -12,6 +13,18 @@ from sqlalchemy.orm import Session
 from repository.exceptions import UserExpressionNotFoundException
 from exercises.common import calculate_knowledge_level
 from helpers.time_helpers import get_current_utc_time
+
+
+class TrainingRepoABC(ABC):
+    @abstractmethod
+    def get_next(self, amount: int) -> list[UserExpression]:
+        """Get next expressions to train."""
+        pass
+
+    @abstractmethod
+    def get_by_id(self, expression_id: str) -> UserExpression | None:
+        """Get expression by ID."""
+        pass
 
 
 class UpdateTrainedExpression(TypedDict):
@@ -142,7 +155,8 @@ class DailyTrainingData:
     #     return self.llist.learn_list
 
 
-class DailyTrainingRepo:
+# class DailyTrainingRepo:
+class DailyTrainingRepo(TrainingRepoABC):
     def __init__(
         self,
         user_id: str,
@@ -220,8 +234,10 @@ class DailyTrainingRepo:
     def refresh(self):
         self._refresh_llist()
 
-    def get_by_id(self, expression_id) -> UserExpression:
-        pass
+    def get_by_id(self, expression_id: str) -> UserExpression | None:
+        return self.user_expressions_dao(self.user_id, self.session).get(
+            include=[expression_id]
+        )
 
     def update_settings(self):
         pass

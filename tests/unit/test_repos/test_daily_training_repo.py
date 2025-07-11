@@ -463,3 +463,11 @@ class RefreshTests(DailyTrainingRepoTestsHelper):
 
     def test_refresh_when_when_result_list_is_igger_than_max_size(self):
         pass
+
+
+class GetByIDTests(DailyTrainingRepoTestsHelper):
+    def test_get_by_id(self):
+        pass
+
+    def test_get_by_id_not_found_returns_none(self):
+        pass
