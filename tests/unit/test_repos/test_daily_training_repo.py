@@ -3,6 +3,8 @@ from unittest import TestCase
 from unittest.mock import Mock, MagicMock, ANY
 
 from repository.training_expressions_repo import DailyTrainingRepo
+from dao.daily_training_dao import DailyTrainingDAO
+from dao.user_expressions_dao import UserExpressionsDAO
 from tests.unit.fixtures import (
     get_dt_data,
     get_expression,
@@ -16,8 +18,8 @@ from repository.exceptions import UserExpressionNotFoundException
 class DailyTrainingRepoTestsHelper(TestCase):
     def setUp(self):
         self.user_id = "test_user_id"
-        self.mock_daily_training_dao = Mock()
-        self.mock_user_expressions_dao = Mock()
+        self.mock_daily_training_dao = Mock(spec=DailyTrainingDAO)
+        self.mock_user_expressions_dao = Mock(spec=UserExpressionsDAO)
         self.mock_session = MagicMock()
 
         self.expr_id_1 = "4d7993aa-d897-4647-994b-e0625c88f349"
@@ -467,7 +469,27 @@ class RefreshTests(DailyTrainingRepoTestsHelper):
 
 class GetByIDTests(DailyTrainingRepoTestsHelper):
     def test_get_by_id(self):
-        pass
+        self.mock_user_expressions_dao.return_value.get.return_value = [
+            self.user_expr_1,
+        ]
+
+        actual = self.subject.get_by_id(self.expr_id_1)
+
+        self.assertEqual(self.expr_id_1, actual.expression_id)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            include=[self.expr_id_1]
+        )
 
     def test_get_by_id_not_found_returns_none(self):
-        pass
+        self.mock_user_expressions_dao.return_value.get.return_value = []
+
+        actual = self.subject.get_by_id(self.expr_id_1)
+
+        self.assertIsNone(actual)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
+            include=[self.expr_id_1]
+        )

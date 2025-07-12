@@ -15,6 +15,11 @@ from exercises.common import calculate_knowledge_level
 from helpers.time_helpers import get_current_utc_time
 
 
+class UpdateTrainedExpression(TypedDict):
+    user_expression: UserExpression
+    is_trained_successfully: bool
+
+
 class TrainingRepoABC(ABC):
     @abstractmethod
     def get_next(self, amount: int) -> list[UserExpression]:
@@ -26,10 +31,10 @@ class TrainingRepoABC(ABC):
         """Get expression by ID."""
         pass
 
-
-class UpdateTrainedExpression(TypedDict):
-    user_expression: UserExpression
-    is_trained_successfully: bool
+    @abstractmethod
+    def update_expressions(self, data: list[UpdateTrainedExpression]) -> None:
+        """Update expressions training data according to was it trained successfully."""
+        pass
 
 
 @dataclass
@@ -195,9 +200,7 @@ class DailyTrainingRepo(TrainingRepoABC):
         # TODO: check if expression_id already exists in the list
         with self.session.begin():
             try:
-                if self.user_expressions_dao(self.user_id, self.session).get(
-                    include=[expression_id]
-                ):
+                if self._get_user_expression_by_id(expression_id):
                     self.daily_training_data.add_item(expression_id)
                     self._store_daily_training_data(commit=False)
                     self.session.commit()
@@ -235,12 +238,19 @@ class DailyTrainingRepo(TrainingRepoABC):
         self._refresh_llist()
 
     def get_by_id(self, expression_id: str) -> UserExpression | None:
-        return self.user_expressions_dao(self.user_id, self.session).get(
-            include=[expression_id]
-        )
+        if user_expr := self._get_user_expression_by_id(expression_id):
+            return user_expr[0]
+        return None
 
     def update_settings(self):
         pass
+
+    def _get_user_expression_by_id(
+        self, expression_id: str
+    ) -> UserExpression | None:
+        return self.user_expressions_dao(self.user_id, self.session).get(
+            include=[expression_id]
+        )
 
     def _update_item_training_data(
         self, user_expression_id: str, success: bool
