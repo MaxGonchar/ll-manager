@@ -40,7 +40,9 @@ class DailyTraining:
         return get_challenge_solution_object(correct, answer)
 
     def get_learn_list_expressions(self) -> list[ExerciseExpressionsListItem]:
-        pass
+        expressions = self.repo.get_list()
+        expressions.sort(key=lambda item: item["practice_count"], reverse=True)
+        return expressions
 
     def add_item_to_learn_list(self):
         pass

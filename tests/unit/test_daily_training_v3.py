@@ -1,9 +1,15 @@
+from datetime import datetime
 from unittest import TestCase
 from unittest.mock import Mock
 
 from repository.training_expressions_repo import DailyTrainingRepo
 from exercises.daily_training_v3 import DailyTraining
-from tests.unit.fixtures import get_expression, get_user_expression, get_user
+from tests.unit.fixtures import (
+    get_daily_training_expressions_list_item,
+    get_expression,
+    get_user_expression,
+    get_user,
+)
 
 
 class DailyTrainingTestHelper(TestCase):
@@ -117,3 +123,63 @@ class SubmitChallengeTests(DailyTrainingTestHelper):
 
         self.assertEqual(expected, actual)
         self.repo.update_expressions.assert_not_called()
+
+
+class GetLearnListExpressionsTests(DailyTrainingTestHelper):
+    def setUp(self):
+        super().setUp()
+
+        self.subject = DailyTraining(self.repo)
+
+    def test_with_data(self):
+        self.repo.get_list.return_value = [
+            get_daily_training_expressions_list_item(
+                expression_id="expr_id_1",
+                expression="expression_1",
+                knowledge_level=0,
+                practice_count=0,
+                last_practice_time=None,
+            ),
+            get_daily_training_expressions_list_item(
+                expression_id="expr_id_2",
+                expression="expression_2",
+                knowledge_level=0.9,
+                practice_count=6,
+                last_practice_time=datetime(2023, 10, 1, 12, 0, 0),
+            ),
+            get_daily_training_expressions_list_item(
+                expression_id="expr_id_3",
+                expression="expression_3",
+                knowledge_level=0.5,
+                practice_count=5,
+                last_practice_time=datetime(2023, 10, 2, 12, 0, 0),
+            ),
+        ]
+
+        expected = [
+            {
+                "expression_id": "expr_id_2",
+                "expression": "expression_2",
+                "knowledge_level": 0.9,
+                "practice_count": 6,
+                "last_practice_time": datetime(2023, 10, 1, 12, 0, 0),
+            },
+            {
+                "expression_id": "expr_id_3",
+                "expression": "expression_3",
+                "knowledge_level": 0.5,
+                "practice_count": 5,
+                "last_practice_time": datetime(2023, 10, 2, 12, 0, 0),
+            },
+            {
+                "expression_id": "expr_id_1",
+                "expression": "expression_1",
+                "knowledge_level": 0.0,
+                "practice_count": 0,
+                "last_practice_time": None,
+            },
+        ]
+
+        actual = self.subject.get_learn_list_expressions()
+        self.assertEqual(expected, actual)
+        self.repo.get_list.assert_called_once_with()

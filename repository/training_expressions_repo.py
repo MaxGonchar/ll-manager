@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from datetime import datetime
 from typing import TypedDict
 from dao.daily_training_dao import (
     DailyTrainingDict,
@@ -11,8 +12,12 @@ from extensions import db
 from models.models import UserExpression
 from sqlalchemy.orm import Session
 from repository.exceptions import UserExpressionNotFoundException
-from exercises.common import calculate_knowledge_level
-from helpers.time_helpers import get_current_utc_time
+from exercises.common import (
+    calculate_knowledge_level,
+    ExerciseExpressionsListItem,
+    get_exercise_expressions_list_item,
+)
+from helpers.time_helpers import get_current_utc_time, string_to_datetime
 
 
 class UpdateTrainedExpression(TypedDict):
@@ -34,6 +39,11 @@ class TrainingRepoABC(ABC):
     @abstractmethod
     def update_expressions(self, data: list[UpdateTrainedExpression]) -> None:
         """Update expressions training data according to was it trained successfully."""
+        pass
+
+    @abstractmethod
+    def get_list(self) -> list[UserExpression]:
+        """Get the list of expressions."""
         pass
 
 
@@ -97,8 +107,8 @@ class DailyTrainingLearnList:
     def get_item_ids(self) -> list[str]:
         return [item.expression_id for item in self.learn_list]
 
-    # def get_as_dict_by_item_id(self) -> dict[str, DailyTrainingLearnListItem]:
-    #     return {item.expression_id: item for item in self.learn_list}
+    def get_as_dict_by_item_id(self) -> dict[str, DailyTrainingLearnListItem]:
+        return {item.expression_id: item for item in self.learn_list}
 
 
 class DailyTrainingData:
@@ -149,8 +159,8 @@ class DailyTrainingData:
     def get_llist_expressions_ids(self) -> list[str]:
         return self.llist.get_item_ids()
 
-    # def get_as_dict_by_id(self) -> dict[str, DailyTrainingLearnListItem]:
-    #     return self.llist.get_as_dict_by_item_id()
+    def get_as_dict_by_id(self) -> dict[str, DailyTrainingLearnListItem]:
+        return self.llist.get_as_dict_by_item_id()
 
     def add_item(self, item_id: str) -> None:
         item = DailyTrainingLearnListItem.new_from_expression_id(item_id)
@@ -189,11 +199,31 @@ class DailyTrainingRepo(TrainingRepoABC):
             )
         return []
 
-    def get_list(self) -> list[UserExpression]:
+    def get_list(self) -> list[ExerciseExpressionsListItem]:
         if ids := self.daily_training_data.get_llist_expressions_ids():
-            return self.user_expressions_dao(self.user_id, self.session).get(
-                include=ids
-            )
+            user_expressions = self.user_expressions_dao(
+                self.user_id, self.session
+            ).get(include=ids)
+            learn_list = self.daily_training_data.get_as_dict_by_id()
+            return [
+                get_exercise_expressions_list_item(
+                    expr_id=expr.expression_id,
+                    expression=expr.expression.expression,
+                    knowledge_level=learn_list[
+                        expr.expression_id
+                    ].knowledge_level,
+                    practice_count=learn_list[
+                        expr.expression_id
+                    ].practice_count,
+                    last_practice_time=string_to_datetime(
+                        learn_list[expr.expression_id].last_practice_time
+                    )
+                    if learn_list[expr.expression_id].last_practice_time
+                    is not None
+                    else None,
+                )
+                for expr in user_expressions
+            ]
         return []
 
     def add(self, expression_id: str):

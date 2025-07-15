@@ -1,4 +1,5 @@
 from copy import deepcopy
+from datetime import datetime
 from unittest import TestCase
 from unittest.mock import Mock, MagicMock, ANY
 
@@ -11,6 +12,7 @@ from tests.unit.fixtures import (
     get_learn_list_item,
     get_user,
     get_user_expression,
+    get_daily_training_expressions_list_item,
 )
 from repository.exceptions import UserExpressionNotFoundException
 
@@ -177,19 +179,85 @@ class GetNextTests(DailyTrainingRepoTestsHelper):
 
 
 class GetListTests(DailyTrainingRepoTestsHelper):
+    def setUp(self):
+        super().setUp()
+        self.mock_daily_training_data = {
+            "learnListSize": 50,
+            "practiceCountThreshold": 50,
+            "knowledgeLevelThreshold": 0.9,
+            "learning_list": [
+                {
+                    "expressionId": self.expr_id_1,
+                    "position": 1,
+                    "practiceCount": 0,
+                    "knowledgeLevel": 0,
+                    "lastPracticeTime": None,
+                },
+                {
+                    "expressionId": self.expr_id_2,
+                    "position": 2,
+                    "practiceCount": 6,
+                    "knowledgeLevel": 0.9,
+                    "lastPracticeTime": "2023-10-01 12:00:00",
+                },
+                {
+                    "expressionId": self.expr_id_3,
+                    "position": 3,
+                    "practiceCount": 5,
+                    "knowledgeLevel": 0.5,
+                    "lastPracticeTime": "2023-10-02 12:00:00",
+                },
+            ],
+        }
+
+        self.mock_daily_training_dao = Mock(spec=DailyTrainingDAO)
+
     def test_get_list(self):
+        self.mock_daily_training_dao.return_value.get.return_value = (
+            self.mock_daily_training_data
+        )
         self.mock_user_expressions_dao.return_value.get.return_value = [
             self.user_expr_1,
             self.user_expr_2,
             self.user_expr_3,
         ]
+        subject = DailyTrainingRepo(
+            user_id=self.user_id,
+            session=self.mock_session,
+            daily_training_dao=self.mock_daily_training_dao,
+            user_expressions_dao=self.mock_user_expressions_dao,
+        )
 
-        actual = self.subject.get_list()
+        actual = subject.get_list()
 
-        self.assertEqual(3, len(actual))
-        self.assertEqual(self.expr_id_1, actual[0].expression_id)
-        self.assertEqual(self.expr_id_2, actual[1].expression_id)
-        self.assertEqual(self.expr_id_3, actual[2].expression_id)
+        expected = [
+            get_daily_training_expressions_list_item(
+                expression_id=self.expr_id_1,
+                expression=self.expression_1,
+                knowledge_level=0,
+                practice_count=0,
+                last_practice_time=None,
+            ),
+            get_daily_training_expressions_list_item(
+                expression_id=self.expr_id_2,
+                expression=self.expression_2,
+                knowledge_level=0.9,
+                practice_count=6,
+                last_practice_time=datetime(2023, 10, 1, 12, 0, 0),
+            ),
+            get_daily_training_expressions_list_item(
+                expression_id=self.expr_id_3,
+                expression=self.expression_3,
+                knowledge_level=0.5,
+                practice_count=5,
+                last_practice_time=datetime(2023, 10, 2, 12, 0, 0),
+            ),
+        ]
+
+        self.assertEqual(len(expected), len(actual))
+
+        for exp, act in zip(expected, actual):
+            self._assert_daily_training_expressions_list_item(exp, act)
 
         self.mock_daily_training_dao.return_value.get.assert_called_once_with()
         self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
@@ -199,14 +267,15 @@ class GetListTests(DailyTrainingRepoTestsHelper):
     def test_get_list_empty(self):
         training_data = deepcopy(self.mock_daily_training_data)
         training_data["learning_list"] = []
-        mock_daily_training_dao = Mock()
-        mock_daily_training_dao.return_value.get.return_value = training_data
+        self.mock_daily_training_dao.return_value.get.return_value = (
+            training_data
+        )
         self.mock_user_expressions_dao.return_value.get.return_value = []
 
         subject = DailyTrainingRepo(
             user_id=self.user_id,
             session=self.mock_session,
-            daily_training_dao=mock_daily_training_dao,
+            daily_training_dao=self.mock_daily_training_dao,
             user_expressions_dao=self.mock_user_expressions_dao,
         )
 
@@ -216,6 +285,17 @@ class GetListTests(DailyTrainingRepoTestsHelper):
 
         self.mock_daily_training_dao.return_value.get.assert_called_once_with()
         self.mock_user_expressions_dao.return_value.get.assert_not_called()
+
+    def _assert_daily_training_expressions_list_item(self, expected, actual):
+        self.assertEqual(expected["expression_id"], actual["expression_id"])
+        self.assertEqual(expected["expression"], actual["expression"])
+        self.assertEqual(
+            expected["knowledge_level"], actual["knowledge_level"]
+        )
+        self.assertEqual(expected["practice_count"], actual["practice_count"])
+        self.assertEqual(
+            expected["last_practice_time"], actual["last_practice_time"]
+        )
 
 
 class AddTests(DailyTrainingRepoTestsHelper):
@@ -463,7 +543,7 @@ class RefreshTests(DailyTrainingRepoTestsHelper):
     def test_refresh_when_nothing_to_add(self):
         pass
 
-    def test_refresh_when_when_result_list_is_igger_than_max_size(self):
+    def test_refresh_when_when_result_list_is_bigger_than_max_size(self):
         pass
 
 
