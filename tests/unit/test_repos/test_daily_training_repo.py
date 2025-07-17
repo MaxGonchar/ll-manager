@@ -347,6 +347,18 @@ class AddTests(DailyTrainingRepoTestsHelper):
         self.mock_session.commit.assert_not_called()
         self.mock_session.rollback.assert_called_once()
 
+    def test_add_item_already_exists(self):
+        self.mock_user_expressions_dao.return_value.get.return_value = [
+            self.user_expr_1,
+        ]
+
+        self.subject.add(self.expr_id_1)
+
+        self.mock_daily_training_dao.return_value.get.assert_called_once_with()
+        self.mock_user_expressions_dao.return_value.get.assert_not_called()
+        self.mock_daily_training_dao.return_value.put.assert_not_called()
+        self.mock_session.commit.assert_not_called()
+
 
 class DeleteTests(DailyTrainingRepoTestsHelper):
     def test_delete(self):

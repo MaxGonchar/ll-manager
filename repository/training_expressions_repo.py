@@ -46,6 +46,11 @@ class TrainingRepoABC(ABC):
         """Get the list of expressions."""
         pass
 
+    @abstractmethod
+    def add(self, expression_id: str) -> None:
+        """Add expression to the training list."""
+        pass
+
 
 @dataclass
 class DailyTrainingLearnListItem:
@@ -170,7 +175,6 @@ class DailyTrainingData:
     #     return self.llist.learn_list
 
 
-# class DailyTrainingRepo:
 class DailyTrainingRepo(TrainingRepoABC):
     def __init__(
         self,
@@ -227,7 +231,13 @@ class DailyTrainingRepo(TrainingRepoABC):
         return []
 
     def add(self, expression_id: str):
-        # TODO: check if expression_id already exists in the list
+
+        if (
+            expression_id
+            in self.daily_training_data.get_llist_expressions_ids()
+        ):
+            return
+
         with self.session.begin():
             try:
                 if self._get_user_expression_by_id(expression_id):

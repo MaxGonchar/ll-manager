@@ -183,3 +183,15 @@ class GetLearnListExpressionsTests(DailyTrainingTestHelper):
         actual = self.subject.get_learn_list_expressions()
         self.assertEqual(expected, actual)
         self.repo.get_list.assert_called_once_with()
+
+
+class AddItemToLearnListTests(DailyTrainingTestHelper):
+    def setUp(self):
+        super().setUp()
+
+        self.subject = DailyTraining(self.repo)
+
+    def test_add_item(self):
+        self.subject.add_item_to_learn_list(self.expression_id)
+
+        self.repo.add.assert_called_once_with(self.expression_id)

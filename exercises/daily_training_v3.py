@@ -44,8 +44,8 @@ class DailyTraining:
         expressions.sort(key=lambda item: item["practice_count"], reverse=True)
         return expressions
 
-    def add_item_to_learn_list(self):
-        pass
+    def add_item_to_learn_list(self, expression_id: str) -> None:
+        self.repo.add(expression_id)
 
     def remove_item_from_learn_list(self):
         pass
