@@ -47,17 +47,17 @@ class DailyTraining:
     def add_item_to_learn_list(self, expression_id: str) -> None:
         self.repo.add(expression_id)
 
-    def remove_item_from_learn_list(self):
-        pass
+    def remove_item_from_learn_list(self, expression_id: str) -> None:
+        self.repo.delete(expression_id)
 
-    def update_settings(self):
-        pass
+    def update_settings(self, settings: dict) -> None:
+        self.repo.update_settings(settings)
 
     def refresh_learn_list(self):
-        pass
+        self.repo.refresh()
 
-    def count_learn_list_items(self):
-        pass
+    def count_learn_list_items(self) -> int:
+        return self.repo.count_learn_list_items()
 
-    def is_expression_in_learn_list(self):
-        pass
+    def is_expression_in_learn_list(self, expression_id: str) -> bool:
+        return self.repo.is_expression_in_learn_list(expression_id)

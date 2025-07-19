@@ -25,6 +25,12 @@ class UpdateTrainedExpression(TypedDict):
     is_trained_successfully: bool
 
 
+class DailyTrainingSettings(TypedDict):
+    max_learn_list_size: int
+    knowledge_level_threshold: float
+    practice_count_threshold: int
+
+
 class TrainingRepoABC(ABC):
     @abstractmethod
     def get_next(self, amount: int) -> list[UserExpression]:
@@ -49,6 +55,31 @@ class TrainingRepoABC(ABC):
     @abstractmethod
     def add(self, expression_id: str) -> None:
         """Add expression to the training list."""
+        pass
+
+    @abstractmethod
+    def delete(self, expression_id: str) -> None:
+        """Delete expression from the training list."""
+        pass
+
+    @abstractmethod
+    def update_settings(self, settings: DailyTrainingSettings) -> None:
+        """Update daily training settings."""
+        pass
+
+    @abstractmethod
+    def refresh(self) -> None:
+        """Refresh the training list."""
+        pass
+
+    @abstractmethod
+    def count_learn_list_items(self) -> int:
+        """Count the number of items in the learn list."""
+        pass
+
+    @abstractmethod
+    def is_expression_in_learn_list(self, expression_id: str) -> bool:
+        """Check if an expression is in the learn list."""
         pass
 
 
@@ -282,8 +313,17 @@ class DailyTrainingRepo(TrainingRepoABC):
             return user_expr[0]
         return None
 
-    def update_settings(self):
-        pass
+    def update_settings(self, settings: DailyTrainingSettings) -> None:
+        self.daily_training_data.max_llist_size = settings[
+            "max_learn_list_size"
+        ]
+        self.daily_training_data.knowledge_level_threshold = settings[
+            "knowledge_level_threshold"
+        ]
+        self.daily_training_data.practice_count_threshold = settings[
+            "practice_count_threshold"
+        ]
+        self._refresh_llist()
 
     def _get_user_expression_by_id(
         self, expression_id: str
@@ -307,9 +347,19 @@ class DailyTrainingRepo(TrainingRepoABC):
         self.daily_training_data.insert_item(llist_item)
 
     def _refresh_llist(self, commit: bool = True):
+        # TODO: add "updated" flag to not update daily training data if nothing changed
         self._remove_fully_trained_expressions()
         self._add_new_expressions_if_vacancies()
         self._store_daily_training_data(commit)
+
+    def count_learn_list_items(self) -> int:
+        return self.daily_training_data.get_llist_size()
+
+    def is_expression_in_learn_list(self, expression_id: str) -> bool:
+        return (
+            expression_id
+            in self.daily_training_data.get_llist_expressions_ids()
+        )
 
     def _remove_fully_trained_expressions(self):
         item_ids_to_remove = [

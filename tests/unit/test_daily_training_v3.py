@@ -195,3 +195,74 @@ class AddItemToLearnListTests(DailyTrainingTestHelper):
         self.subject.add_item_to_learn_list(self.expression_id)
 
         self.repo.add.assert_called_once_with(self.expression_id)
+
+
+class RemoveItemFromLearnListTests(DailyTrainingTestHelper):
+    def setUp(self):
+        super().setUp()
+
+        self.subject = DailyTraining(self.repo)
+
+    def test_remove_item(self):
+        self.subject.remove_item_from_learn_list(self.expression_id)
+
+        self.repo.delete.assert_called_once_with(self.expression_id)
+
+
+class UpdateSettingsTests(DailyTrainingTestHelper):
+    def setUp(self):
+        super().setUp()
+
+        self.subject = DailyTraining(self.repo)
+
+    def test_update_settings(self):
+        settings = {
+            "learn_list_size": 10,
+            "knowledge_level_threshold": 0.5,
+            "practice_count_threshold": 3,
+        }
+        self.subject.update_settings(settings)
+
+        self.repo.update_settings.assert_called_once_with(settings)
+
+
+class RefreshLearnListTests(DailyTrainingTestHelper):
+    def setUp(self):
+        super().setUp()
+
+        self.subject = DailyTraining(self.repo)
+
+    def test_refresh_learn_list(self):
+        self.subject.refresh_learn_list()
+
+        self.repo.refresh.assert_called_once_with()
+
+
+class CountLearnListItemsTests(DailyTrainingTestHelper):
+    def setUp(self):
+        super().setUp()
+
+        self.subject = DailyTraining(self.repo)
+
+    def test_count_learn_list_items(self):
+        self.repo.count_learn_list_items.return_value = 5
+
+        actual = self.subject.count_learn_list_items()
+        self.assertEqual(5, actual)
+        self.repo.count_learn_list_items.assert_called_once_with()
+
+
+class IsExpressionInLearnListTests(DailyTrainingTestHelper):
+    def setUp(self):
+        super().setUp()
+
+        self.subject = DailyTraining(self.repo)
+
+    def test_is_expression_in_learn_list(self):
+        self.repo.is_expression_in_learn_list.return_value = True
+
+        actual = self.subject.is_expression_in_learn_list(self.expression_id)
+        self.assertTrue(actual)
+        self.repo.is_expression_in_learn_list.assert_called_once_with(
+            self.expression_id
+        )
