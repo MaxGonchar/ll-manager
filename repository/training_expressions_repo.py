@@ -269,19 +269,18 @@ class DailyTrainingRepo(TrainingRepoABC):
         ):
             return
 
-        with self.session.begin():
-            try:
-                if self._get_user_expression_by_id(expression_id):
-                    self.daily_training_data.add_item(expression_id)
-                    self._store_daily_training_data(commit=False)
-                    self.session.commit()
-                else:
-                    raise UserExpressionNotFoundException(
-                        f"User expression with id {expression_id} not found for user {self.user_id}"
-                    )
-            except Exception:
-                self.session.rollback()
-                raise
+        try:
+            if self._get_user_expression_by_id(expression_id):
+                self.daily_training_data.add_item(expression_id)
+                self._store_daily_training_data(commit=False)
+                self.session.commit()
+            else:
+                raise UserExpressionNotFoundException(
+                    f"User expression with id {expression_id} not found for user {self.user_id}"
+                )
+        except Exception:
+            self.session.rollback()
+            raise
 
     def delete(self, expression_id: str):
         self.daily_training_data.pop_item_by_id(expression_id)
@@ -290,20 +289,19 @@ class DailyTrainingRepo(TrainingRepoABC):
     def update_expressions(self, data: list[UpdateTrainedExpression]) -> None:
         for item in data:
             self._update_item_training_data(
-                item["user_expression"].expression_id,
+                str(item["user_expression"].expression_id),
                 item["is_trained_successfully"],
             )
 
-        with self.session.begin():
-            try:
-                self._refresh_llist(commit=False)
-                self.user_expressions_dao(
-                    self.user_id, self.session
-                ).bulk_update([item["user_expression"] for item in data])
-                self.session.commit()
-            except Exception:
-                self.session.rollback()
-                raise
+        try:
+            self._refresh_llist(commit=False)
+            self.user_expressions_dao(self.user_id, self.session).bulk_update(
+                [item["user_expression"] for item in data]
+            )
+            self.session.commit()
+        except Exception:
+            self.session.rollback()
+            raise
 
     def refresh(self):
         self._refresh_llist()

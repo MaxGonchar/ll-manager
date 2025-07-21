@@ -15,8 +15,16 @@ from exercises.daily_training_v2 import (
 )
 from forms.daily_training_forms import DailyTrainingSettingsForm
 from helpers.rbac_helper import role_required
+from helpers.ff_helper import is_feature_flag_enabled
 
 exercise_bp = Blueprint("exercise", __name__, url_prefix="/exercise")
+
+
+def _init_daily_training(user_id: str):
+    from exercises.daily_training_v3 import DailyTraining
+    from repository.training_expressions_repo import DailyTrainingRepo
+
+    return DailyTraining(DailyTrainingRepo(user_id))
 
 
 @exercise_bp.route("/daily-training", methods=["GET", "POST"])
@@ -29,7 +37,11 @@ def daily_training_challenge():
         ]
     )
 
-    dt = DailyTraining(g.user_id)
+    dt = (
+        _init_daily_training(g.user_id)
+        if is_feature_flag_enabled("DAILY_TRAINING_V3")
+        else DailyTraining(g.user_id)
+    )
 
     if request.method == "GET":
         challenge = dt.get_challenge()

@@ -16,6 +16,7 @@ from repository.training_expressions_repo import (
 class DailyTraining:
     def __init__(self, repo: TrainingRepoABC):
         self.repo: TrainingRepoABC = repo
+        print("DailyTraining v3 initialized")
 
     def get_challenge(self) -> ChallengeDict | None:
         if next_expressions := self.repo.get_next(1):
