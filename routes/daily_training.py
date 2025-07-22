@@ -76,7 +76,12 @@ def daily_training_expressions():
         ]
     )
 
-    d_training = DailyTraining(g.user_id)
+    d_training = (
+        _init_daily_training(g.user_id)
+        if is_feature_flag_enabled("DAILY_TRAINING_V3")
+        else DailyTraining(g.user_id)
+    )
+
     exprs = d_training.get_learn_list_expressions()
     return render_template(
         "exercises/daily_training_expressions.html", exprs=exprs

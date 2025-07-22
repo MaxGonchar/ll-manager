@@ -5,11 +5,15 @@
 ------ In Progress -------
 ==========================
 
+- Replace existing daily training logic with the new one
+- testing (compare behavior with ff on and off):
+  train expression successfully
+  train expression with failing
+  train expression with hint
 
 ==========================
 ------ ToBeDone ----------
 ==========================
-- Replace existing daily training logic with the new one
 - Create a new exercise for training writing sentences and using daily training repo
 - think about adding and removing expressions out of the training classes
 ==========================
