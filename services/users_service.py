@@ -54,6 +54,7 @@ class UsersService:
 
     def login(self, email: str, psw: str) -> User:
         if not (user := self.repo.get_by_email(email)):
+            print(f"User with email {email} not found")
             raise UserNotFoundException
 
         if not is_psw_matching(psw, user.password_hash):

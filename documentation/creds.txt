@@ -8,3 +8,6 @@ google
 
 project name: ll-manager
 client: ll-desktop client 1
+
+dev@test.mail
+devpass

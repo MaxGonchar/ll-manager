@@ -6,6 +6,7 @@
 ==========================
 
 - Replace existing daily training logic with the new one
+- seed data for a new dev user
 - testing (compare behavior with ff on and off):
   train expression successfully
   train expression with failing
