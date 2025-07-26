@@ -16,7 +16,6 @@ from repository.training_expressions_repo import (
 class DailyTraining:
     def __init__(self, repo: TrainingRepoABC):
         self.repo: TrainingRepoABC = repo
-        print("DailyTraining v3 initialized")
 
     def get_challenge(self) -> ChallengeDict | None:
         if next_expressions := self.repo.get_next(1):
@@ -51,10 +50,17 @@ class DailyTraining:
     def remove_item_from_learn_list(self, expression_id: str) -> None:
         self.repo.delete(expression_id)
 
-    def update_settings(self, settings: dict) -> None:
+    def update_settings(
+        self, llist_size: int, practice_count: int, knowledge_level: float
+    ) -> None:
+        settings = {
+            "max_learn_list_size": llist_size,
+            "practice_count_threshold": practice_count,
+            "knowledge_level_threshold": knowledge_level,
+        }
         self.repo.update_settings(settings)
 
-    def refresh_learn_list(self):
+    def refresh_learning_list(self):
         self.repo.refresh()
 
     def count_learn_list_items(self) -> int:
@@ -62,3 +68,7 @@ class DailyTraining:
 
     def is_expression_in_learn_list(self, expression_id: str) -> bool:
         return self.repo.is_expression_in_learn_list(expression_id)
+
+    @property
+    def dt_data(self):
+        return self.repo.daily_training_data

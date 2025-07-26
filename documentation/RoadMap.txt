@@ -5,19 +5,19 @@
 ------ In Progress -------
 ==========================
 
-- Replace existing daily training logic with the new one
-- seed data for a new dev user
-- testing (compare behavior with ff on and off):
+- tested:
+  get list of daily training expressions
   train expression successfully
   train expression with failing
   train expression with hint
-  get list of daily training expressions
   remove expression from daily training
   get / update settings
-  add item to daily training
-  see count of items from daily training
-  new expression is added to daily training if there is a space
   see icon "add expression to daily training" in the expression list for expression are not in daily training
+  add item to daily training
+  new expression is added to daily training if there is a space
+  see count of items from daily training
+
+- testing (compare behavior with ff on and off):
 - run all tests successfully
 
 ==========================

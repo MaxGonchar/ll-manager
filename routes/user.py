@@ -10,6 +10,7 @@ from constants import Role
 
 user_bp = Blueprint("user", __name__, url_prefix="/")
 
+
 def _init_daily_training(user_id: str):
     from exercises.daily_training_v3 import DailyTraining
     from repository.training_expressions_repo import DailyTrainingRepo

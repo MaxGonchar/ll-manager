@@ -242,18 +242,18 @@ class DailyTrainingRepo(TrainingRepoABC):
             learn_list = self.daily_training_data.get_as_dict_by_id()
             return [
                 get_exercise_expressions_list_item(
-                    expr_id=expr.expression_id,
+                    expr_id=str(expr.expression_id),
                     expression=expr.expression.expression,
                     knowledge_level=learn_list[
-                        expr.expression_id
+                        str(expr.expression_id)
                     ].knowledge_level,
                     practice_count=learn_list[
-                        expr.expression_id
+                        str(expr.expression_id)
                     ].practice_count,
                     last_practice_time=string_to_datetime(
-                        learn_list[expr.expression_id].last_practice_time
+                        learn_list[str(expr.expression_id)].last_practice_time
                     )
-                    if learn_list[expr.expression_id].last_practice_time
+                    if learn_list[str(expr.expression_id)].last_practice_time
                     is not None
                     else None,
                 )
@@ -293,10 +293,14 @@ class DailyTrainingRepo(TrainingRepoABC):
                 item["is_trained_successfully"],
             )
 
+        updated_user_expressions = self._update_user_expressions_training_data(
+            data
+        )
+
         try:
             self._refresh_llist(commit=False)
             self.user_expressions_dao(self.user_id, self.session).bulk_update(
-                [item["user_expression"] for item in data]
+                updated_user_expressions
             )
             self.session.commit()
         except Exception:
@@ -343,6 +347,22 @@ class DailyTrainingRepo(TrainingRepoABC):
         llist_item.position += 1 if success else -1
         llist_item.last_practice_time = get_current_utc_time()
         self.daily_training_data.insert_item(llist_item)
+
+    def _update_user_expressions_training_data(
+        self, data: list[UpdateTrainedExpression]
+    ) -> list[UserExpression]:
+        updated_expressions = []
+        for item in data:
+            user_expression = item["user_expression"]
+            user_expression.knowledge_level = calculate_knowledge_level(
+                user_expression.knowledge_level,
+                user_expression.practice_count,
+                item["is_trained_successfully"],
+            )
+            user_expression.practice_count += 1
+            user_expression.updated = get_current_utc_time()
+            updated_expressions.append(user_expression)
+        return updated_expressions
 
     def _refresh_llist(self, commit: bool = True):
         # TODO: add "updated" flag to not update daily training data if nothing changed
