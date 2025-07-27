@@ -217,11 +217,15 @@ class UpdateSettingsTests(DailyTrainingTestHelper):
 
     def test_update_settings(self):
         settings = {
-            "learn_list_size": 10,
+            "max_learn_list_size": 10,
             "knowledge_level_threshold": 0.5,
             "practice_count_threshold": 3,
         }
-        self.subject.update_settings(settings)
+        self.subject.update_settings(
+            settings["max_learn_list_size"],
+            settings["practice_count_threshold"],
+            settings["knowledge_level_threshold"],
+        )
 
         self.repo.update_settings.assert_called_once_with(settings)
 
@@ -233,7 +237,7 @@ class RefreshLearnListTests(DailyTrainingTestHelper):
         self.subject = DailyTraining(self.repo)
 
     def test_refresh_learn_list(self):
-        self.subject.refresh_learn_list()
+        self.subject.refresh_learning_list()
 
         self.repo.refresh.assert_called_once_with()
 

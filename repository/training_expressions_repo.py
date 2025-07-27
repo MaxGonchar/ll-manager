@@ -360,7 +360,9 @@ class DailyTrainingRepo(TrainingRepoABC):
                 item["is_trained_successfully"],
             )
             user_expression.practice_count += 1
-            user_expression.updated = get_current_utc_time()
+            current_time = get_current_utc_time()
+            user_expression.last_practice_time = current_time
+            user_expression.updated = current_time
             updated_expressions.append(user_expression)
         return updated_expressions
 
