@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, g
 
+from helpers.ff_helper import is_feature_flag_enabled
 from services.user_expression_service import UserExpressionService
 from exercises.daily_training_v2 import DailyTraining
 from exercises.expression_recall import ExpressionRecall
@@ -8,6 +9,13 @@ from helpers.rbac_helper import role_required
 from constants import Role
 
 user_bp = Blueprint("user", __name__, url_prefix="/")
+
+
+def _init_daily_training(user_id: str):
+    from exercises.daily_training_v3 import DailyTraining
+    from repository.training_expressions_repo import DailyTrainingRepo
+
+    return DailyTraining(DailyTrainingRepo(user_id))
 
 
 @user_bp.route("")
@@ -21,10 +29,13 @@ def index():
     )
 
     user_id = g.user_id
+    dt = (
+        _init_daily_training(g.user_id)
+        if is_feature_flag_enabled("DAILY_TRAINING_V3")
+        else DailyTraining(g.user_id)
+    )
     exprs = {
-        "dailyTrainingExpressionsNumber": DailyTraining(
-            user_id
-        ).count_learn_list_items(),
+        "dailyTrainingExpressionsNumber": dt.count_learn_list_items(),
         "totalExpressions": UserExpressionService(
             user_id
         ).count_user_expressions(),

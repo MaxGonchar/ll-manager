@@ -8,6 +8,7 @@ from models.models import (
     Writings,
 )
 
+# from repository.training_expressions_repo import DailyTrainingExpressionsListItem
 
 from typing import List, Optional
 
@@ -210,3 +211,19 @@ def get_writings(
         added=added,
         updated=updated,
     )
+
+
+def get_daily_training_expressions_list_item(
+    expression_id: str,
+    expression: str,
+    knowledge_level: float,
+    practice_count: int,
+    last_practice_time: str | None,
+):
+    return {
+        "expression_id": expression_id,
+        "expression": expression,
+        "knowledge_level": knowledge_level,
+        "practice_count": practice_count,
+        "last_practice_time": last_practice_time,
+    }

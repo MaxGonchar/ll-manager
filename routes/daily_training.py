@@ -15,8 +15,16 @@ from exercises.daily_training_v2 import (
 )
 from forms.daily_training_forms import DailyTrainingSettingsForm
 from helpers.rbac_helper import role_required
+from helpers.ff_helper import is_feature_flag_enabled
 
 exercise_bp = Blueprint("exercise", __name__, url_prefix="/exercise")
+
+
+def _init_daily_training(user_id: str):
+    from exercises.daily_training_v3 import DailyTraining
+    from repository.training_expressions_repo import DailyTrainingRepo
+
+    return DailyTraining(DailyTrainingRepo(user_id))
 
 
 @exercise_bp.route("/daily-training", methods=["GET", "POST"])
@@ -29,7 +37,11 @@ def daily_training_challenge():
         ]
     )
 
-    dt = DailyTraining(g.user_id)
+    dt = (
+        _init_daily_training(g.user_id)
+        if is_feature_flag_enabled("DAILY_TRAINING_V3")
+        else DailyTraining(g.user_id)
+    )
 
     if request.method == "GET":
         challenge = dt.get_challenge()
@@ -64,7 +76,12 @@ def daily_training_expressions():
         ]
     )
 
-    d_training = DailyTraining(g.user_id)
+    d_training = (
+        _init_daily_training(g.user_id)
+        if is_feature_flag_enabled("DAILY_TRAINING_V3")
+        else DailyTraining(g.user_id)
+    )
+
     exprs = d_training.get_learn_list_expressions()
     return render_template(
         "exercises/daily_training_expressions.html", exprs=exprs
@@ -81,7 +98,11 @@ def remove_from_daily_training(expression_id: str):
         ]
     )
 
-    d_training = DailyTraining(g.user_id)
+    d_training = (
+        _init_daily_training(g.user_id)
+        if is_feature_flag_enabled("DAILY_TRAINING_V3")
+        else DailyTraining(g.user_id)
+    )
 
     try:
         d_training.remove_item_from_learn_list(expression_id)
@@ -101,7 +122,11 @@ def settings():
         ]
     )
 
-    d_training = DailyTraining(g.user_id)
+    d_training = (
+        _init_daily_training(g.user_id)
+        if is_feature_flag_enabled("DAILY_TRAINING_V3")
+        else DailyTraining(g.user_id)
+    )
     form = DailyTrainingSettingsForm()
 
     if form.validate_on_submit():

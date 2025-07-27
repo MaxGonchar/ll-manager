@@ -1,16 +1,20 @@
-from models.models import UserExpression, Expression, ExpressionContext
-from sqlalchemy import func
-from sqlalchemy.orm import Session
-from sqlalchemy.orm.exc import StaleDataError
 from extensions import db
-from typing import List, Optional
 from helpers.time_helpers import get_current_utc_time
+from models.models import Expression, ExpressionContext, UserExpression
 from repository.exceptions import UserExpressionNotFoundException
 
 
-class UserExpressionsRepo:
-    def __init__(self, user_id: str) -> None:
-        self.session: Session = db.session
+from sqlalchemy import func
+from sqlalchemy.orm import Session
+from sqlalchemy.orm.exc import StaleDataError
+
+
+from typing import List, Optional
+
+
+class UserExpressionsDAO:
+    def __init__(self, user_id: str, session: Session | None = None) -> None:
+        self.session: Session = session or db.session
         self.user_id = user_id
 
     def get_trained_expressions(
@@ -143,6 +147,10 @@ class UserExpressionsRepo:
             .filter(UserExpression.user_id == self.user_id)
             .count()
         )
+
+    def bulk_update(self, user_expressions: list[UserExpression]):
+        self.session.bulk_save_objects(user_expressions)
+        self.session.commit()
 
     def _get_include(self, include: List[str]) -> List[UserExpression]:
         return (

@@ -16,7 +16,7 @@ class CreateUsersTests(TestCase):
         self.first = "test_first"
         self.last = "test_last"
 
-        user_repo_patcher = patch("services.users_service.UsersRepo")
+        user_repo_patcher = patch("services.users_service.UsersDAO")
         self.mock_post = user_repo_patcher.start().return_value.post
         self.addCleanup(user_repo_patcher.stop)
 
@@ -68,7 +68,7 @@ class LoginTests(TestCase):
             password_hash="7c9124321b7c84c74e95c3cfd598b6f9eb71a950c141bc39848dafe846eb8628",
         )
 
-        user_repo_patcher = patch("services.users_service.UsersRepo")
+        user_repo_patcher = patch("services.users_service.UsersDAO")
         mock_user_repo = user_repo_patcher.start()
         self.mock_get = mock_user_repo.return_value.get_by_email
         self.mock_get.return_value = self.user

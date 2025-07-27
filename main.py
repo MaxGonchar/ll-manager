@@ -22,7 +22,7 @@ from routes.sentence_training import sentence_training_bp
 from routes.writing_training import writing_training_bp
 from extensions import db
 from env_manager import load_env
-from repository.users_repo import UsersRepo
+from dao.user_dao import UsersDAO
 import filters
 
 logging.basicConfig(
@@ -102,7 +102,7 @@ def before_request():
 
     user_id = session.get("user_id")
 
-    if not (user_id and (user := UsersRepo().get_by_id(user_id))):
+    if not (user_id and (user := UsersDAO().get_by_id(user_id))):
         return redirect(url_for("login.login"))
 
     set_globals(user_id, user.role)

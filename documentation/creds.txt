@@ -1,10 +1,7 @@
-https://detectlanguage.com
-
-e-mail: boborodada@gmail.com
-psw: ll-detect-2022
-token: 9d8b50a987ce4ac304a5b9d8d927eae3
-
 google
 
 project name: ll-manager
 client: ll-desktop client 1
+
+dev@test.mail
+devpass

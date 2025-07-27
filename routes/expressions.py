@@ -8,6 +8,7 @@ from flask import (
 )
 
 from forms.expression_forms import PostExpressionForm
+from helpers.ff_helper import is_feature_flag_enabled
 from services.user_expression_service import UserExpressionService
 from services.tags_service import TagsService
 from exercises.daily_training_v2 import DailyTraining
@@ -17,6 +18,13 @@ from helpers.rbac_helper import role_required
 expressions_bp = Blueprint(
     "expressions", __name__, url_prefix="/user/expressions"
 )
+
+
+def _init_daily_training(user_id: str):
+    from exercises.daily_training_v3 import DailyTraining
+    from repository.training_expressions_repo import DailyTrainingRepo
+
+    return DailyTraining(DailyTrainingRepo(user_id))
 
 
 # TO IMPROVE: add pagination
@@ -126,6 +134,10 @@ def add_expression_to_daily_training(expression_id: str):
         ]
     )
 
-    d_training = DailyTraining(g.user_id)
+    d_training = (
+        _init_daily_training(g.user_id)
+        if is_feature_flag_enabled("DAILY_TRAINING_V3")
+        else DailyTraining(g.user_id)
+    )
     d_training.add_item_to_learn_list(expression_id)
     return redirect(url_for("expressions.user_expressions"))

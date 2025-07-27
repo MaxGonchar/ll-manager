@@ -1,9 +1,10 @@
 from typing import List, Optional, TypedDict
 from uuid import uuid4
 
-from repository.user_expressions_repo import UserExpressionsRepo
+from dao.user_expressions_dao import UserExpressionsDAO
+from helpers.ff_helper import is_feature_flag_enabled
 from models.models import Expression, UserExpression
-from repository.users_repo import UsersRepo
+from dao.user_dao import UsersDAO
 from repository.tags_repo import TagsRepo
 from helpers.time_helpers import get_current_utc_time
 from exercises.daily_training_v2 import DailyTraining
@@ -13,6 +14,13 @@ from services.exceptions import (
     UserExpressionNotFoundException,
     InvalidPostUserExpressionDataException,
 )
+
+
+def _init_daily_training(user_id: str):
+    from exercises.daily_training_v3 import DailyTraining
+    from repository.training_expressions_repo import DailyTrainingRepo
+
+    return DailyTraining(DailyTrainingRepo(user_id))
 
 
 class UserExpressionListItem(TypedDict):
@@ -34,7 +42,7 @@ class UserExpressionType(TypedDict):
 class UserExpressionService:
     def __init__(self, user_id: str) -> None:
         self.user_id = user_id
-        self.repo = UserExpressionsRepo(user_id)
+        self.repo = UserExpressionsDAO(user_id)
 
     def get_expression_by_id(self, expr_id: str) -> UserExpressionType:
         if not (expr := self.repo.get_by_id(expr_id)):
@@ -57,7 +65,7 @@ class UserExpressionService:
         properties: dict = {},
     ) -> None:
 
-        if not (user := UsersRepo().get_by_id(self.user_id)):
+        if not (user := UsersDAO().get_by_id(self.user_id)):
             raise UserNotFoundException
 
         tags = []
@@ -96,7 +104,13 @@ class UserExpressionService:
 
         self.repo.post(user_expr)
 
-        DailyTraining(self.user_id).refresh_learning_list()
+        dt = (
+            _init_daily_training(self.user_id)
+            if is_feature_flag_enabled("DAILY_TRAINING_V3")
+            else DailyTraining(self.user_id)
+        )
+
+        dt.refresh_learning_list()
 
     def count_user_expressions(self) -> int:
         return self.repo.count()
@@ -105,7 +119,11 @@ class UserExpressionService:
         self,
         us_exprs: List[UserExpression],
     ) -> List[UserExpressionListItem]:
-        dt = DailyTraining(self.user_id)
+        dt = (
+            _init_daily_training(self.user_id)
+            if is_feature_flag_enabled("DAILY_TRAINING_V3")
+            else DailyTraining(self.user_id)
+        )
         return [
             {
                 "expressionId": str(expr.expression_id),
