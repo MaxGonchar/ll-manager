@@ -30,6 +30,11 @@
       <button class="button button-filled" id="button-submit" onclick="submit()">Submit</button>
     </div>
 
+    <div>
+      <p>Practice count: {{ challenge.practiceCount }}</p>
+      <p>Knowledge level: {{ challenge.knowledgeLevel | knowledge_level_filter }}</p>
+    </div>
+
     <script>
       const action = "{{ url_for('exercise.daily_training_challenge')}}";
       const challenge = {

@@ -5,7 +5,6 @@ from exercises.common import (
     get_challenge_solution_object,
     is_answer_correct,
     ExerciseExpressionsListItem,
-    get_exercise_expressions_list_item,
 )
 from repository.training_expressions_repo import (
     TrainingRepoABC,
@@ -19,7 +18,7 @@ class DailyTraining:
 
     def get_challenge(self) -> ChallengeDict | None:
         if next_expressions := self.repo.get_next(1):
-            return get_challenge_object(next_expressions[0].expression)
+            return get_challenge_object(next_expressions[0])
 
     def submit_challenge(
         self, expression_id: str, answer: str, hint: bool = False
