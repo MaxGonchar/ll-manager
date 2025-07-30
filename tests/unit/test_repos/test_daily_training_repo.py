@@ -7,9 +7,7 @@ from repository.training_expressions_repo import DailyTrainingRepo
 from dao.daily_training_dao import DailyTrainingDAO
 from dao.user_expressions_dao import UserExpressionsDAO
 from tests.unit.fixtures import (
-    get_dt_data,
     get_expression,
-    get_learn_list_item,
     get_user,
     get_user_expression,
     get_daily_training_expressions_list_item,
@@ -114,12 +112,31 @@ class GetNextTests(DailyTrainingRepoTestsHelper):
 
         actual = self.subject.get_next(1)
 
-        self.assertEqual(self.expr_id_1, actual[0].expression_id)
+        expected = [
+            {
+                "expression": self.user_expr_1,
+                "knowledgeLevel": 0,
+                "practiceCount": 0,
+            }
+        ]
+
+        self._assert_training_expressions_data(expected, actual)
 
         self.mock_daily_training_dao.return_value.get.assert_called_once_with()
         self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
             include=[self.expr_id_1]
         )
+
+    def _assert_training_expressions_data(self, expected: list, actual: list):
+        self.assertEqual(len(expected), len(actual))
+
+        for exp, act in zip(expected, actual):
+            self.assertEqual(
+                exp["expression"].expression_id,
+                act["expression"].expression_id,
+            )
+            self.assertEqual(exp["knowledgeLevel"], act["knowledgeLevel"])
+            self.assertEqual(exp["practiceCount"], act["practiceCount"])
 
     def test_get_few(self):
         self.mock_user_expressions_dao.return_value.get.return_value = [
@@ -129,9 +146,20 @@ class GetNextTests(DailyTrainingRepoTestsHelper):
 
         actual = self.subject.get_next(2)
 
-        self.assertEqual(2, len(actual))
-        self.assertEqual(self.expr_id_1, actual[0].expression_id)
-        self.assertEqual(self.expr_id_2, actual[1].expression_id)
+        expected = [
+            {
+                "expression": self.user_expr_1,
+                "knowledgeLevel": 0,
+                "practiceCount": 0,
+            },
+            {
+                "expression": self.user_expr_2,
+                "knowledgeLevel": 0,
+                "practiceCount": 0,
+            },
+        ]
+
+        self._assert_training_expressions_data(expected, actual)
 
         self.mock_daily_training_dao.return_value.get.assert_called_once_with()
         self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
@@ -148,9 +176,24 @@ class GetNextTests(DailyTrainingRepoTestsHelper):
         actual = self.subject.get_next(4)
 
         self.assertEqual(3, len(actual))
-        self.assertEqual(self.expr_id_1, actual[0].expression_id)
-        self.assertEqual(self.expr_id_2, actual[1].expression_id)
-        self.assertEqual(self.expr_id_3, actual[2].expression_id)
+        expected = [
+            {
+                "expression": self.user_expr_1,
+                "knowledgeLevel": 0,
+                "practiceCount": 0,
+            },
+            {
+                "expression": self.user_expr_2,
+                "knowledgeLevel": 0,
+                "practiceCount": 0,
+            },
+            {
+                "expression": self.user_expr_3,
+                "knowledgeLevel": 0,
+                "practiceCount": 0,
+            },
+        ]
+        self._assert_training_expressions_data(expected, actual)
 
         self.mock_daily_training_dao.return_value.get.assert_called_once_with()
         self.mock_user_expressions_dao.return_value.get.assert_called_once_with(

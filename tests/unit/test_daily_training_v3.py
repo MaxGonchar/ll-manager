@@ -30,21 +30,27 @@ class GetChallengeTests(DailyTrainingTestHelper):
 
     def test_get_challenge(self):
         self.repo.get_next.return_value = [
-            get_user_expression(
-                user_id=self.user_id,
-                user=get_user(self.user_id),
-                expression=get_expression(
-                    expression_id=self.expression_id,
-                    expression=self.expression,
-                    definition=self.definition,
+            {
+                "expression": get_user_expression(
+                    user_id=self.user_id,
+                    user=get_user(self.user_id),
+                    expression=get_expression(
+                        expression_id=self.expression_id,
+                        expression=self.expression,
+                        definition=self.definition,
+                    ),
                 ),
-            )
+                "knowledgeLevel": 0,
+                "practiceCount": 0,
+            }
         ]
         expected = {
             "answer": self.expression,
             "expression_id": self.expression_id,
             "question": self.definition,
             "tip": self.expression,
+            "practiceCount": 0,
+            "knowledgeLevel": 0,
         }
         actual = self.subject.get_challenge()
         self.assertEqual(expected, actual)

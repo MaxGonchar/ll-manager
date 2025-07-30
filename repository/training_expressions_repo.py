@@ -8,6 +8,7 @@ from dao.daily_training_dao import (
     DailyTrainingDAO,
 )
 from dao.user_expressions_dao import UserExpressionsDAO
+from exercises.common import TrainingExpressionData
 from extensions import db
 from models.models import UserExpression
 from sqlalchemy.orm import Session
@@ -33,7 +34,7 @@ class DailyTrainingSettings(TypedDict):
 
 class TrainingRepoABC(ABC):
     @abstractmethod
-    def get_next(self, amount: int) -> list[UserExpression]:
+    def get_next(self, amount: int) -> list[TrainingExpressionData]:
         """Get next expressions to train."""
         pass
 
@@ -137,6 +138,14 @@ class DailyTrainingLearnList:
             if item.expression_id == item_id:
                 return self.learn_list.pop(i)
 
+    def get_item_by_id(
+        self, item_id: str
+    ) -> DailyTrainingLearnListItem | None:
+        for item in self.learn_list:
+            if item.expression_id == item_id:
+                return item
+        return None
+
     def serialize(self) -> list[DailyTrainingLearnListItemDict]:
         return [item.serialize() for item in self.learn_list]
 
@@ -172,9 +181,6 @@ class DailyTrainingData:
     def get_next_expression_ids_to_train(self, amount: int) -> list[str]:
         return self.llist.get_first_items_ids(amount)
 
-    # def get_next_expr_to_train_id(self) ->  str | None:
-    #     return self.llist.get_first_item_id()
-
     def pop_item_by_id(self, item_id: str) -> DailyTrainingLearnListItem:
         return self.llist.pop_item_by_id(item_id)
 
@@ -202,8 +208,10 @@ class DailyTrainingData:
         item = DailyTrainingLearnListItem.new_from_expression_id(item_id)
         self.llist.insert(item)
 
-    # def get_learn_list(self) -> list[DailyTrainingLearnListItem]:
-    #     return self.llist.learn_list
+    def get_training_data(
+        self, expression_id: str
+    ) -> DailyTrainingLearnListItem | None:
+        return self.llist.get_item_by_id(expression_id)
 
 
 class DailyTrainingRepo(TrainingRepoABC):
@@ -229,10 +237,30 @@ class DailyTrainingRepo(TrainingRepoABC):
         if user_expression_ids := self.daily_training_data.get_next_expression_ids_to_train(
             amount
         ):
-            return self.user_expressions_dao(self.user_id, self.session).get(
-                include=user_expression_ids
-            )
+            user_expressions = self.user_expressions_dao(
+                self.user_id, self.session
+            ).get(include=user_expression_ids)
+            return self._format_training_expressions_data(user_expressions)
         return []
+
+    def _format_training_expressions_data(
+        self, expressions: list[UserExpression]
+    ) -> list[TrainingExpressionData]:
+        response = []
+        for expr in expressions:
+            training_data = self.daily_training_data.get_training_data(
+                str(expr.expression.id)
+            )
+            if training_data:
+                response.append(
+                    {
+                        "expression": expr,
+                        "knowledgeLevel": training_data.knowledge_level,
+                        "practiceCount": training_data.practice_count,
+                    }
+                )
+
+        return response
 
     def get_list(self) -> list[ExerciseExpressionsListItem]:
         if ids := self.daily_training_data.get_llist_expressions_ids():

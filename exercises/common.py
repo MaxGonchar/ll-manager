@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, TypedDict
 
-from models.models import Expression
+from models.models import Expression, UserExpression
 
 
 class ChallengeDict(TypedDict):
@@ -9,6 +9,8 @@ class ChallengeDict(TypedDict):
     tip: Optional[str]
     answer: str
     expression_id: str
+    practiceCount: int
+    knowledgeLevel: float
 
 
 class ChallengeSolutionDict(TypedDict):
@@ -27,25 +29,35 @@ class ExerciseExpressionsListItem(TypedDict):
     last_practice_time: Optional[datetime]
 
 
-def get_challenge_object(expr: Expression) -> ChallengeDict:
+class TrainingExpressionData(TypedDict):
+    expression: UserExpression
+    knowledgeLevel: float
+    practiceCount: int
+
+
+def get_challenge_object(item: TrainingExpressionData) -> ChallengeDict:
+    expr = item["expression"].expression
     return {
         "answer": expr.expression,
         "expression_id": str(expr.id),
         "question": expr.definition,
         "tip": expr.expression,
+        "practiceCount": item["practiceCount"],
+        "knowledgeLevel": item["knowledgeLevel"],
     }
 
 
 def get_challenge_solution_object(
     challenge_expr: Expression, user_answer: str
 ) -> ChallengeSolutionDict:
-    return {
+    resp = {
         "correctAnswer": challenge_expr.expression,
         "usersAnswer": user_answer,
         "definition": challenge_expr.definition,
         "translation": challenge_expr.translation("uk"),
         "example": challenge_expr.example,
     }
+    return resp
 
 
 def get_exercise_expressions_list_item(
