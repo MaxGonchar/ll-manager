@@ -49,7 +49,7 @@ class TrainingRepoABC(ABC):
         pass
 
     @abstractmethod
-    def get_list(self) -> list[UserExpression]:
+    def get_list(self) -> list[ExerciseExpressionsListItem]:
         """Get the list of expressions."""
         pass
 
@@ -181,7 +181,9 @@ class DailyTrainingData:
     def get_next_expression_ids_to_train(self, amount: int) -> list[str]:
         return self.llist.get_first_items_ids(amount)
 
-    def pop_item_by_id(self, item_id: str) -> DailyTrainingLearnListItem:
+    def pop_item_by_id(
+        self, item_id: str
+    ) -> DailyTrainingLearnListItem | None:
         return self.llist.pop_item_by_id(item_id)
 
     def get_llist_size(self) -> int:
@@ -219,18 +221,20 @@ class DailyTrainingRepo(TrainingRepoABC):
         self,
         user_id: str,
         session: Session = db.session,
-        daily_training_dao: DailyTrainingDAO = DailyTrainingDAO,
-        user_expressions_dao: UserExpressionsDAO = UserExpressionsDAO,
+        daily_training_dao: type[DailyTrainingDAO] = DailyTrainingDAO,
+        user_expressions_dao: type[UserExpressionsDAO] = UserExpressionsDAO,
     ):
         self.user_id = user_id
         self.session: Session = session
-        self.daily_training_dao: DailyTrainingDAO = daily_training_dao
-        self.user_expressions_dao: UserExpressionsDAO = user_expressions_dao
+        self.daily_training_dao: type[DailyTrainingDAO] = daily_training_dao
+        self.user_expressions_dao: type[
+            UserExpressionsDAO
+        ] = user_expressions_dao
         self.daily_training_data = DailyTrainingData(
             self.daily_training_dao(self.user_id, self.session).get()
         )
 
-    def get_next(self, amount: int) -> list[UserExpression]:
+    def get_next(self, amount: int) -> list[TrainingExpressionData]:
         # TODO: deal with expressions that can be deleted or deactivated.
         # ??? Mark as deleted and allow a user to remove from the list
         # ??? remove from the list here
@@ -357,7 +361,7 @@ class DailyTrainingRepo(TrainingRepoABC):
 
     def _get_user_expression_by_id(
         self, expression_id: str
-    ) -> UserExpression | None:
+    ) -> list[UserExpression] | None:
         return self.user_expressions_dao(self.user_id, self.session).get(
             include=[expression_id]
         )
@@ -368,6 +372,10 @@ class DailyTrainingRepo(TrainingRepoABC):
         llist_item = self.daily_training_data.pop_item_by_id(
             user_expression_id
         )
+        if not llist_item:
+            raise UserExpressionNotFoundException(
+                f"User expression with id {user_expression_id} not found in daily training data"
+            )
         llist_item.knowledge_level = calculate_knowledge_level(
             llist_item.knowledge_level, llist_item.practice_count, success
         )

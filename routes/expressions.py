@@ -134,10 +134,6 @@ def add_expression_to_daily_training(expression_id: str):
         ]
     )
 
-    d_training = (
-        _init_daily_training(g.user_id)
-        if is_feature_flag_enabled("DAILY_TRAINING_V3")
-        else DailyTraining(g.user_id)
-    )
+    d_training = _init_daily_training(g.user_id)
     d_training.add_item_to_learn_list(expression_id)
     return redirect(url_for("expressions.user_expressions"))

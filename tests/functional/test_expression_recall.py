@@ -37,6 +37,8 @@ class ExpressionRecallChallengeGetTests(FunctionalTestsHelper):
             "tip": "despair",
             "answer": "despair",
             "expression_id": "24d96f68-46e1-4fb3-b300-81cd89cea435",
+            "knowledgeLevel": Decimal("0.50000"),
+            "practiceCount": 9,
         }
         self.assertEqual(expected_challenge, context["challenge"])
 
@@ -119,6 +121,8 @@ class ExpressionRecallChallengePostTests(FunctionalTestsHelper):
             "tip": "preceding",
             "answer": "preceding",
             "expression_id": "4d7993aa-d897-4647-994b-e0625c88f349",
+            "knowledgeLevel": Decimal("0.00000"),
+            "practiceCount": 0,
         }
         self.assertEqual(expected_challenge, context["challenge"])
 
@@ -174,6 +178,8 @@ class ExpressionRecallChallengePostTests(FunctionalTestsHelper):
             "tip": "preceding",
             "answer": "preceding",
             "expression_id": "4d7993aa-d897-4647-994b-e0625c88f349",
+            "knowledgeLevel": Decimal("0.00000"),
+            "practiceCount": 0,
         }
         self.assertEqual(expected_challenge, context["challenge"])
 
@@ -228,6 +234,8 @@ class ExpressionRecallChallengePostTests(FunctionalTestsHelper):
             "tip": "despair",
             "answer": "despair",
             "expression_id": "24d96f68-46e1-4fb3-b300-81cd89cea435",
+            "knowledgeLevel": Decimal("0.50000"),
+            "practiceCount": 9,
         }
         self.assertEqual(expected_challenge, context["challenge"])
 

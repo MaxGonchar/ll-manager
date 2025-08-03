@@ -38,6 +38,8 @@ class GetChallengeTests(TestCase):
             "expression_id": expression_id,
             "question": definition,
             "tip": expression,
+            "knowledgeLevel": 99.9,
+            "practiceCount": 0,
         }
 
         self.assertEqual(expected, actual)

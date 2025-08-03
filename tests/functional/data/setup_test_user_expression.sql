@@ -3,7 +3,7 @@ DELETE FROM users;
 DELETE FROM expressions;
 
 INSERT INTO users (id, first, last, email, role, password_hash, properties, added, updated, last_login) VALUES -- psw: daily_training
-  ('04aa4f4e-a53e-4b6c-96c5-3604e3fcc4ef', 'First', 'Last', 'daily_training@test.mail', 'self-educated', 'c1a4b7e252281a7649d17a0f9f1d5180d5b5b1783dca84e121bbfcadda4ecc12', '{"nativeLang": "uk"}', '2023-04-16 09:10:25', '2023-04-16 09:10:25', '2023-04-16 09:10:25');
+  ('04aa4f4e-a53e-4b6c-96c5-3604e3fcc4ef', 'First', 'Last', 'daily_training@test.mail', 'self-educated', 'c1a4b7e252281a7649d17a0f9f1d5180d5b5b1783dca84e121bbfcadda4ecc12', '{"nativeLang": "uk", "challenges": {"dailyTraining": {"learnListSize": 50, "practiceCountThreshold": 50, "knowledgeLevelThreshold": 0.9, "learning_list": [{"expressionId": "4d7993aa-d897-4647-994b-e0625c88f349", "position": 0, "practiceCount": 0, "knowledgeLevel": 0}, {"expressionId": "24d96f68-46e1-4fb3-b300-81cd89cea435", "position": 0, "practiceCount": 0, "knowledgeLevel": 0}, {"expressionId": "d5c26549-74f7-4930-9c2c-16d10d46e55e", "position": 0, "practiceCount": 0, "knowledgeLevel": 0}]}}}', '2023-04-16 09:10:25', '2023-04-16 09:10:25', '2023-04-16 09:10:25');
 
 INSERT INTO expressions (id, expression, definition, translations, added, updated) VALUES
   ('4d7993aa-d897-4647-994b-e0625c88f349', 'preceding'                    , 'coming before something in order, position, or time' , '{"uk": "попередній"}' , '2016-06-22 19:10:25', '2016-06-22 19:10:25'),

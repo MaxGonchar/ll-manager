@@ -2,25 +2,18 @@ from typing import List, Optional, TypedDict
 from uuid import uuid4
 
 from dao.user_expressions_dao import UserExpressionsDAO
-from helpers.ff_helper import is_feature_flag_enabled
 from models.models import Expression, UserExpression
 from dao.user_dao import UsersDAO
 from repository.tags_repo import TagsRepo
 from helpers.time_helpers import get_current_utc_time
-from exercises.daily_training_v2 import DailyTraining
 from services.exceptions import (
     UserNotFoundException,
     TagNotFoundException,
     UserExpressionNotFoundException,
     InvalidPostUserExpressionDataException,
 )
-
-
-def _init_daily_training(user_id: str):
-    from exercises.daily_training_v3 import DailyTraining
-    from repository.training_expressions_repo import DailyTrainingRepo
-
-    return DailyTraining(DailyTrainingRepo(user_id))
+from exercises.daily_training_v3 import DailyTraining
+from repository.training_expressions_repo import DailyTrainingRepo
 
 
 class UserExpressionListItem(TypedDict):
@@ -43,6 +36,7 @@ class UserExpressionService:
     def __init__(self, user_id: str) -> None:
         self.user_id = user_id
         self.repo = UserExpressionsDAO(user_id)
+        self.daily_training = DailyTraining(DailyTrainingRepo(user_id))
 
     def get_expression_by_id(self, expr_id: str) -> UserExpressionType:
         if not (expr := self.repo.get_by_id(expr_id)):
@@ -104,13 +98,7 @@ class UserExpressionService:
 
         self.repo.post(user_expr)
 
-        dt = (
-            _init_daily_training(self.user_id)
-            if is_feature_flag_enabled("DAILY_TRAINING_V3")
-            else DailyTraining(self.user_id)
-        )
-
-        dt.refresh_learning_list()
+        self.daily_training.refresh_learning_list()
 
     def count_user_expressions(self) -> int:
         return self.repo.count()
@@ -119,11 +107,6 @@ class UserExpressionService:
         self,
         us_exprs: List[UserExpression],
     ) -> List[UserExpressionListItem]:
-        dt = (
-            _init_daily_training(self.user_id)
-            if is_feature_flag_enabled("DAILY_TRAINING_V3")
-            else DailyTraining(self.user_id)
-        )
         return [
             {
                 "expressionId": str(expr.expression_id),
@@ -131,7 +114,7 @@ class UserExpressionService:
                 "knowledgeLevel": expr.knowledge_level,
                 "practiceCount": expr.practice_count,
                 "lastPracticeTime": expr.last_practice_time,
-                "isInLearnList": dt.is_expression_in_learn_list(
+                "isInLearnList": self.daily_training.is_expression_in_learn_list(
                     str(expr.expression_id)
                 ),
             }
@@ -148,7 +131,7 @@ class UserExpressionService:
             )
             or "no translation",
             "tags": [tag.tag for tag in usr_expr.expression.tags],
-            "examples": [
+            "examples": [  # type: ignore
                 item.sentence for item in usr_expr.expression.context
             ],
         }
