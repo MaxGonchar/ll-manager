@@ -27,7 +27,13 @@ class ExpressionRecall:
 
         user_expr = user_exprs[0]
 
-        return get_challenge_object(user_expr.expression)
+        return get_challenge_object(
+            {
+                "expression": user_expr,
+                "knowledgeLevel": user_expr.knowledge_level,
+                "practiceCount": user_expr.practice_count,
+            }
+        )
 
     def submit_challenge(
         self, expr_id: str, answer: str, hint: bool = False

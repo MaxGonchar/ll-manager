@@ -37,11 +37,7 @@ def daily_training_challenge():
         ]
     )
 
-    dt = (
-        _init_daily_training(g.user_id)
-        if is_feature_flag_enabled("DAILY_TRAINING_V3")
-        else DailyTraining(g.user_id)
-    )
+    dt = _init_daily_training(g.user_id)
 
     if request.method == "GET":
         challenge = dt.get_challenge()
@@ -76,11 +72,7 @@ def daily_training_expressions():
         ]
     )
 
-    d_training = (
-        _init_daily_training(g.user_id)
-        if is_feature_flag_enabled("DAILY_TRAINING_V3")
-        else DailyTraining(g.user_id)
-    )
+    d_training = _init_daily_training(g.user_id)
 
     exprs = d_training.get_learn_list_expressions()
     return render_template(
@@ -98,11 +90,7 @@ def remove_from_daily_training(expression_id: str):
         ]
     )
 
-    d_training = (
-        _init_daily_training(g.user_id)
-        if is_feature_flag_enabled("DAILY_TRAINING_V3")
-        else DailyTraining(g.user_id)
-    )
+    d_training = _init_daily_training(g.user_id)
 
     try:
         d_training.remove_item_from_learn_list(expression_id)
@@ -122,11 +110,7 @@ def settings():
         ]
     )
 
-    d_training = (
-        _init_daily_training(g.user_id)
-        if is_feature_flag_enabled("DAILY_TRAINING_V3")
-        else DailyTraining(g.user_id)
-    )
+    d_training = _init_daily_training(g.user_id)
     form = DailyTrainingSettingsForm()
 
     if form.validate_on_submit():

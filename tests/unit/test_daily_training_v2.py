@@ -81,6 +81,8 @@ class GetChallengeTests(TestCase):
         expected = {
             "answer": expr,
             "expression_id": expr_id,
+            "knowledgeLevel": 99.9,
+            "practiceCount": 0,
             "question": definition,
             "tip": expr,
         }

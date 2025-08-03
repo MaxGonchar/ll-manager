@@ -34,6 +34,12 @@ class SearchTests(TestCase):
         )
         self.addCleanup(daily_training_patcher.stop)
 
+        dt_repo_patcher = patch(
+            "services.user_expression_service.DailyTrainingRepo"
+        )
+        self.mock_dt_repo = dt_repo_patcher.start()
+        self.addCleanup(dt_repo_patcher.stop)
+
         self.subject = UserExpressionService(self.user_id)
 
     def test_search(self):
@@ -132,6 +138,12 @@ class PostTests(TestCase):
         tag_repo_patcher = patch("services.user_expression_service.TagsRepo")
         self.mock_get_tag = tag_repo_patcher.start().return_value.get_by_name
         self.addCleanup(tag_repo_patcher.stop)
+
+        dt_repo_patcher = patch(
+            "services.user_expression_service.DailyTrainingRepo"
+        )
+        self.mock_dt_repo = dt_repo_patcher.start()
+        self.addCleanup(dt_repo_patcher.stop)
 
         self.subject = UserExpressionService(self.user_id)
 
@@ -235,6 +247,12 @@ class GetExpressionByIDTests(TestCase):
         self.mock_get_us_expr_by_id = mock_ue_repo.return_value.get_by_id
         self.addCleanup(user_expr_repo_patcher.stop)
 
+        dt_repo_patcher = patch(
+            "services.user_expression_service.DailyTrainingRepo"
+        )
+        self.mock_dt_repo = dt_repo_patcher.start()
+        self.addCleanup(dt_repo_patcher.stop)
+
         self.subject = UserExpressionService(self.user_id)
 
     def test_get_user_expression_by_id(self):
@@ -313,6 +331,12 @@ class GetAllTests(TestCase):
         tag_repo_patcher = patch("services.user_expression_service.TagsRepo")
         self.mock_get_tag = tag_repo_patcher.start().return_value.get_by_name
         self.addCleanup(tag_repo_patcher.stop)
+
+        dt_repo_patcher = patch(
+            "services.user_expression_service.DailyTrainingRepo"
+        )
+        self.mock_dt_repo = dt_repo_patcher.start()
+        self.addCleanup(dt_repo_patcher.stop)
 
         self.subject = UserExpressionService(self.user_id)
 
@@ -419,6 +443,12 @@ class CountTests(TestCase):
         mock_ue_repo = user_expr_repo_patcher.start()
         self.mock_count = mock_ue_repo.return_value.count
         self.addCleanup(user_expr_repo_patcher.stop)
+
+        dt_repo_patcher = patch(
+            "services.user_expression_service.DailyTrainingRepo"
+        )
+        self.mock_dt_repo = dt_repo_patcher.start()
+        self.addCleanup(dt_repo_patcher.stop)
 
         self.subject = UserExpressionService(self.user_id)
 

@@ -29,11 +29,7 @@ def index():
     )
 
     user_id = g.user_id
-    dt = (
-        _init_daily_training(g.user_id)
-        if is_feature_flag_enabled("DAILY_TRAINING_V3")
-        else DailyTraining(g.user_id)
-    )
+    dt = _init_daily_training(user_id)
     exprs = {
         "dailyTrainingExpressionsNumber": dt.count_learn_list_items(),
         "totalExpressions": UserExpressionService(

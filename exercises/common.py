@@ -50,7 +50,7 @@ def get_challenge_object(item: TrainingExpressionData) -> ChallengeDict:
 def get_challenge_solution_object(
     challenge_expr: Expression, user_answer: str
 ) -> ChallengeSolutionDict:
-    resp = {
+    resp: ChallengeSolutionDict = {
         "correctAnswer": challenge_expr.expression,
         "usersAnswer": user_answer,
         "definition": challenge_expr.definition,

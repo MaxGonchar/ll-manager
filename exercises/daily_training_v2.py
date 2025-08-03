@@ -150,6 +150,7 @@ class DailyTrainingData:
         return self.llist.learn_list
 
 
+# TODO: remove since we use v3
 class DailyTraining:
     def __init__(self, user_id: str) -> None:
         self.dt_repo = DailyTrainingDAO(user_id)
@@ -171,7 +172,13 @@ class DailyTraining:
 
         expr = self._get_expression_by_id(next_expr_id)
 
-        return get_challenge_object(expr.expression)
+        return get_challenge_object(
+            {
+                "expression": expr,
+                "knowledgeLevel": expr.knowledge_level,
+                "practiceCount": expr.practice_count,
+            }
+        )
 
     def submit_challenge(
         self, expr_id: str, answer: str, hint: bool = False
