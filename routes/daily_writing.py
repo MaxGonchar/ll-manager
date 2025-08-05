@@ -3,7 +3,9 @@ from flask import Blueprint, render_template, request, g
 from helpers.rbac_helper import role_required
 from constants import Role
 
-daily_writing_bp = Blueprint("daily_writing", __name__, url_prefix="/daily-writing")
+daily_writing_bp = Blueprint(
+    "daily_writing", __name__, url_prefix="/daily-writing"
+)
 
 
 @daily_writing_bp.route("/", methods=["GET", "POST"])
@@ -45,8 +47,8 @@ def daily_writing():
                     "explanation": "another explanation",
                     "solution": "another solution",
                 },
-            ]
-        }
+            ],
+        },
     }
 
     return render_template("exercises/daily_writing.html", data=data)
