@@ -1,3 +1,4 @@
+from exercises.common import TrainingExpressionData
 from models.models import (
     Expression,
     Tag,
@@ -226,4 +227,14 @@ def get_daily_training_expressions_list_item(
         "knowledge_level": knowledge_level,
         "practice_count": practice_count,
         "last_practice_time": last_practice_time,
+    }
+
+
+def get_training_expression_data(
+    user_expression: UserExpression, kl: float, pc: int
+) -> TrainingExpressionData:
+    return {
+        "expression": user_expression,
+        "knowledgeLevel": kl,
+        "practiceCount": pc,
     }

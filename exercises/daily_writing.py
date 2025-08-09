@@ -1,6 +1,9 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import TypedDict
-from repository.training_expressions_repo import TrainingRepoABC, UpdateTrainedExpression
+from repository.training_expressions_repo import (
+    TrainingRepoABC,
+    UpdateTrainedExpression,
+)
 from services.assistant import (
     ExpressionDetectionRequest,
     ExpressionDetectionResponse,
@@ -57,9 +60,9 @@ class DailyWriting:
         return {
             "expressions": [
                 {
-                    "id": expr["expression"].id,
-                    "expression": expr["expression"].expression,
-                    "definition": expr["expression"].definition,
+                    "id": expr.id,
+                    "expression": expr.expression,
+                    "definition": expr.definition,
                     "status": "not_checked",
                     "comment": None,
                 }
@@ -71,27 +74,32 @@ class DailyWriting:
     def submit_writing(
         self, text: str, expressions_to_train_ids: list[str]
     ) -> DailyWritingData:
-        
-        expressions_to_train = self.repo.get_by_ids(
-            expressions_to_train_ids
-        )
+
+        expressions_to_train = self.repo.get_by_ids(expressions_to_train_ids)
         expressions_to_detect = self._build_expressions_to_detect_message(
             expressions_to_train
         )
-        general_judgement, detected_expression_ids = self._get_general_judgement(
-            text, expressions_to_detect
-        )
+        (
+            general_judgement,
+            detected_expression_ids,
+        ) = self._get_general_judgement(text, expressions_to_detect)
 
         judgments = []
-        
+
         if detected_expression_ids.expressions:
             judgments = self._get_expression_usage_judgement(
                 text,
-                self._build_expression_usage_request(expressions_to_train, detected_expression_ids.expressions),
+                self._build_expression_usage_request(
+                    expressions_to_train, detected_expression_ids.expressions
+                ),
             )
 
-            self.repo.update_expressions(self._get_trined_expressions_to_update(expressions_to_train, judgments))
-        
+            self.repo.update_expressions(
+                self._get_trined_expressions_to_update(
+                    expressions_to_train, judgments
+                )
+            )
+
         expressions = [
             item["expression"].expression
             for item in self.repo.get_next(MAX_EXPRESSIONS_TO_TRAIN)
@@ -99,9 +107,9 @@ class DailyWriting:
         data: DailyWritingData = {
             "expressions": [
                 {
-                    "id": expr["expression"].id,
-                    "expression": expr["expression"].expression,
-                    "definition": expr["expression"].definition,
+                    "id": expr.id,
+                    "expression": expr.expression,
+                    "definition": expr.definition,
                     "status": "not_checked",
                     "comment": None,
                 }
@@ -122,20 +130,23 @@ class DailyWriting:
         }
 
         if judgments:
-            judgments_data = {
-                item.id: item
-                for item in judgments
-            }
+            judgments_data = {item.id: item for item in judgments}
 
             for expr in data["expressions"]:
                 if expr["id"] in judgments_data:
-                    expr["status"] = "success" if judgments_data[expr["id"]].is_correct else "failed"
+                    expr["status"] = (
+                        "success"
+                        if judgments_data[expr["id"]].is_correct
+                        else "failed"
+                    )
                     expr["comment"] = judgments_data[expr["id"]].comment
 
         return data
 
     def _get_general_judgement(
-        self, text: str, expressions_to_detect: list[ExpressionDetectionRequest]
+        self,
+        text: str,
+        expressions_to_detect: list[ExpressionDetectionRequest],
     ):
         with ThreadPoolExecutor() as executor:
             future_general_judgement = executor.submit(
@@ -150,11 +161,16 @@ class DailyWriting:
             detected_expression_ids = future_detected_expression_ids.result()
 
         return general_judgement, detected_expression_ids
-    
+
     @staticmethod
-    def _build_expressions_to_detect_message(user_expressions: list[UserExpression]) -> list[ExpressionDetectionRequest]:
+    def _build_expressions_to_detect_message(
+        user_expressions: list[UserExpression],
+    ) -> list[ExpressionDetectionRequest]:
         return [
-            {"id": user_expr.expression_id, "expression": user_expr.expression.expression}
+            {
+                "id": user_expr.expression_id,
+                "expression": user_expr.expression.expression,
+            }
             for user_expr in user_expressions
         ]
 
@@ -175,7 +191,11 @@ class DailyWriting:
             judgments = [future.result() for future in as_completed(futures)]
         return judgments
 
-    def _build_expression_usage_request(self, user_expressions: list[UserExpression], expressions_ids: list[str]) -> list[ExpressionUsageRequest]:
+    def _build_expression_usage_request(
+        self,
+        user_expressions: list[UserExpression],
+        expressions_ids: list[str],
+    ) -> list[ExpressionUsageRequest]:
         return [
             {
                 "id": user_expr.expression_id,
@@ -185,12 +205,14 @@ class DailyWriting:
             for user_expr in user_expressions
             if user_expr.expression_id in expressions_ids
         ]
-    
-    def _get_trined_expressions_to_update(self, expressions_to_train: list[UserExpression], 
-                                           judgments: list[ExpressionUsageResponse]) -> list[UpdateTrainedExpression]:
+
+    def _get_trined_expressions_to_update(
+        self,
+        expressions_to_train: list[UserExpression],
+        judgments: list[ExpressionUsageResponse],
+    ) -> list[UpdateTrainedExpression]:
         trained_expressions_data = {
-            item.id: item.is_correct
-            for item in judgments
+            item.id: item.is_correct for item in judgments
         }
         expressions_to_update = []
         for expr in expressions_to_train:
@@ -198,7 +220,9 @@ class DailyWriting:
                 expressions_to_update.append(
                     {
                         "user_expression": expr,
-                        "is_trained_successfully": trained_expressions_data[expr.expression_id],
+                        "is_trained_successfully": trained_expressions_data[
+                            expr.expression_id
+                        ],
                     }
                 )
         return expressions_to_update
