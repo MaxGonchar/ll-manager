@@ -549,6 +549,12 @@ main {
     visibility: visible;
 }
 
+.text-box {
+    flex: 4;
+    height: 80vh;
+
+    overflow-y: auto;
+}
 
 .dialogue {
     flex: 4;

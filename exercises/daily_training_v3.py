@@ -23,12 +23,12 @@ class DailyTraining:
     def submit_challenge(
         self, expression_id: str, answer: str, hint: bool = False
     ) -> ChallengeSolutionDict:
-        challenge_expression = self.repo.get_by_id(expression_id)
-        correct = challenge_expression.expression
+        challenge_expression = self.repo.get_by_ids([expression_id])
+        correct = challenge_expression[0].expression
 
         if not hint:
             update_user_expression_data: UpdateTrainedExpression = {
-                "user_expression": challenge_expression,
+                "user_expression": challenge_expression[0],
                 "is_trained_successfully": is_answer_correct(
                     correct.expression, answer
                 ),

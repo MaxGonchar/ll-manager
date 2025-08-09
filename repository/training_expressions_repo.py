@@ -34,13 +34,18 @@ class DailyTrainingSettings(TypedDict):
 
 class TrainingRepoABC(ABC):
     @abstractmethod
+    def __init__(self, user_id: str):
+        """Initialize the training repository with user ID and database session."""
+        self.user_id = user_id
+
+    @abstractmethod
     def get_next(self, amount: int) -> list[TrainingExpressionData]:
         """Get next expressions to train."""
         pass
 
     @abstractmethod
-    def get_by_id(self, expression_id: str) -> UserExpression | None:
-        """Get expression by ID."""
+    def get_by_ids(self, expression_ids: list[str]) -> list[UserExpression]:
+        """Get expressions by IDs."""
         pass
 
     @abstractmethod
@@ -342,10 +347,10 @@ class DailyTrainingRepo(TrainingRepoABC):
     def refresh(self):
         self._refresh_llist()
 
-    def get_by_id(self, expression_id: str) -> UserExpression | None:
-        if user_expr := self._get_user_expression_by_id(expression_id):
-            return user_expr[0]
-        return None
+    def get_by_ids(self, expression_ids: list[str]) -> list[UserExpression]:
+        return self.user_expressions_dao(self.user_id, self.session).get(
+            include=expression_ids
+        )
 
     def update_settings(self, settings: DailyTrainingSettings) -> None:
         self.daily_training_data.max_llist_size = settings[

@@ -804,27 +804,29 @@ class RefreshTests(DailyTrainingRepoTestsHelper):
         )
 
 
-class GetByIDTests(DailyTrainingRepoTestsHelper):
-    def test_get_by_id(self):
+class GetByIDsTests(DailyTrainingRepoTestsHelper):
+    def test_get_by_ids(self):
         self.mock_user_expressions_dao.return_value.get.return_value = [
             self.user_expr_1,
+            self.user_expr_2,
         ]
 
-        actual = self.subject.get_by_id(self.expr_id_1)
+        actual = self.subject.get_by_ids([self.expr_id_1, self.expr_id_2])
 
-        self.assertEqual(self.expr_id_1, actual.expression_id)
+        self.assertEqual(self.expr_id_1, actual[0].expression_id)
+        self.assertEqual(self.expr_id_2, actual[1].expression_id)
 
         self.mock_daily_training_dao.return_value.get.assert_called_once_with()
         self.mock_user_expressions_dao.return_value.get.assert_called_once_with(
-            include=[self.expr_id_1]
+            include=[self.expr_id_1, self.expr_id_2]
         )
 
-    def test_get_by_id_not_found_returns_none(self):
+    def test_get_by_id_not_found_returns_empty_list(self):
         self.mock_user_expressions_dao.return_value.get.return_value = []
 
-        actual = self.subject.get_by_id(self.expr_id_1)
+        actual = self.subject.get_by_ids([self.expr_id_1])
 
-        self.assertIsNone(actual)
+        self.assertEqual([], actual)
 
         self.mock_daily_training_dao.return_value.get.assert_called_once_with()
         self.mock_user_expressions_dao.return_value.get.assert_called_once_with(

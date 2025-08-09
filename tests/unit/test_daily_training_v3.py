@@ -78,7 +78,7 @@ class SubmitChallengeTests(DailyTrainingTestHelper):
                 definition=self.definition,
             ),
         )
-        self.repo.get_by_id.return_value = self.challenge_expression
+        self.repo.get_by_ids.return_value = [self.challenge_expression]
 
         self.expected = {
             "correctAnswer": self.expression,
