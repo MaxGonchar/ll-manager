@@ -203,7 +203,7 @@ class DailyWriting:
                 "meaning": user_expr.expression.definition,
             }
             for user_expr in user_expressions
-            if user_expr.expression_id in expressions_ids
+            if str(user_expr.expression_id) in expressions_ids
         ]
 
     def _get_trined_expressions_to_update(

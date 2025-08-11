@@ -53,8 +53,11 @@
         {% endif %}
     </div>
 
-    <form class="dialogue-form" action="{{url_for('writing_training.writing_training')}}" method="post">
+    <form class="dialogue-form" action="{{url_for('daily_writing.daily_writing')}}" method="post">
         <textarea name="input"></textarea>
+        {% for item in data.expressions %}
+            <input type="hidden" name="expression_ids" value="{{ item.id }}">
+        {% endfor %}
         <button class="button button-filled">Submit</button>
     </form>
   </div>
