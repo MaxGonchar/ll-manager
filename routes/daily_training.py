@@ -10,12 +10,10 @@ from flask import (
 
 from constants import MessageStatus, Role
 from exercises.daily_training_v2 import (
-    DailyTraining,
     LearnListItemNotFoundExpression,
 )
 from forms.daily_training_forms import DailyTrainingSettingsForm
 from helpers.rbac_helper import role_required
-from helpers.ff_helper import is_feature_flag_enabled
 
 exercise_bp = Blueprint("exercise", __name__, url_prefix="/exercise")
 

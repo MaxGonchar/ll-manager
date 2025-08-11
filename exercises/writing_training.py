@@ -30,9 +30,9 @@ class WritingTraining:
     def __init__(
         self,
         user_id: str,
-        writings_repo: WritingsRepo = WritingsRepo,
-        user_expr_repo: UserExpressionsDAO = UserExpressionsDAO,
-        assistant: VeniceAssistant = VeniceAssistant,
+        writings_repo: type[WritingsRepo] = WritingsRepo,
+        user_expr_repo: type[UserExpressionsDAO] = UserExpressionsDAO,
+        assistant: type[VeniceAssistant] = VeniceAssistant,
     ):
         self.user_id = user_id
         self.writings_repo: WritingsRepo = writings_repo(self.user_id)
