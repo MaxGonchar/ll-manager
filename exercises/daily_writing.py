@@ -24,6 +24,8 @@ class WritingTrainingExpression(TypedDict):
     definition: str
     status: str
     comment: str | None
+    pk: int #  practice count
+    kl: float #  knowledge level
 
 
 class WritingComment(TypedDict):
@@ -53,20 +55,18 @@ class DailyWriting:
         self.assistant = assistant()
 
     def get_challenge(self) -> DailyWritingData:
-        expressions = [
-            item["expression"].expression
-            for item in self.repo.get_next(MAX_EXPRESSIONS_TO_TRAIN)
-        ]
         return {
             "expressions": [
                 {
-                    "id": expr.id,
-                    "expression": expr.expression,
-                    "definition": expr.definition,
+                    "id": item["expression"].expression.id,
+                    "expression": item["expression"].expression.expression,
+                    "definition": item["expression"].expression.definition,
                     "status": "not_checked",
                     "comment": None,
+                    "pk": item["practiceCount"],
+                    "kl": item["knowledgeLevel"],
                 }
-                for expr in expressions
+                for item in self.repo.get_next(MAX_EXPRESSIONS_TO_TRAIN)
             ],
             "lastWriting": None,
         }
@@ -100,20 +100,18 @@ class DailyWriting:
                 )
             )
 
-        expressions = [
-            item["expression"].expression
-            for item in self.repo.get_next(MAX_EXPRESSIONS_TO_TRAIN)
-        ]
         data: DailyWritingData = {
             "expressions": [
                 {
-                    "id": expr.id,
-                    "expression": expr.expression,
-                    "definition": expr.definition,
+                    "id": item["expression"].expression.id,
+                    "expression": item["expression"].expression.expression,
+                    "definition": item["expression"].expression.definition,
                     "status": "not_checked",
                     "comment": None,
+                    "pk": item["practiceCount"],
+                    "kl": item["knowledgeLevel"],
                 }
-                for expr in expressions
+                for item in self.repo.get_next(MAX_EXPRESSIONS_TO_TRAIN)
             ],
             "lastWriting": {
                 "userText": text,

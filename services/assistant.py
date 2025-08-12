@@ -58,7 +58,11 @@ Here are some additional facts about the assistant:
 #
 # complaining about informal sentences
 general_judgement_template = """
-I need an language analysis of the following text:
+I have an exercise where a student has to write a short text.
+One or few sentences.
+Taking into acount that the text is very short and lacks context, 
+provide please an analysis of the text.
+
 <text>
 {text_to_analyze}
 </text>
@@ -66,9 +70,10 @@ I need an language analysis of the following text:
 I need information about the following:
 1. Punctuation errors
 2. Grammar errors
-3. Spelling errors
-4. Sentence structure
-5. Readability
+3. Tense errors
+4. Spelling errors
+5. Sentence structure
+6. Readability
 
 {response_format}
 """
@@ -145,7 +150,7 @@ class VeniceAssistant:
     def __init__(self):
         self.default_temperature = 0
         self.chat_model: ChatVeniceAI = ChatVeniceAI(
-            model=os.environ.get("VENICE_MODEL"),
+            model=os.environ.get("VENICE_MODEL", ""),
             api_key=os.environ.get("VENICE_API_KEY"),
             temperature=self.default_temperature,
             callbacks=[ModelCallbackHandler()],

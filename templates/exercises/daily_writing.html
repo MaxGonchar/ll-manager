@@ -28,7 +28,7 @@
                 {% endif %}
             </div>
             <a class="expression-link" href="{{ url_for('expressions.user_expression', expression_id=item.id) }}" target="_blank">
-                {{ item.expression }}
+                [pk: {{ item.pk }}] <b>{{ item.expression }}</b>
             </a>
         </div>
     {% endfor %}
