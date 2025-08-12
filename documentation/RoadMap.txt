@@ -9,10 +9,7 @@
 ==========================
 ------ ToBeDone ----------
 ==========================
-- see knowledge level and practice count in the daily training page when get a challenge
-- remove ff
-- Create a new exercise for training writing sentences and using daily training repo
-- think about adding and removing expressions out of the training classes
+- sort expressions by practice count on UI
 ==========================
 ------ BackLog -----------
 ==========================

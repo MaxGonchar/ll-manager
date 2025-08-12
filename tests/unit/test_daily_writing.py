@@ -86,6 +86,8 @@ class TestDailyWritingGetChallenge(BaseDailyWritingTest):
                     "definition": "definition1",
                     "status": "not_checked",
                     "comment": None,
+                    "pk": 1,
+                    "kl": 0.5,
                 },
                 {
                     "id": "expr_id-2",
@@ -93,6 +95,8 @@ class TestDailyWritingGetChallenge(BaseDailyWritingTest):
                     "definition": "definition2",
                     "status": "not_checked",
                     "comment": None,
+                    "pk": 2,
+                    "kl": 0.7,
                 },
                 {
                     "id": "expr_id-3",
@@ -100,6 +104,8 @@ class TestDailyWritingGetChallenge(BaseDailyWritingTest):
                     "definition": "definition3",
                     "status": "not_checked",
                     "comment": None,
+                    "pk": 3,
+                    "kl": 0.9,
                 },
             ],
             "lastWriting": None,
@@ -198,6 +204,8 @@ class SubmitChallengeTest(BaseDailyWritingTest):
                     "expression": "expr2",
                     "id": "expr_id-2",
                     "status": "failed",
+                    "pk": 3,
+                    "kl": 0.9,
                 },
                 {
                     "comment": None,
@@ -205,6 +213,8 @@ class SubmitChallengeTest(BaseDailyWritingTest):
                     "expression": "expr3",
                     "id": "expr_id-3",
                     "status": "not_checked",
+                    "pk": 3,
+                    "kl": 0.9,
                 },
                 {
                     "comment": None,
@@ -212,6 +222,8 @@ class SubmitChallengeTest(BaseDailyWritingTest):
                     "expression": "expr4",
                     "id": "expr_id-4",
                     "status": "not_checked",
+                    "pk": 3,
+                    "kl": 0.9,
                 },
             ],
             "lastWriting": {
@@ -231,7 +243,6 @@ class SubmitChallengeTest(BaseDailyWritingTest):
             },
         }
 
-        self.maxDiff = None
         self.assertEqual(expected, actual)
 
         self.mock_repo.return_value.get_by_ids.assert_called_once_with(
