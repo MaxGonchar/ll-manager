@@ -36,10 +36,16 @@ def get_ll_list(props):
 
 
 def print_ll_list(ll_list):
-    for item in ll_list:
+    print("i, pk, lp, kl, expr")
+    for i, item in enumerate(ll_list):
+        pk = item["practiceCount"]
+        if int(pk) == 79:
+            pk = "\033[92m79\033[0m"
         print(
-            item["practiceCount"],
+            i,
+            pk,
             item["position"],
+            int(item["knowledgeLevel"] * 100),
             get_expression(item["expressionId"]),
         )
 
