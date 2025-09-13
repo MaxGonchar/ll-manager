@@ -31,9 +31,6 @@ def daily_writing():
         data = dw.submit_writing(
             request.form["input"], request.form.getlist("expression_ids")
         )
-        from pprint import pprint
-
-        pprint(data)
         return render_template("exercises/daily_writing.html", data=data)
 
     data = dw.get_challenge()

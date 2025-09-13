@@ -43,20 +43,6 @@ Here are some additional facts about the assistant:
 - It isn't repetitive. If the conversation is going in circles, it moves it in a new direction.
 """
 
-# TODO: fix cases like:
-# Problem:
-# Explanation: The text does not contain any punctuation errors.
-# Solution: No solution needed
-#
-# too strict judgement
-#
-# complaining about luck of context
-#
-# complaining about simple sentences
-#
-# complaining about vogue meaning
-#
-# complaining about informal sentences
 general_judgement_template = """
 I have an exercise where a student has to write a short text.
 One or few sentences.
@@ -73,8 +59,10 @@ I need information about the following:
 3. Tense errors
 4. Spelling errors
 5. Sentence structure
-6. Readability
 
+**IMPORTANT:**
+Respond ONLY with valid JSON in the exact format specified below.
+Do not include any additional text, explanations, or formatting.
 {response_format}
 """
 
@@ -97,6 +85,8 @@ class GeneralJudgementResponse(BaseModel):
         return "\n".join(report)
 
 
+# TODO: since sometimes LLM returns like: "The expression is not used" as a comment
+# I might need to change response format: {"expr_id":<expr_id>, "user": false}
 expression_detection_template = """
 I provide you with a text.:
 {text}
@@ -105,6 +95,10 @@ I want you to identify usage of fallowing expressions:
 {expression_list}
 
 Please provide me with a list of expression ids that are used in the text.
+It's important to return ONLY IDs for expressions that are USED in the text.
+**IMPORTANT:**
+Respond ONLY with valid JSON in the exact format specified below.
+Do not include any additional text, explanations, or formatting.
 {response_format}
 
 If no expression is used, please provide an empty list.
@@ -123,11 +117,17 @@ class ExpressionDetectionResponse(BaseModel):
 # TODO: not be too strict, also failed sometimes, try another model
 #
 # complain about figurative usage
+#
+# Deal with expressions whose usage was detected as false positive
+# and expression usage marks it as incorrect since it was not used
 expression_usage_template = """
 In the text below:
 {text}
 I want you to answer, did this expression "{expression}" with meaning "{meaning}" is used correctly?
 
+**IMPORTANT:**
+Respond ONLY with valid JSON in the exact format specified below.
+Do not include any additional text, explanations, or formatting.
 {response_format}
 """
 
