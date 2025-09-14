@@ -24,8 +24,8 @@ class WritingTrainingExpression(TypedDict):
     definition: str
     status: str
     comment: str | None
-    pk: int #  practice count
-    kl: float #  knowledge level
+    pk: int  #  practice count
+    kl: float  #  knowledge level
 
 
 class WritingComment(TypedDict):

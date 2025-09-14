@@ -1,6 +1,7 @@
 {% from "widgets/icons.html" import list_bullet, cog_6_tooth %}
 {% from "widgets/link-icons.html" import link_icon %}
 {% from "widgets/nav-bars.html" import side_nav_bar %}
+{% from "widgets/utils.html" import expression_meta_data %}
 
 {% extends 'user/base.html' %}
 
@@ -30,10 +31,7 @@
       <button class="button button-filled" id="button-submit" onclick="submit()">Submit</button>
     </div>
 
-    <div>
-      <p>Practice count: {{ challenge.practiceCount }}</p>
-      <p>Knowledge level: {{ challenge.knowledgeLevel | knowledge_level_filter }}</p>
-    </div>
+    {{ expression_meta_data(challenge.practiceCount, challenge.knowledgeLevel) }}
 
     <script>
       const action = "{{ url_for('exercise.daily_training_challenge')}}";
