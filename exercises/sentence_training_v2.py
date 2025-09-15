@@ -33,15 +33,17 @@ class SentenceTraining:
         self.repo: TrainingRepoABC = repo(user_id)
         # self.context_repo = ExpressionContextRepo
 
-    def get_expressions_number_can_be_trained_in_sentence(self):
+    def get_expressions_number_can_be_trained_in_sentence(self) -> int:
         return self.repo.count_learn_list_items()
 
     def get_challenge(self) -> Optional[SentenceTrainingChallenge]:
-        user_expr = self.repo.get_next(1)
+        user_exprs = self.repo.get_next(1)
 
-        print(user_expr[0]["expression"].expression.expression)
+        if not user_exprs:
+            return None
 
-        data = random.choice(user_expr[0]["expression"].expression.context)
+        user_expr = user_exprs[0]
+        data = random.choice(user_expr["expression"].expression.context)
 
         return {
             "expressionId": data.expression_id,
@@ -50,8 +52,8 @@ class SentenceTraining:
             "translation": data.translation["uk"],
             "template": data.template["tpl"],
             "values": data.template["values"],
-            "practiceCount": user_expr[0]["practiceCount"],
-            "knowledgeLevel": user_expr[0]["knowledgeLevel"],
+            "practiceCount": user_expr["practiceCount"],
+            "knowledgeLevel": user_expr["knowledgeLevel"],
         }
 
     def submit_challenge(
