@@ -28,10 +28,8 @@ class SentenceTrainingChallengeSolution(TypedDict):
 
 
 class SentenceTraining:
-    
-    def __init__(self, user_id: str, repo: type[TrainingRepoABC]):
-        self.repo: TrainingRepoABC = repo(user_id)
-        # self.context_repo = ExpressionContextRepo
+    def __init__(self, repo: TrainingRepoABC):
+        self.repo: TrainingRepoABC = repo
 
     def get_expressions_number_can_be_trained_in_sentence(self) -> int:
         return self.repo.count_learn_list_items()
@@ -74,10 +72,16 @@ class SentenceTraining:
         correct = context.sentence
 
         if not hint:
-            self.repo.update_expressions([{
-                "user_expression": user_expr,
-                "is_trained_successfully": is_answer_correct(correct, answer)
-            }])
+            self.repo.update_expressions(
+                [
+                    {
+                        "user_expression": user_expr,
+                        "is_trained_successfully": is_answer_correct(
+                            correct, answer
+                        ),
+                    }
+                ]
+            )
 
         return {
             "correctAnswer": correct,
@@ -85,9 +89,10 @@ class SentenceTraining:
             "translation": context.translation["uk"],
         }
 
-    def _get_context(self, user_expr: UserExpression, context_id: str) -> Optional[ExpressionContext]:
+    def _get_context(
+        self, user_expr: UserExpression, context_id: str
+    ) -> Optional[ExpressionContext]:
         for context in user_expr.expression.context:
             if str(context.id) == context_id:
                 return context
         return None
-        

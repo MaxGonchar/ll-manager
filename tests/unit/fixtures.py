@@ -98,8 +98,9 @@ def get_expression(
     updated: Optional[str] = None,
     tags: Optional[List[Tag]] = None,
     properties: dict = {},
+    context: Optional[List[ExpressionContext]] = None,
 ) -> Expression:
-    return Expression(
+    expression = Expression(
         id=expression_id,
         expression=expression,
         definition=definition or "test definition",
@@ -110,6 +111,9 @@ def get_expression(
         tags=tags or [],
         properties=properties,
     )
+    if context:
+        expression.context = context
+    return expression
 
 
 def get_tag(

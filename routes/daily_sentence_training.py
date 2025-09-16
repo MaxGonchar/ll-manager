@@ -1,4 +1,12 @@
-from flask import Blueprint, request, render_template, url_for, flash, redirect, g
+from flask import (
+    Blueprint,
+    request,
+    render_template,
+    url_for,
+    flash,
+    redirect,
+    g,
+)
 
 from constants import Role
 from helpers.rbac_helper import role_required
@@ -11,7 +19,7 @@ daily_sentence_training_bp = Blueprint(
 
 
 def _init_sentence_training(user_id: str):
-    return SentenceTraining(user_id, DailyTrainingRepo)
+    return SentenceTraining(DailyTrainingRepo(user_id))
 
 
 @daily_sentence_training_bp.route("/", methods=["GET", "POST"])
@@ -32,13 +40,13 @@ def daily_sentence_training():
         if challenge is None:
             flash("Nothing to recall")
             return redirect(url_for("user.index"))
- 
+
         return render_template(
             "exercises/sentence_training_challenge.html",
             challenge=challenge,
             action=url_for("daily_sentence_training.daily_sentence_training"),
         )
-    
+
     solution = st.submit_challenge(
         request.form["expression_id"],
         request.form["context_id"],
