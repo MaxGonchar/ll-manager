@@ -41,6 +41,10 @@ class SentenceTraining:
             return None
 
         user_expr = user_exprs[0]
+
+        if not user_expr["expression"].expression.context:
+            raise ContextNotFoundException
+
         data = random.choice(user_expr["expression"].expression.context)
 
         return {
