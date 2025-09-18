@@ -38,7 +38,7 @@ def daily_sentence_training():
         challenge = st.get_challenge()
 
         if challenge is None:
-            flash("Nothing to recall")
+            flash("No sentences available for training", "info")
             return redirect(url_for("user.index"))
 
         return render_template(

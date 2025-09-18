@@ -5,6 +5,8 @@ from common.utils import get_connection
 
 USER_ID = "b5f55871-4a7d-4c27-aaa5-e3542d8554a7"
 CONFIGS = dotenv_values(".env.prod")
+# USER_ID = "9c9e7618-8d4a-4de5-8d6b-b5aa5d71549e"
+# CONFIGS = dotenv_values(".env.dev")
 
 
 def get_properties(user_id):
