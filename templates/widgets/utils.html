@@ -1,0 +1,6 @@
+{% macro expression_meta_data(practice_count, knowledge_level) %}
+    <div>
+      <p>Practice count: {{ practice_count }}</p>
+      <p>Knowledge level: {{ knowledge_level | knowledge_level_filter }}</p>
+    </div>
+{% endmacro %}

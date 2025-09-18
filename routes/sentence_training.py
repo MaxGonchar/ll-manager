@@ -35,7 +35,9 @@ def sentence_training_challenge():
             return redirect(url_for("user.index"))
 
         return render_template(
-            "exercises/sentence_training_challenge.html", challenge=challenge
+            "exercises/sentence_training_challenge.html",
+            challenge=challenge,
+            action=url_for("sentence_training.sentence_training_challenge"),
         )
 
     expression_id = request.form["expression_id"]
@@ -48,5 +50,7 @@ def sentence_training_challenge():
     )
 
     return render_template(
-        "exercises/sentence_training_solution.html", solution=solution
+        "exercises/sentence_training_solution.html",
+        solution=solution,
+        action=url_for("sentence_training.sentence_training_challenge"),
     )

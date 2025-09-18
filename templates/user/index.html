@@ -23,6 +23,14 @@
       </div>
     </a>
 
+    <a class="menu-title-link" href="{{ url_for('daily_sentence_training.daily_sentence_training') }}">
+      <div class="menu-title-box">
+        {{ chat_bubble_bottom_center_text("menu-title-icon") }}
+        <h2>Daily sentence</h2>
+        <p>{{ exprs["dailyTrainingExpressionsNumber"] }} expressions to train</p>
+      </div>
+    </a>
+
     <a class="menu-title-link" href="{{ url_for('expression_recall.expression_recall_challenge')}}">
       <div class="menu-title-box">
         {{ cloud_arrow_up("menu-title-icon") }}

@@ -1,6 +1,8 @@
 {% from "widgets/link-icons.html" import link_icon %}
 {% from "widgets/nav-bars.html" import side_nav_bar %}
 {% from "widgets/icons.html" import list_bullet %}
+{% from "widgets/utils.html" import expression_meta_data %}
+
 
 {% extends 'user/base.html' %}
 
@@ -21,8 +23,10 @@
       <button class="button button-filled" id="button-submit">Submit</button>
     </div>
 
+    {{ expression_meta_data(challenge.practiceCount, challenge.knowledgeLevel) }}
+
     <script>
-        const action = "{{ url_for('sentence_training.sentence_training_challenge')}}";
+        const action = "{{ action }}";
         const challenge = {
             expression_id: "{{ challenge.expressionId }}",
             context_id: "{{ challenge.contextId }}",

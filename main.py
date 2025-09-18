@@ -21,6 +21,7 @@ from routes.admin import admin_bp
 from routes.sentence_training import sentence_training_bp
 from routes.writing_training import writing_training_bp
 from routes.daily_writing import daily_writing_bp
+from routes.daily_sentence_training import daily_sentence_training_bp
 from extensions import db
 from env_manager import load_env
 from dao.user_dao import UsersDAO
@@ -78,6 +79,7 @@ app.register_blueprint(sentence_training_bp)
 app.register_blueprint(dialogue_training_bp)
 app.register_blueprint(writing_training_bp)
 app.register_blueprint(daily_writing_bp)
+app.register_blueprint(daily_sentence_training_bp)
 
 app.jinja_env.filters["date_filter"] = filters.date_filter
 app.jinja_env.filters[
