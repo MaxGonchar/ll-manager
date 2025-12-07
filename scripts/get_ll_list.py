@@ -38,17 +38,31 @@ def get_ll_list(props):
 
 
 def print_ll_list(ll_list):
-    print("i, pk, lp, kl, expr")
+    print(f"{'|i':<4} {'|pk':<5} {'|lp':<5} {'|kl':<5} {'|expr'}")
+    print("-" * 40)
+
     for i, item in enumerate(ll_list):
         pk = item["practiceCount"]
+        pk_display = str(pk)
+        
         if int(pk) == 79:
-            pk = "\033[92m79\033[0m"
+            pk_display = "\033[92m79\033[0m"
+        elif int(pk) == 78:
+            pk_display = "\033[93m78\033[0m"
+        
+        if int(pk) in [78, 79]:
+            pk_formatted = pk_display + "  "
+        else:
+            pk_formatted = f"{pk_display:<4}"
+        
         print(
-            i,
-            pk,
-            item["position"],
-            int(item["knowledgeLevel"] * 100),
-            get_expression(item["expressionId"]),
+            (
+                f"|{i:<3} "
+                f"|{pk_formatted} "
+                f"|{item['position']:<4} "
+                f"|{int(item['knowledgeLevel'] * 100):<4} "
+                f"|{get_expression(item['expressionId'])}"
+            )
         )
 
 

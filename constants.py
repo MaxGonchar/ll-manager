@@ -43,6 +43,7 @@ class Tags(Enum):
     IDIOM = "idiom"
     PHRASAL_VERB = "phrasal verb"
     PROVERB = "proverb"
+    COLLOCATION = "collocation"
 
     @classmethod
     def list_(cls) -> List[str]:
