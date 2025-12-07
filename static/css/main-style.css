@@ -659,3 +659,7 @@ main {
     border-radius: 5px;
     text-align: center;
 }
+
+.sentence, .box, .user-answer, .correct-answer, .sentence-translation {
+    margin: 0 40px 0 40px;
+}
